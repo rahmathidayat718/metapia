@@ -80,7 +80,7 @@ function doGet(e) {
       return balas({ ok: false, kode: "error", pesan: String(err) });
     }
   }
-  return ContentService.createTextOutput("METAPIA siap menerima data ✓");
+  return ContentService.createTextOutput("METAPIA siap menerima data ✓ (versi 3: login PIN + kuis + game)");
 }
 
 /* ==========================================================================

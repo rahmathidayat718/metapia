@@ -458,25 +458,19 @@ const Game = (() => {
       return;
     }
     elStatus.textContent = "Menyimpan skor...";
-    let balas = null;
-    try {
-      balas = await tanyaSheet({
-        aksi: "game",
-        nama: user.nama,
-        pin: user.pin,
-        gameId: g.id,
-        game: g.judul,
-        skor: hasil.skor,
-        benar: `${hasil.benar} dari ${hasil.dari}`, // bukan "8/10": Sheets bakal ngira itu tanggal
-      });
-    } catch (e) {}
-    if (balas && balas.ok) {
-      elStatus.textContent = "✓ Skor sudah tersimpan!";
-      elStatus.className = "status-kirim is-ok";
-    } else {
-      elStatus.textContent = "Skor belum terkirim (cek internet). Tapi sudah tersimpan di perangkat ini.";
-      elStatus.className = "status-kirim is-gagal";
-    }
+    // gagal -> otomatis masuk antrean & dikirim ulang nanti (lihat js/sheet.js)
+    const kirim = await kirimData({
+      aksi: "game",
+      nama: user.nama,
+      pin: user.pin,
+      gameId: g.id,
+      game: g.judul,
+      skor: hasil.skor,
+      benar: `${hasil.benar} dari ${hasil.dari}`, // bukan "8/10": Sheets bakal ngira itu tanggal
+    });
+    const pesan = pesanKirim(kirim, "Skor");
+    elStatus.textContent = pesan.teks;
+    elStatus.className = `status-kirim ${pesan.kelas}`;
   }
 
   /* ========================================================================

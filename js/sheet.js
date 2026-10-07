@@ -11,14 +11,15 @@
 const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbz-f4OJgQayEX5lfmHgFwRIfang_DOSAZCiBMNEKVYkaHlLPGYtyiijqLlrSWSzYVY-/exec";
 
 /**
- * Kirim data & BACA balasannya (login nama + PIN, kirim nilai kuis).
+ * Kirim data & BACA balasannya (login nama + PIN, kirim nilai kuis/game).
  * Body sengaja teks biasa (bukan application/json) biar browser gak perlu
  * izin tambahan (preflight) yang gak didukung Apps Script.
- * Gagal konek / kelamaan (15 detik) -> lempar error.
+ * Gagal konek / kelamaan (30 detik — Apps Script yang baru "bangun" bisa
+ * lambat) -> lempar error.
  */
 async function tanyaSheet(data) {
   const kontrol = new AbortController();
-  const timer = setTimeout(() => kontrol.abort(), 15000);
+  const timer = setTimeout(() => kontrol.abort(), 30000);
   try {
     const res = await fetch(GOOGLE_SHEET_URL, {
       method: "POST",
@@ -29,6 +30,87 @@ async function tanyaSheet(data) {
   } finally {
     clearTimeout(timer);
   }
+}
+
+/* ==========================================================================
+   KIRIM NILAI / SKOR + ANTREAN
+   Kalau gagal terkirim (internet putus, server lambat, Apps Script belum
+   diperbarui), data disimpan di antrean (localStorage "metapia_antrean")
+   lalu dikirim ulang OTOMATIS tiap kali siswa membuka Dashboard/Kuis/Game.
+   ========================================================================== */
+const KUNCI_ANTREAN = "metapia_antrean";
+
+function bacaAntrean() {
+  try { return JSON.parse(localStorage.getItem(KUNCI_ANTREAN)) || []; } catch (e) { return []; }
+}
+function tulisAntrean(daftar) {
+  localStorage.setItem(KUNCI_ANTREAN, JSON.stringify(daftar.slice(-50)));
+}
+
+/**
+ * Kirim 1 data ke sheet. Hasilnya { status, pesan }:
+ *  "ok"         -> tersimpan di sheet
+ *  "pin_salah"  -> ditolak (PIN gak cocok), gak diantre
+ *  "versi_lama" -> Apps Script belum diperbarui, diantre
+ *  "offline"    -> gak nyambung / kelamaan, diantre
+ *  "error"      -> error di Apps Script, diantre
+ */
+async function kirimData(data, { antreKalauGagal = true } = {}) {
+  let balas = null;
+  try {
+    balas = await tanyaSheet(data);
+  } catch (e) {
+    balas = null;
+  }
+
+  let hasil;
+  if (balas && balas.ok) hasil = { status: "ok" };
+  else if (!balas) hasil = { status: "offline" };
+  else if (balas.kode === "pin_salah") hasil = { status: "pin_salah" };
+  else if (balas.kode === "aksi_salah") hasil = { status: "versi_lama" };
+  else hasil = { status: "error", pesan: balas.pesan || balas.kode };
+
+  if (hasil.status !== "ok") console.warn("[METAPIA] gagal kirim ke Google Sheet:", hasil, balas);
+  if (antreKalauGagal && ["offline", "versi_lama", "error"].includes(hasil.status)) {
+    const daftar = bacaAntrean();
+    daftar.push({ ...data, dikirimPada: new Date().toISOString() });
+    tulisAntrean(daftar);
+  }
+  return hasil;
+}
+
+/** kalimat status buat ditampilkan ke siswa di layar hasil */
+function pesanKirim(hasil, apa = "Nilai") {
+  switch (hasil.status) {
+    case "ok": return { teks: `✓ ${apa} sudah tersimpan!`, kelas: "is-ok" };
+    case "pin_salah": return { teks: `${apa} ditolak server: PIN tidak cocok. Coba keluar lalu masuk lagi.`, kelas: "is-gagal" };
+    case "versi_lama": return { teks: `${apa} belum terkirim: server Google Sheet perlu diperbarui guru. ${apa} disimpan & dikirim otomatis nanti.`, kelas: "is-gagal" };
+    case "offline": return { teks: `${apa} belum terkirim (internet lambat/putus). Akan dikirim otomatis nanti.`, kelas: "is-gagal" };
+    default: return { teks: `${apa} belum terkirim (server error). Akan dikirim otomatis nanti.`, kelas: "is-gagal" };
+  }
+}
+
+/** kirim ulang semua data di antrean (yang berhasil / ditolak dibuang dari antrean) */
+let sedangKirimAntrean = false;
+async function kirimAntrean() {
+  if (!GOOGLE_SHEET_URL || sedangKirimAntrean) return;
+  const daftar = bacaAntrean();
+  if (!daftar.length) return;
+  sedangKirimAntrean = true;
+  const sisa = [];
+  for (const data of daftar) {
+    const hasil = await kirimData(data, { antreKalauGagal: false });
+    if (hasil.status !== "ok" && hasil.status !== "pin_salah") sisa.push(data);
+  }
+  // data baru yang masuk antrean selama proses ini juga dipertahankan
+  const tambahan = bacaAntrean().slice(daftar.length);
+  tulisAntrean(sisa.concat(tambahan));
+  sedangKirimAntrean = false;
+}
+
+// coba kirim ulang antrean sebentar setelah halaman terbuka (kalau sudah login)
+if (typeof window !== "undefined" && localStorage.getItem("metapia_user")) {
+  setTimeout(kirimAntrean, 1500);
 }
 
 /** Ambil nilai kuis terakhir siswa dari sheet (buat Dashboard). Gagal -> null. */

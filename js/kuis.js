@@ -452,26 +452,19 @@ async function simpanNilai(nilai, salah) {
     return;
   }
   elStatus.textContent = "Mengirim nilai ke guru...";
-  // pakai tanyaSheet (nunggu balasan) biar "terkirim" beneran dikonfirmasi sheet
-  let hasil = null;
-  try {
-    hasil = await tanyaSheet({
-      aksi: "nilai",
-      nama: user.nama,
-      pin: user.pin,
-      nilai,
-      benar: jumlahBenar,
-      salah,
-      jawaban: jawabanSiswa.map((j) => HURUF[j]).join(""),
-    });
-  } catch (e) {}
-  if (hasil && hasil.ok) {
-    elStatus.textContent = "✓ Nilai sudah terkirim ke guru!";
-    elStatus.className = "status-kirim is-ok";
-  } else {
-    elStatus.textContent = "Nilai belum terkirim (cek internet). Tapi sudah tersimpan di perangkat ini.";
-    elStatus.className = "status-kirim is-gagal";
-  }
+  // gagal -> otomatis masuk antrean & dikirim ulang nanti (lihat js/sheet.js)
+  const kirim = await kirimData({
+    aksi: "nilai",
+    nama: user.nama,
+    pin: user.pin,
+    nilai,
+    benar: jumlahBenar,
+    salah,
+    jawaban: jawabanSiswa.map((j) => HURUF[j]).join(""),
+  });
+  const pesan = pesanKirim(kirim, "Nilai");
+  elStatus.textContent = pesan.teks;
+  elStatus.className = `status-kirim ${pesan.kelas}`;
 }
 
 /* ==========================================================================
