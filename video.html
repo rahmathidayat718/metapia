@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<!-- belum masukin nama? langsung balik ke halaman login -->
+<script src="js/cek-login.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video — METAPIA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/komik.css">
+<link rel="stylesheet" href="css/video.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="dashboard.html" class="brand">
+    <div class="brand-badge">📖</div>
+    <div class="brand-name"><span>META</span><span>PIA</span></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Beranda</a></li>
+    <li><a href="materi.html"><i class="fa-solid fa-book"></i> Materi</a></li>
+    <li><a href="video.html" class="active"><i class="fa-solid fa-clapperboard"></i> Video</a></li>
+    <li><a href="kuis.html"><i class="fa-solid fa-pen-to-square"></i> Kuis</a></li>
+    <li><a href="game.html"><i class="fa-solid fa-gamepad"></i> Game</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-toggle" id="navToggle"><i class="fa-solid fa-bars"></i></button>
+    <div class="avatar-btn" id="navAvatar" title="Profil">👤</div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ===================== PANEL KOMIK ===================== -->
+  <section class="comic-stage">
+
+    <div class="comic-panel">
+      <!-- kotak keterangan: judul video -->
+      <div class="comic-caption" id="comicCaption">Video Majas</div>
+
+      <!-- layar video: awalnya cover + tombol play, diklik -> iframe (diisi JS) -->
+      <div class="layar-video" id="layarVideo"></div>
+
+      <!-- 2 bocah yang nemenin nonton (diisi JS) -->
+      <div class="tokoh bocah bocah-kiri" id="bocahKiri"></div>
+      <div class="tokoh bocah bocah-kanan" id="bocahKanan"></div>
+
+      <!-- balon kata ajakan (keluar dari bocah kiri) -->
+      <div class="speech-bubble bubble-ajakan" id="bubbleAjakan">
+        <svg class="bubble-shape" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <g class="bubble-stroke">
+            <ellipse cx="50" cy="50" rx="49" ry="48"/>
+            <path class="tail-desktop" d="M32 92 Q37 120 40 145 Q44 120 48 96 Z"/>
+            <path class="tail-mobile" d="M26 90 Q30 102 32 113 Q36 102 40 95 Z"/>
+          </g>
+          <g class="bubble-fill">
+            <ellipse cx="50" cy="50" rx="49" ry="48"/>
+            <path class="tail-desktop" d="M32 92 Q37 120 40 145 Q44 120 48 96 Z"/>
+            <path class="tail-mobile" d="M26 90 Q30 102 32 113 Q36 102 40 95 Z"/>
+          </g>
+        </svg>
+        <p class="speech-text"><span id="teksAjakan"></span></p>
+      </div>
+    </div>
+
+  </section>
+  <!-- =================== /PANEL KOMIK ======================= -->
+
+</div>
+
+<footer class="site-footer">
+  <p>© 2026 METAPIA — Media Pembelajaran Majas Interaktif · <a href="#" onclick="logout(); return false;" style="text-decoration:underline;">Keluar</a></p>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/video.js"></script>
+<script>requireLogin();</script>
+</body>
+</html>

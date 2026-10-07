@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<!-- belum masukin nama? langsung balik ke halaman login -->
+<script src="js/cek-login.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — METAPIA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard.html" class="brand">
+    <div class="brand-badge">📖</div>
+    <div class="brand-name"><span>META</span><span>PIA</span></div>
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="dashboard.html" class="active"><i class="fa-solid fa-house"></i> Beranda</a></li>
+    <li><a href="materi.html"><i class="fa-solid fa-book"></i> Materi</a></li>
+    <li><a href="video.html"><i class="fa-solid fa-clapperboard"></i> Video</a></li>
+    <li><a href="kuis.html"><i class="fa-solid fa-pen-to-square"></i> Kuis</a></li>
+    <li><a href="game.html"><i class="fa-solid fa-gamepad"></i> Game</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <button class="nav-toggle" id="navToggle"><i class="fa-solid fa-bars"></i></button>
+    <div class="avatar-btn" id="navAvatar" title="Profil">👤</div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="open-book-decoration">📖</div>
+      <div class="hero-decoration book-decoration">📚</div>
+      <div class="hero-decoration pencil-decoration">✏️</div>
+
+      <div class="hero-sparkle sparkle-1">✦</div>
+      <div class="hero-sparkle sparkle-2">✦</div>
+      <div class="hero-sparkle sparkle-3">✧</div>
+      <p class="hero-sub">Halo, <span id="navUserName">Sahabat</span>! Yuk lanjut belajar 👋</p>
+      <h1 class="hero-title"><span class="meta">SELAMAT</span><br><span class="pia">DATANG DI METAPIA</span></h1>
+      <p class="hero-desc">Belajar majas personifikasi, metafora, hiperbola, perumpamaan, dan jenis majas lainnya lewat materi, video, kuis, serta game interaktif seru!</p>
+      <div class="hero-actions">
+        <a href="materi.html" class="btn btn-primary"><i class="fa-solid fa-play"></i> Mulai Belajar</a>
+        <a href="game.html" class="btn btn-outline"><i class="fa-solid fa-gamepad"></i> Main Game</a>
+      </div>
+    </div>
+
+    <div class="hero-art">
+      <img class="book-illustration" src="assets/bocah.png" alt="Ilustrasi dua anak terbang di atas buku ajaib penuh bintang">
+
+      <div class="badge-bubble" style="top:6%; left:2%;">Metafora</div>
+      <div class="badge-bubble" style="top:2%; right:4%;">Personifikasi</div>
+      <div class="badge-bubble" style="top:46%; right:-6%; animation-delay:1s;">Hiperbola</div>
+    </div>
+  </section>
+
+  <!-- PENCAPAIAN -->
+  <section class="achievement-section">
+
+  <div class="achievement-title">
+    <span>✨</span>
+    <h2>Pencapaianmu</h2>
+    <span>✨</span>
+  </div>
+
+  <div class="stat-row">
+
+    <div class="stat-card">
+      <div class="stat-icon kuis-icon">
+        <i class="fa-solid fa-star"></i>
+      </div>
+
+      <div class="stat-info">
+        <div class="stat-num" id="nilaiKuis">0</div>
+        <div class="stat-label">Nilai Kuis</div>
+        <div class="stat-desc" id="nilaiKuisDesc">Belum pernah kuis, yuk coba!</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon game-icon">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+
+      <div class="stat-info">
+        <div class="stat-num" id="skorGame">0</div>
+        <div class="stat-label">Skor Game</div>
+        <div class="stat-desc" id="skorGameDesc">Belum pernah main, yuk coba!</div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p>© 2026 METAPIA — Media Pembelajaran Majas Interaktif · <a href="#" onclick="logout(); return false;" style="text-decoration:underline;">Keluar</a></p>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/sheet.js"></script>
+<script>
+requireLogin();
+
+// nilai kuis TERAKHIR siswa yang lagi login. Belum pernah kuis -> 0.
+// 1) langsung tampilin yang tersimpan di browser ini
+// 2) lalu tanya Google Sheet, siapa tau dia kuis di perangkat lain
+function tampilkanNilaiKuis() {
+  const user = getCurrentUser();
+  let semua = {};
+  try { semua = JSON.parse(localStorage.getItem("metapia_nilai")) || {}; } catch (e) {}
+  const data = user && semua[user.nama];
+  if (!data) return;
+  document.getElementById("nilaiKuis").textContent = data.terakhir;
+  const tgl = new Date(data.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  document.getElementById("nilaiKuisDesc").textContent = `Kuis terakhir: ${tgl}`;
+}
+tampilkanNilaiKuis();
+
+// skor GAME TERAKHIR yang dimainkan (disimpan js/game.js). Belum pernah -> 0.
+function tampilkanSkorGame() {
+  const user = getCurrentUser();
+  const data = user && bacaSkorGameLokal(user.nama).terakhir;
+  if (!data) return;
+  document.getElementById("skorGame").textContent = data.skor;
+  const tgl = new Date(data.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+  document.getElementById("skorGameDesc").textContent = `${data.judul} · ${tgl}`;
+}
+tampilkanSkorGame();
+
+// tanya Google Sheet, siapa tau kuis/main game di perangkat lain
+(async function sinkronDariSheet() {
+  const user = getCurrentUser();
+  if (!user) return;
+  const hasil = await ambilStatusSiswa(user.nama, user.pin);
+  if (!hasil || !hasil.ok) return;
+  if (hasil.nilai) {
+    simpanNilaiLokal(user.nama, hasil.nilai.nilai, hasil.nilai.tanggal);
+    tampilkanNilaiKuis();
+  }
+  if (hasil.game) {
+    simpanGameTerakhirLokal(user.nama, hasil.game.game, hasil.game.skor, hasil.game.tanggal);
+    tampilkanSkorGame();
+  }
+})();
+</script>
+</body>
+</html>

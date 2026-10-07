@@ -1,0 +1,233 @@
+/* ==========================================================================
+   METAPIA — komik.css
+   Gaya "panel komik" yang DIPAKAI BARENG halaman Materi & Video:
+   panel bergaris tebal + background bgMateri.jpg, tokoh (guru/murid)
+   dengan pose yang bisa gonta-ganti, balon kata lonjong, dan baris tombol.
+
+   POSISI tokoh & balon kata TIDAK ada di sini — itu diatur di CSS
+   masing-masing halaman (materi.css / video.css), karena tiap halaman
+   susunannya beda.
+
+   Semua posisi di dalam panel pakai PERSEN, dan ukuran teks pakai "cqw"
+   (persen dari lebar panel). Jadi mau layarnya lebar atau sempit, tokoh &
+   balon kata tetap nempel di posisi yang sama terhadap gambar background.
+   Urutan load: common.css -> komik.css -> materi.css / video.css
+   ========================================================================== */
+
+/* background halaman (bgMateri diburamin) sekarang diatur di common.css,
+   dipakai bareng semua halaman */
+
+/* ==========================================================================
+   PEMBUNGKUS
+   -------------------------------------------------------------------------
+   Lebar panel dihitung dari TINGGI layar, biar panel + tombol di bawahnya
+   selalu muat 1 layar tanpa kepotong. Angka 225px = tinggi navbar + jarak
+   + baris tombol + footer. (svh = tinggi layar HP tanpa ketutup address bar;
+   dibagi --skala karena di layar besar halamannya di-zoom, lihat common.css)
+   ========================================================================== */
+/* panel ditaruh di TENGAH ruang antara navbar & footer (kepake di HP yang tinggi) */
+.wrap{ display:flex; flex-direction:column; justify-content:center; }
+
+.comic-stage{
+  width:min(100%, calc((100vh / var(--skala) - 225px) * 1.7917));
+  width:min(100%, calc((100svh / var(--skala) - 225px) * 1.7917));
+  margin:16px auto 10px;
+}
+
+/* ==========================================================================
+   PANEL KOMIK — rasio = rasio gambar bgMateri.jpg (1376 x 768)
+   ========================================================================== */
+.comic-panel{
+  position:relative;
+  container-type:inline-size; /* bikin satuan cqw = persen lebar panel */
+  width:100%;
+  aspect-ratio:1376 / 768;
+  background:url('../assets/bgMateri.jpg') center / cover no-repeat;
+  border:5px solid var(--ink);
+  border-radius:22px;
+  box-shadow:8px 8px 0 rgba(44,36,80,0.55), 0 20px 40px rgba(15,8,45,0.3);
+  overflow:hidden; /* tokoh yang jalan masuk dari luar gak nyembul */
+}
+
+/* kotak keterangan kuning di pojok (kayak "Sementara itu..." di komik) */
+.comic-caption{
+  position:absolute; top:3.5%; left:2%; z-index:4;
+  padding:.5cqw 1.3cqw;
+  background:var(--yellow);
+  border:3px solid var(--ink);
+  border-radius:6px;
+  box-shadow:3px 3px 0 var(--ink);
+  font-family:var(--font-display); font-weight:800;
+  font-size:1.5cqw; color:var(--ink);
+  text-transform:uppercase; letter-spacing:.5px;
+  transform:rotate(-2deg);
+}
+
+/* ==========================================================================
+   TOKOH (guru & murid) — strukturnya dibikin JS:
+   .tokoh > .tokoh-figure > (.tokoh-shadow + .tokoh-body > img.pose ...)
+   -------------------------------------------------------------------------
+   Semua gambar pose 1 tokoh ukurannya sama & kakinya di tengah bawah,
+   jadi cukup ditumpuk lalu gantian di-show. Titik "left" = posisi kaki.
+   ========================================================================== */
+.tokoh{ position:absolute; z-index:2; transform:translateX(-50%); }
+.guru{ aspect-ratio:546 / 520; } /* rasio default; aslinya dikunci JS (aturRasioTokoh di app.js) */
+.tokoh-figure, .tokoh-body{ position:relative; width:100%; height:100%; }
+.tokoh-body{ transform-origin:50% 100%; }
+
+.pose{
+  position:absolute; inset:0;
+  display:block; width:100%; height:100%;
+  object-fit:contain; /* jaga bentuk asli gambar, gak bakal gepeng */
+  opacity:0;
+  filter:drop-shadow(0 4px 4px rgba(15,8,45,0.25));
+  user-select:none;
+}
+.pose.is-active{ opacity:1; animation:gantiPose .22s ease-out; }
+@keyframes gantiPose{ from{ transform:scale(.97); } to{ transform:scale(1); } }
+
+/* bayangan lonjong di bawah kaki biar keliatan napak di rumput */
+.tokoh-shadow{
+  position:absolute; left:25%; right:25%; bottom:-2%; height:6%;
+  border-radius:50%;
+  background:radial-gradient(ellipse, rgba(30,50,20,0.35), transparent 70%);
+}
+
+/* ---------- gerakan ---------- */
+/* jalan masuk dari kiri: badan geser + langkah naik-turun */
+.tokoh.is-masuk .tokoh-figure{ animation:guruMasuk 1.3s cubic-bezier(.25,.8,.35,1) both; }
+.tokoh.is-masuk .tokoh-body{ animation:langkah .32s ease-in-out 4; }
+@keyframes guruMasuk{ from{ transform:translateX(-75cqw); } to{ transform:translateX(0); } }
+@keyframes langkah{
+  0%,100%{ transform:translateY(0) rotate(0); }
+  25%{ transform:translateY(-2.5%) rotate(-1.5deg); }
+  75%{ transform:translateY(-2.5%) rotate(1.5deg); }
+}
+
+/* lagi ngomong: badan goyang halus naik-turun */
+.tokoh.is-talking .tokoh-body{ animation:ngomong .45s ease-in-out infinite alternate; }
+@keyframes ngomong{
+  from{ transform:translateY(0) scaleY(1); }
+  to{ transform:translateY(-1%) scaleY(1.012); }
+}
+
+/* gerakan sesekali waktu diam (dipicu JS, bukan terus-terusan) */
+.tokoh.is-bounce .tokoh-body{ animation:lompatKecil .6s ease; }
+@keyframes lompatKecil{
+  0%,100%{ transform:translateY(0); }
+  40%{ transform:translateY(-3.5%); }
+  70%{ transform:translateY(.5%); }
+}
+
+/* ==========================================================================
+   BALON KATA
+   -------------------------------------------------------------------------
+   Ukurannya TETAP (persen dari panel, diatur di CSS halaman) supaya
+   ekornya selalu pas nunjuk ke kepala tokoh. Bentuknya digambar SVG yang
+   di-stretch ngikutin kotak ini. transform-origin (di CSS halaman) =
+   ujung ekor, jadi balon "keluar" dari mulut tokoh.
+   ========================================================================== */
+.speech-bubble{
+  position:absolute; z-index:3;
+  transform:scale(.3); opacity:0;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+  cursor:pointer;
+  pointer-events:none;
+}
+.speech-bubble.is-show{ transform:scale(1); opacity:1; pointer-events:auto; }
+
+.bubble-shape{
+  position:absolute; inset:0; width:100%; height:100%;
+  overflow:visible;
+  filter:drop-shadow(4px 5px 0 rgba(44,36,80,0.25));
+}
+.bubble-shape *{ vector-effect:non-scaling-stroke; } /* garis tetap rata walau di-stretch */
+.bubble-stroke{ fill:var(--ink); stroke:var(--ink); stroke-width:7; stroke-linejoin:round; }
+.bubble-fill{ fill:#fff; }
+.tail-mobile{ display:none; }
+
+.speech-text{
+  position:relative;
+  height:100%;
+  display:flex; align-items:center; justify-content:center;
+  padding:3% 11%;
+  text-align:center;
+  font-family:var(--font-display); font-weight:700;
+  font-size:1.9cqw; line-height:1.3;
+  color:var(--ink);
+}
+.speech-cursor{ font-weight:800; color:var(--purple-700); animation:blink 1s step-start infinite; }
+.speech-cursor.is-hidden{ display:none; }
+@keyframes blink{ 50%{ opacity:0; } }
+
+/* ==========================================================================
+   BARIS KONTROL: [Sebelumnya]   • • • • • •   [...] [Lanjut]
+   ========================================================================== */
+.comic-controls{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center; gap:12px;
+  margin-top:16px;
+}
+.comic-controls > #btnPrev{ justify-self:start; }
+.comic-controls-right{ justify-self:end; display:flex; align-items:center; gap:12px; }
+
+.comic-progress{ display:flex; justify-content:center; gap:8px; }
+.comic-dot{
+  width:12px; height:12px; border-radius:50%;
+  background:rgba(255,255,255,0.45); border:2px solid rgba(255,255,255,0.8);
+  cursor:pointer; padding:0; transition:.2s;
+}
+.comic-dot:hover{ transform:scale(1.2); }
+.comic-dot.is-active{ background:var(--yellow); border-color:var(--yellow-dark); width:30px; border-radius:100px; }
+.comic-dot.is-done{ background:#fff; border-color:#fff; }
+
+.comic-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  height:50px; padding:0 24px;
+  border:3px solid var(--ink); border-radius:100px;
+  box-shadow:4px 4px 0 var(--ink);
+  font-family:var(--font-display); font-weight:800; font-size:1rem;
+  white-space:nowrap;
+  cursor:pointer; transition:transform .12s, box-shadow .12s;
+}
+.comic-btn:not(:disabled):hover{ transform:translate(-1px,-1px); box-shadow:5px 5px 0 var(--ink); }
+.comic-btn:not(:disabled):active{ transform:translate(3px,3px); box-shadow:1px 1px 0 var(--ink); }
+.comic-btn:disabled{ opacity:.5; cursor:not-allowed; }
+.comic-btn-primary{ background:var(--yellow); color:var(--ink); }
+.comic-btn-ghost{ background:#fff; color:var(--purple-700); }
+.comic-btn-mute{ background:#fff; color:var(--purple-700); width:50px; padding:0; justify-content:center; border-radius:50%; }
+.comic-btn-mute.is-muted{ color:#B7B0D6; }
+
+/* ==========================================================================
+   RESPONSIVE — HP / tablet kecil: panel jadi tegak (portrait)
+   -------------------------------------------------------------------------
+   Background digeser ke bagian kiri gambar (buku & bunga). Posisi tokoh
+   & balon versi HP diatur di CSS halaman. Ekor balon pakai versi "mobile".
+   ========================================================================== */
+@media (max-width:820px){
+  .comic-stage{
+    width:min(100%, calc((100vh / var(--skala) - 215px) * 0.75));
+    width:min(100%, calc((100svh / var(--skala) - 215px) * 0.75));
+    margin-top:14px;
+  }
+  .comic-panel{
+    aspect-ratio:3 / 4;
+    background-position:18% center;
+    border-width:4px;
+    box-shadow:6px 6px 0 rgba(44,36,80,0.55), 0 14px 30px rgba(15,8,45,0.3);
+  }
+  .tail-desktop{ display:none; }
+  .tail-mobile{ display:inline; }
+  .speech-text{ font-size:4.3cqw; padding:3% 10%; }
+  .comic-caption{ top:1.5%; left:3%; font-size:3.2cqw; padding:.8cqw 2.4cqw; }
+
+  /* titik progres pindah ke baris sendiri di atas tombol */
+  .comic-controls{ grid-template-columns:1fr 1fr; row-gap:12px; }
+  .comic-progress{ grid-column:1 / -1; grid-row:1; }
+}
+@media (max-width:480px){
+  .comic-btn{ height:46px; padding:0 16px; font-size:.92rem; }
+  .comic-btn-mute{ width:46px; padding:0; }
+  .comic-controls-right{ gap:8px; }
+}

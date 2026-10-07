@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<!-- belum masukin nama? langsung balik ke halaman login -->
+<script src="js/cek-login.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materi — METAPIA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/komik.css">
+<link rel="stylesheet" href="css/materi.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="dashboard.html" class="brand">
+    <div class="brand-badge">📖</div>
+    <div class="brand-name"><span>META</span><span>PIA</span></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Beranda</a></li>
+    <li><a href="materi.html" class="active"><i class="fa-solid fa-book"></i> Materi</a></li>
+    <li><a href="video.html"><i class="fa-solid fa-clapperboard"></i> Video</a></li>
+    <li><a href="kuis.html"><i class="fa-solid fa-pen-to-square"></i> Kuis</a></li>
+    <li><a href="game.html"><i class="fa-solid fa-gamepad"></i> Game</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-toggle" id="navToggle"><i class="fa-solid fa-bars"></i></button>
+    <div class="avatar-btn" id="navAvatar" title="Profil">👤</div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ===================== PANEL KOMIK ===================== -->
+  <section class="comic-stage">
+
+    <div class="comic-panel" id="scene">
+      <!-- kotak keterangan ala komik (judul majas yang lagi dibahas) -->
+      <div class="comic-caption" id="comicCaption">Ayo Belajar!</div>
+
+      <!-- murid (Dito, Sari, Bima, Keke) -> diisi JS -->
+      <div class="kelompok-murid" id="audienceRow"></div>
+
+      <!-- guru -> diisi JS, jalan masuk dari kiri -->
+      <div class="tokoh guru" id="teacherSlot"></div>
+
+      <!-- balon kata GURU: bentuk lonjong + ekor digambar pakai SVG -->
+      <div class="speech-bubble bubble-guru" id="bubbleGuru">
+        <svg class="bubble-shape" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <!-- lapis 1: garis tepi (ellipse + ekor) -->
+          <g class="bubble-stroke">
+            <ellipse cx="50" cy="50" rx="49" ry="48"/>
+            <path class="tail-desktop" d="M20 84 Q14 108 8 123 Q22 108 36 92 Z"/>
+            <path class="tail-mobile" d="M30 90 Q36 115 39 137 Q44 112 46 96 Z"/>
+          </g>
+          <!-- lapis 2: isi putih, nutupin garis di sambungan ekor biar nyatu -->
+          <g class="bubble-fill">
+            <ellipse cx="50" cy="50" rx="49" ry="48"/>
+            <path class="tail-desktop" d="M20 84 Q14 108 8 123 Q22 108 36 92 Z"/>
+            <path class="tail-mobile" d="M30 90 Q36 115 39 137 Q44 112 46 96 Z"/>
+          </g>
+        </svg>
+        <p class="speech-text"><span><span class="speech-isi"></span><span class="speech-cursor">|</span></span></p>
+      </div>
+
+      <!-- balon kata MURID (Dito), ekornya nunjuk ke kepala Dito -->
+      <div class="speech-bubble bubble-murid" id="bubbleMurid">
+        <svg class="bubble-shape" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <g class="bubble-stroke">
+            <ellipse cx="50" cy="50" rx="49" ry="48"/>
+            <path class="tail-desktop" d="M24 88 Q28 112 29 136 Q36 112 40 95 Z"/>
+            <path class="tail-mobile" d="M26 88 Q30 112 32 135 Q38 112 42 95 Z"/>
+          </g>
+          <g class="bubble-fill">
+            <ellipse cx="50" cy="50" rx="49" ry="48"/>
+            <path class="tail-desktop" d="M24 88 Q28 112 29 136 Q36 112 40 95 Z"/>
+            <path class="tail-mobile" d="M26 88 Q30 112 32 135 Q38 112 42 95 Z"/>
+          </g>
+        </svg>
+        <p class="speech-text"><span><span class="speech-isi"></span><span class="speech-cursor">|</span></span></p>
+      </div>
+    </div>
+
+    <!-- tombol kontrol + titik progres di tengah -->
+    <div class="comic-controls">
+      <button class="comic-btn comic-btn-ghost" id="btnPrev">
+        <i class="fa-solid fa-arrow-left"></i> <span class="btn-label">Sebelumnya</span>
+      </button>
+
+      <div class="comic-progress" id="comicProgress"></div>
+
+      <div class="comic-controls-right">
+        <button class="comic-btn comic-btn-mute" id="btnMute" title="Nyalakan/matikan suara">
+          <i class="fa-solid fa-volume-high" id="muteIcon"></i>
+        </button>
+        <button class="comic-btn comic-btn-primary" id="btnAction">
+          Siap! <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </section>
+  <!-- =================== /PANEL KOMIK ======================= -->
+
+</div>
+
+<footer class="site-footer">
+  <p>© 2026 METAPIA — Media Pembelajaran Majas Interaktif · <a href="#" onclick="logout(); return false;" style="text-decoration:underline;">Keluar</a></p>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/materi.js"></script>
+<script>requireLogin();</script>
+</body>
+</html>

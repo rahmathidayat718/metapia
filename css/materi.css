@@ -1,0 +1,35 @@
+/* ==========================================================================
+   METAPIA — materi.css
+   Khusus halaman Materi: POSISI guru, 4 murid, dan 2 balon kata (guru &
+   Dito) di dalam panel komik. Gaya panel/tokoh/balon/tombolnya sendiri
+   ada di komik.css (dipakai bareng halaman Video).
+   Urutan load: common.css -> komik.css -> materi.css
+   ========================================================================== */
+
+/* ---------- tokoh ---------- */
+.guru{ left:27%; bottom:5%; height:62%; }
+
+.kelompok-murid{ position:absolute; inset:0; pointer-events:none; }
+.murid{ bottom:5.5%; height:40%; }
+.murid-1{ left:52%; }  /* Dito — yang ikut ngomong */
+.murid-2{ left:63%; }  /* Sari */
+.murid-3{ left:73%; }  /* Bima */
+.murid-4{ left:83%; }  /* Keke */
+
+/* ---------- balon kata (transform-origin = ujung ekor) ---------- */
+.bubble-guru { left:30%; top:5%;  width:54%; height:32%; transform-origin:8% 123%; }
+.bubble-murid{ left:42%; top:14%; width:48%; height:28%; transform-origin:29% 136%; }
+
+/* ==========================================================================
+   RESPONSIVE — HP: balon guru melebar di atas, guru di kiri bawah,
+   murid berjejer kecil di kanan bawah
+   ========================================================================== */
+@media (max-width:820px){
+  .guru{ left:30%; bottom:4%; height:60%; }
+  .murid{ bottom:4%; height:26%; }
+  .murid-1{ left:56%; } .murid-2{ left:67%; } .murid-3{ left:78%; } .murid-4{ left:89%; }
+
+  .bubble-guru { left:4%;  top:3%;  width:92%; height:26%; transform-origin:39% 137%; }
+  .bubble-murid{ left:44%; top:42%; width:53%; height:22%; transform-origin:32% 135%; }
+  .bubble-murid .speech-text{ font-size:3.6cqw; padding:3% 9%; }
+}

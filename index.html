@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk — METAPIA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="brand-badge">📖</div>
+    </div>
+    <h1 class="login-title">
+      <span style="color:var(--yellow-dark)">META</span><span style="color:var(--purple-700)">PIA</span>
+    </h1>
+    <p class="login-tag">Menjelajahi Dunia Majas dengan Imajinasi Tanpa Batas</p>
+
+    <svg class="login-illustration" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="120" rx="70" ry="10" fill="#EDE6FF"/>
+      <path d="M30 95 C30 60 70 55 100 65 C130 55 170 60 170 95 L170 100 C140 88 130 95 100 88 C70 95 60 88 30 100 Z" fill="#5B3FD9"/>
+      <path d="M30 95 C30 60 70 55 100 65 L100 88 C70 95 60 88 30 100 Z" fill="#8A6BFF"/>
+      <path d="M170 95 C170 60 130 55 100 65 L100 88 C130 95 140 88 170 100 Z" fill="#6C4FE0"/>
+      <g fill="#FFC93C">
+        <path d="M100 25 l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/>
+        <circle cx="55" cy="40" r="2.5"/>
+        <circle cx="150" cy="35" r="3"/>
+        <circle cx="170" cy="55" r="2"/>
+        <circle cx="35" cy="60" r="2"/>
+      </g>
+    </svg>
+
+    <!-- masuk pakai NAMA + PIN 4 angka (dicek ke Google Sheet, lihat js/auth.js) -->
+    <form class="login-form" id="formLogin" novalidate>
+      <label class="login-label" for="namaSiswa">Siapa namamu?</label>
+      <div class="input-nama">
+        <i class="fa-solid fa-user-astronaut"></i>
+        <input type="text" id="namaSiswa" maxlength="40" placeholder="Tulis nama lengkapmu..." autocomplete="name" autofocus>
+      </div>
+
+      <label class="login-label" for="pinSiswa">PIN rahasiamu <small>(4 angka)</small></label>
+      <div class="input-nama">
+        <i class="fa-solid fa-key"></i>
+        <input type="password" id="pinSiswa" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+        <button type="button" class="lihat-pin" id="lihatPin" aria-label="Lihat PIN"><i class="fa-solid fa-eye"></i></button>
+      </div>
+      <p class="login-hint">Baru pertama kali? Buat PIN 4 angka &amp; ingat baik-baik, ya!</p>
+
+      <p id="loginError" class="login-error"></p>
+      <button type="submit" class="btn btn-primary btn-block" id="btnMasuk">
+        Ayo Masuk! <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <!-- muncul sekali waktu siswa baru daftar: ngingetin PIN-nya -->
+    <div class="login-sukses" id="loginSukses" hidden>
+      <div class="sukses-ikon">🎉</div>
+      <h2>Halo, <span id="suksesNama"></span>!</h2>
+      <p>Namamu sudah terdaftar. Ini PIN rahasiamu, <b>ingat baik-baik</b> ya:</p>
+      <div class="pin-besar" id="suksesPin"></div>
+      <p class="login-hint">PIN dipakai kalau kamu masuk dari HP/komputer lain.</p>
+      <a href="dashboard.html" class="btn btn-primary btn-block">Oke, aku ingat! <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+
+    <p class="login-foot">
+      Khusus untuk siswa &amp; siswi. Nama &amp; PIN dipakai untuk mencatat nilai kuismu ✨
+    </p>
+  </div>
+</div>
+
+<script src="js/sheet.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

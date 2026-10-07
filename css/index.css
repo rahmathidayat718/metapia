@@ -1,0 +1,74 @@
+/* ==========================================================================
+   METAPIA — index.css
+   Khusus halaman login (index.html). Butuh common.css duluan untuk
+   variabel warna, font, dan style dasar.
+   ==========================================================================
+
+/* ==========================================================================
+   HALAMAN LOGIN
+   ========================================================================== */
+.login-page{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+.login-card{
+  position:relative; z-index:1;
+  background:rgba(255,255,255,0.97);
+  width:100%; max-width:420px;
+  border-radius:var(--radius-lg);
+  padding:32px 36px 28px;
+  box-shadow:var(--shadow-soft);
+  text-align:center;
+}
+.login-logo{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px; }
+.login-logo .brand-badge{ width:48px; height:48px; font-size:1.5rem; }
+.login-title{ font-size:2rem; margin-top:6px; }
+.login-tag{ color:var(--ink-soft); font-weight:700; margin-top:6px; font-size:.95rem; }
+.login-illustration{
+  width:120px; margin:8px auto 4px;
+  filter:drop-shadow(0 10px 18px rgba(15,8,45,0.35)); /* sama kayak book-illustration, ngikutin bentuk gambar */
+}
+
+/* form nama siswa */
+.login-form[hidden]{ display:none; }
+.login-form{ display:flex; flex-direction:column; gap:12px; text-align:left; margin-top:6px; }
+.login-label{ font-family:var(--font-display); font-weight:800; font-size:1.1rem; color:var(--purple-900); }
+.input-nama{
+  display:flex; align-items:center; gap:10px;
+  padding:0 16px;
+  background:#F6F2FF;
+  border:3px solid var(--ink); border-radius:16px;
+  box-shadow:4px 4px 0 var(--ink);
+  transition:box-shadow .15s, transform .15s;
+}
+.input-nama:focus-within{ background:#fff; transform:translate(-1px,-1px); box-shadow:5px 5px 0 var(--purple-700); }
+.input-nama i{ color:var(--purple-700); font-size:1.1rem; }
+.input-nama input{
+  flex:1; min-width:0;
+  padding:14px 0;
+  border:none; outline:none; background:transparent;
+  font-family:var(--font-body); font-weight:800; font-size:1.05rem; color:var(--ink);
+}
+.input-nama input::placeholder{ color:#A79FC9; font-weight:700; }
+.login-label small{ font-family:var(--font-body); font-size:.8rem; font-weight:700; color:var(--ink-soft); }
+.lihat-pin{ border:none; background:none; color:var(--ink-soft); font-size:1rem; padding:6px; }
+.login-hint{ margin-top:-4px; font-size:.82rem; font-weight:700; color:var(--ink-soft); }
+.login-form .btn:disabled{ opacity:.7; cursor:wait; }
+
+/* layar sukses daftar (nunjukin PIN) */
+.login-sukses{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:6px; }
+.login-sukses[hidden]{ display:none; }
+.sukses-ikon{ font-size:2.4rem; }
+.login-sukses h2{ font-size:1.5rem; }
+.login-sukses p{ color:var(--ink-soft); font-weight:700; font-size:.95rem; }
+.pin-besar{
+  font-family:var(--font-display); font-weight:800; font-size:2.6rem; letter-spacing:12px;
+  padding:6px 18px 6px 30px;
+  background:var(--yellow); color:var(--ink);
+  border:3px solid var(--ink); border-radius:16px; box-shadow:4px 4px 0 var(--ink);
+}
+.login-sukses .btn{ margin-top:8px; border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); }
+.login-form .btn{ margin-top:4px; border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); }
+.login-form .btn:active{ transform:translate(3px,3px); box-shadow:1px 1px 0 var(--ink); }
+.login-foot{ margin-top:22px; font-size:.85rem; color:var(--ink-soft); font-weight:600; }
+.login-error{ display:none; background:#FFE3E3; color:#C23A3A; font-weight:700; font-size:.85rem; padding:10px 14px; border-radius:12px; } /* muncul cuma kalau login gagal */
+
+/* layar PIN (siswa baru) muncul -> ilustrasi buku disembunyikan biar muat */
+.login-card:has(.login-sukses:not([hidden])) .login-illustration{ display:none; }

@@ -1,0 +1,250 @@
+/* ==========================================================================
+   METAPIA — common.css
+   Berisi semua yang DIPAKAI BARENG di semua halaman:
+   variabel warna, reset, background, navbar, tombol, footer.
+   Wajib di-load duluan sebelum CSS khusus tiap halaman (index.css,
+   dashboard.css, materi.css, dst).
+   ==========================================================================
+
+/* Ambil font dari Google Fonts.
+   - Baloo 2  : buat judul / teks besar, bentuknya bulat & playful (cocok anak SD)
+   - Nunito   : buat teks biasa / paragraf, biar tetap enak dibaca */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap');
+
+/* ==========================================================================
+   VARIABEL WARNA & UKURAN (CSS Variables)
+   Semua warna, radius, shadow dikumpulin di sini biar kalau mau ganti
+   warna tema, cukup ubah di satu tempat ini aja, gak perlu cari satu-satu.
+   ========================================================================== */
+:root{
+  /* warna ungu (warna utama brand METAPIA) */
+  --purple-900:#2E2359;   /* ungu paling gelap, dipakai buat judul */
+  --purple-700:#5B3FD9;   /* ungu utama, dipakai buat tombol & aksen */
+  --purple-500:#8A6BFF;   /* ungu lebih terang */
+
+  /* warna teks */
+  --ink:#2C2450;          /* warna teks utama (hampir hitam, tapi keunguan) */
+  --ink-soft:#5A5478;     /* warna teks kedua, lebih soft/abu-abu */
+
+  /* warna-warna ceria buat kartu menu (Materi/Video/Kuis/Game) */
+  --yellow:#FFC93C;
+  --yellow-dark:#F2A400;
+  --blue:#4FC3F7;
+  --blue-dark:#2196D8;
+  --pink:#FF7AAE;
+  --pink-dark:#F2467F;
+  --green:#3FDDB0;
+  --green-dark:#17BC8F;
+
+  --white:#FFFFFF;
+  --card-bg:#FFFFFF;      /* warna dasar kartu/box */
+
+  /* bayangan (box-shadow) yang dipakai berulang-ulang */
+  --shadow-soft: 0 10px 30px rgba(46,35,89,0.18);  /* buat navbar & kartu login */
+  --shadow-card: 0 8px 20px rgba(46,35,89,0.12);   /* buat kartu-kartu biasa */
+
+  /* radius sudut biar bentuknya bulat/rounded, bukan kotak tajam */
+  --radius-lg: 28px;  /* buat card besar (feature card, login card) */
+  --radius-md: 18px;  /* buat card sedang (item card) */
+  --radius-sm: 12px;  /* buat elemen kecil */
+
+  /* biar gampang ganti font, cukup ubah di sini */
+  --font-display:'Baloo 2', system-ui, sans-serif;
+  --font-body:'Nunito', system-ui, sans-serif;
+
+  /* skala tampilan (lihat bagian "SKALA LAYAR BESAR" di bawah) */
+  --skala:1;
+}
+
+/* ==========================================================================
+   SKALA LAYAR BESAR
+   Semua ukuran di web ini pakai px, jadi di layar lebar (mis. laptop 1920
+   dengan zoom Windows 100%) semuanya keliatan kecil & banyak ruang kosong.
+   Solusinya: di layar yang lebar DAN tinggi, navbar + isi halaman + footer
+   diperbesar otomatis pakai "zoom". Hasilnya mirip tampilan zoom 125%.
+
+   PENTING: di dalam elemen yang di-zoom, satuan vh ikut membesar. Jadi
+   ukuran yang pakai vh (panel komik, kuis, dashboard) dibagi var(--skala)
+   biar tetap pas 1 layar.
+   ========================================================================== */
+@media (min-width:1700px) and (min-height:820px){ :root{ --skala:1.12; } }
+@media (min-width:1880px) and (min-height:880px){ :root{ --skala:1.25; } }
+@media (min-width:2300px) and (min-height:1100px){ :root{ --skala:1.5; } }
+
+.navbar, .wrap, .site-footer, .login-card{ zoom:var(--skala); }
+
+/* ==========================================================================
+   RESET DASAR
+   Biar semua browser mulai dari kondisi yang sama.
+   ========================================================================== */
+*,*::before,*::after{
+  box-sizing:border-box; /* padding & border gak nambahin lebar elemen */
+}
+html{
+  scroll-behavior:smooth; /* kalau ada scroll ke anchor, jalannya halus */
+}
+
+/* ==========================================================================
+   BODY — background bgMateri.jpg yang diburamin + lapisan ungu tipis,
+   SAMA di semua halaman biar serasi (panel komik di Materi/Video/Kuis
+   pakai gambar yang sama tapi tajam, jadi keliatan "nyambung").
+
+   Susunannya kolom: navbar di atas, .wrap (isi) ngisi sisa ruang, footer
+   selalu nempel di bawah layar.
+   ========================================================================== */
+body{
+  margin:0;
+  font-family:var(--font-body);
+  color:var(--ink);
+  min-height:100vh;
+  min-height:100svh;
+  display:flex; flex-direction:column;
+
+  background-image:url('../assets/bgMateri.jpg');
+  background-size:cover;          /* foto nutupin seluruh layar */
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;    /* foto diam waktu halaman di-scroll */
+
+  overflow-x:hidden; /* jaga-jaga biar gak ada scroll horizontal gak sengaja */
+}
+body::before{
+  content:''; position:fixed; inset:0; z-index:0;
+  background:rgba(46,35,89,0.35);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  pointer-events:none;
+}
+
+/* Judul (h1-h4) pakai font display, teks biasa (p) pakai font body */
+h1,h2,h3,h4{ font-family:var(--font-display); margin:0; color:var(--purple-900); }
+p{ margin:0; line-height:1.6; }
+a{ text-decoration:none; color:inherit; } /* link gak digarisbawahi & warnanya ikut parent */
+img{ max-width:100%; display:block; }     /* gambar gak akan melebihi lebar kontainernya */
+button{ font-family:var(--font-body); cursor:pointer; }
+
+/* ==========================================================================
+   CONTAINER
+   Pembungkus konten biar lebar maksimalnya konsisten & ada jarak di kanan-kiri.
+   ========================================================================== */
+.wrap{
+  position:relative;
+  z-index:1;
+  flex:1 0 auto; /* isi halaman ngisi sisa ruang -> footer kedorong ke dasar layar */
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;   /* bikin kontainer ke tengah halaman */
+  padding:0 24px;  /* jarak aman di kiri-kanan buat layar sempit */
+}
+
+/* ==========================================================================
+   NAVBAR
+   Bentuknya pil/rounded, mengambang di atas background foto.
+   ========================================================================== */
+.navbar{
+  position:sticky;  /* nempel di atas layar terus, gak ikut ilang pas discroll */
+  top:16px;         /* jarak dari atas layar waktu udah "nempel" */
+  z-index:50;       /* dijadiin paling atas biar gak ketiban konten lain pas scroll */
+  display:flex;
+  align-items:center;
+  justify-content:space-between; /* logo kiri, menu tengah, avatar kanan */
+  width:calc(100% - 24px); /* body sekarang flex kolom, jadi lebar navbar harus disebut */
+  max-width:1180px;
+  margin:20px auto 0;
+  padding:10px 22px;
+  background:rgba(255,255,255,0.97); /* dibikin hampir solid biar gak kalah sama bg yang rame */
+  border-radius:100px;               /* bentuk pil */
+  box-shadow:0 14px 34px rgba(20,10,60,0.35); /* shadow dipertebal biar navbar "ngambang" jelas di atas bg */
+}
+
+.brand{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:800; font-size:1.3rem; }
+.brand-badge{
+  width:38px; height:38px; border-radius:12px;
+  background:linear-gradient(145deg, var(--yellow), var(--pink));
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem;
+}
+.brand-name span:first-child{ color:var(--yellow-dark); } /* tulisan "META" */
+.brand-name span:last-child{ color:var(--purple-700); }   /* tulisan "PIA" */
+
+/* daftar menu navbar (Beranda, Materi, Video, Kuis, Game) */
+.nav-links{ display:flex; align-items:center; gap:6px; list-style:none; margin:0; padding:0; }
+.nav-links a{
+  display:flex; align-items:center; gap:7px;
+  padding:9px 16px; border-radius:100px; font-weight:800; color:var(--ink); /* dipertebal & digelapin dikit biar lebih jelas */
+  font-size:.95rem;
+}
+.nav-links a:hover{ background:#EAF2FF; color:var(--purple-700); }
+.nav-links a.active{ background:var(--purple-700); color:#fff; } /* menu yang lagi aktif/dibuka */
+
+.nav-right{ display:flex; align-items:center; gap:12px; }
+/* pil nama siswa di kanan navbar: [ikon] Nama Siswa */
+.avatar-btn{
+  display:flex; align-items:center; gap:8px;
+  height:42px; max-width:220px;
+  padding:0 16px 0 5px;
+  border:2px solid var(--purple-700); border-radius:100px;
+  background:#EAF2FF;
+  font-family:var(--font-display); font-weight:800; font-size:1rem; color:var(--purple-700);
+}
+.avatar-ikon{
+  flex:none;
+  width:30px; height:30px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:50%;
+  background:var(--purple-700); color:#fff;
+  font-size:.85rem;
+}
+.avatar-nama{
+  min-width:0;
+  overflow:hidden; white-space:nowrap;
+  text-overflow:ellipsis; /* nama kepanjangan -> "Muhammad Rah..." */
+}
+.avatar-btn.nama-panjang{ font-size:.86rem; } /* nama panjang: huruf dikecilin dikit */
+.nav-toggle{ display:none; background:none; border:none; font-size:1.4rem; color:var(--purple-700); } /* tombol hamburger, cuma muncul di HP */
+
+/* ==========================================================================
+   TOMBOL (BUTTON)
+   ========================================================================== */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:14px 28px; border-radius:100px; border:none; font-weight:800;
+  font-family:var(--font-display); font-size:1rem;
+  white-space:nowrap; /* teks tombol gak akan turun baris */
+}
+.btn-primary{ background:linear-gradient(135deg, var(--yellow), var(--yellow-dark)); color:#5A3A00; }
+.btn-outline{ background:#fff; color:var(--purple-700); box-shadow:var(--shadow-card); }
+.btn-block{ width:100%; } /* tombol selebar kontainernya, biasa dipakai di login */
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.site-footer{ position:relative; z-index:1; text-align:center; padding:12px 16px 14px; color:rgba(255,255,255,0.85); font-weight:700; font-size:.85rem; text-shadow:0 2px 6px rgba(15,8,45,0.4); }
+
+/* menu navbar versi HP, muncul waktu tombol hamburger diklik (lihat js/app.js) */
+.nav-links.open{
+  display:flex;
+  position:absolute; top:64px; left:0; right:0; margin:0 12px;
+  background:#fff; border-radius:20px; flex-direction:column; padding:14px;
+  box-shadow:var(--shadow-soft); z-index:20;
+}
+.nav-links.open a{ width:100%; }
+
+/* =========================================================================
+   RESPONSIVE — bagian yang DIPAKAI BARENG (navbar & menu HP)
+   ========================================================================= */
+@media (max-width:980px){
+  .nav-links{ display:none; }   /* menu navbar disembunyiin */
+  .nav-toggle{ display:block; } /* tombol hamburger dimunculin */
+}
+@media (max-width:600px){
+  .navbar{ margin:14px 12px 0; padding:10px 14px; }
+  .brand-name{ font-size:1.05rem; }
+  .nav-right{ gap:8px; min-width:0; }
+  .avatar-btn{ max-width:130px; height:38px; padding:0 12px 0 4px; font-size:.88rem; }
+  .avatar-btn.nama-panjang{ font-size:.8rem; }
+  .avatar-ikon{ width:28px; height:28px; }
+}
+@media (max-width:380px){
+  .brand-name{ display:none; } /* HP kecil banget: logo aja, biar nama siswa muat */
+}

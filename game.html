@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<!-- belum masukin nama? langsung balik ke halaman login -->
+<script src="js/cek-login.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game — METAPIA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/komik.css">
+<link rel="stylesheet" href="css/kuis.css">
+<link rel="stylesheet" href="css/game.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="dashboard.html" class="brand">
+    <div class="brand-badge">📖</div>
+    <div class="brand-name"><span>META</span><span>PIA</span></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Beranda</a></li>
+    <li><a href="materi.html"><i class="fa-solid fa-book"></i> Materi</a></li>
+    <li><a href="video.html"><i class="fa-solid fa-clapperboard"></i> Video</a></li>
+    <li><a href="kuis.html"><i class="fa-solid fa-pen-to-square"></i> Kuis</a></li>
+    <li><a href="game.html" class="active"><i class="fa-solid fa-gamepad"></i> Game</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-toggle" id="navToggle"><i class="fa-solid fa-bars"></i></button>
+    <div class="avatar-btn" id="navAvatar" title="Profil">👤</div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <!-- susunannya sama kayak halaman Kuis: Kak Rara kiri, kartu game kanan -->
+  <section class="kuis-stage game-stage">
+
+    <aside class="kuis-guru">
+      <div class="tokoh guru" id="teacherSlot"></div>
+
+      <div class="speech-bubble bubble-kuis" id="bubbleGuru">
+        <svg class="bubble-shape" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <g class="bubble-stroke">
+            <ellipse cx="50" cy="50" rx="49" ry="48"/>
+            <path class="tail-desktop" d="M40 94 Q45 110 47 124 Q51 110 55 95 Z"/>
+            <path class="tail-mobile" d="M7 32 Q-4 22 -15 14 Q-4 42 5 62 Z"/>
+          </g>
+          <g class="bubble-fill">
+            <ellipse cx="50" cy="50" rx="49" ry="48"/>
+            <path class="tail-desktop" d="M40 94 Q45 110 47 124 Q51 110 55 95 Z"/>
+            <path class="tail-mobile" d="M7 32 Q-4 22 -15 14 Q-4 42 5 62 Z"/>
+          </g>
+        </svg>
+        <p class="speech-text"><span><span class="speech-isi"></span><span class="speech-cursor is-hidden">|</span></span></p>
+      </div>
+    </aside>
+
+    <!-- kartu game: isinya (menu / layar pembuka / main / hasil) dibikin JS -->
+    <div class="kuis-card game-card" id="gameCard" aria-live="polite"></div>
+
+  </section>
+</div>
+
+<footer class="site-footer">
+  <p>© 2026 METAPIA — Media Pembelajaran Majas Interaktif · <a href="#" onclick="logout(); return false;" style="text-decoration:underline;">Keluar</a></p>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/sheet.js"></script>
+<script src="js/game-data.js"></script>
+<script src="js/game.js"></script>
+<script src="js/game-tebak.js"></script>
+<script src="js/game-keranjang.js"></script>
+<script src="js/game-ubah.js"></script>
+<script>requireLogin(); Game.mulai();</script>
+</body>
+</html>
