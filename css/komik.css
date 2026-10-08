@@ -219,7 +219,9 @@ body.panggung{
    ========================================================================== */
 @media (max-width:820px){
   /* HP: panggung tegak 3:4, background digeser ke kiri (buku & bunga) */
-  body.panggung{ background-position:18% bottom; --sisa-bawah:130px; }
+  /* HP: sisa = baris tombol + menu bawah ala aplikasi (lihat common.css) */
+  body.panggung{ background-position:18% bottom; --sisa-bawah:calc(132px + var(--tinggi-menu-bawah, 0px)); }
+  .comic-controls{ margin-top:24px; } /* jarak dari kaki tokoh */
   .comic-stage{
     width:min(100%, calc(var(--tinggi-panggung) * 0.75));
     margin-top:8px;
@@ -228,7 +230,7 @@ body.panggung{
   .tail-desktop{ display:none; }
   .tail-mobile{ display:inline; }
   .speech-text{ font-size:4.3cqw; padding:3% 10%; }
-  .comic-caption{ top:1.5%; left:3%; font-size:3.2cqw; padding:.8cqw 2.4cqw; }
+  .comic-caption{ top:1%; left:3%; font-size:3.2cqw; padding:.8cqw 2.4cqw; }
 
   /* titik progres pindah ke baris sendiri di atas tombol */
   .comic-controls{ grid-template-columns:1fr 1fr; row-gap:12px; }

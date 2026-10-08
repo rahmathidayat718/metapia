@@ -4,7 +4,8 @@
    1) Guru jalan masuk dari kiri -> sapa "Siap?" -> Dito jawab "Siap, Kak!"
    2) Guru jelasin tiap majas lewat balon kata -> di akhir nanya "Paham?"
       -> Dito jawab pakai balon katanya sendiri (nunjukin dia paham)
-   3) Majas terakhir -> tombol "Selesai!" -> pindah ke kuis.html
+   3) Majas terakhir -> tombol "Lanjut ke Video" -> pindah ke video.html
+      (alur belajar: Materi -> Video -> Kuis -> Game)
 
    POSE (otomatis, gak perlu diatur manual):
    - Guru : senyum (diam) / bicara (ngomong) / nunjuk (kalimat ada "Contoh")
@@ -26,10 +27,14 @@ const GURU = {
     senyum: "assets/karakter/guru/guru-senyum.png",
     bicara: "assets/karakter/guru/guru-bicara.png",
     nunjuk: "assets/karakter/guru/guru-nunjuk.png",
+    // versi mulut TERTUTUP -> gantian sama yang terbuka waktu ngomong (lip-sync)
+    bicara_tutup: "assets/karakter/guru/guru-bicara-tutup.png",
+    nunjuk_tutup: "assets/karakter/guru/guru-nunjuk-tutup.png",
   },
 };
 
-/* murid pertama (Dito) yang ikut ngobrol sama guru */
+/* 4 murid, GANTIAN menjawab pertanyaan guru (lihat PENJAWAB di bawah).
+   Dito punya banyak pose; Sari, Bima, Keke baru 1 pose (diam). */
 const MURID = [
   {
     nama: "Dito",
@@ -38,6 +43,8 @@ const MURID = [
       senang: "assets/karakter/murid/dito-senang.png",
       bicara: "assets/karakter/murid/dito-bicara.png",
       ide: "assets/karakter/murid/dito-ide.png",
+      bicara_tutup: "assets/karakter/murid/dito-bicara-tutup.png",
+      ide_tutup: "assets/karakter/murid/dito-ide-tutup.png",
     },
   },
   { nama: "Sari", pose: { diam: "assets/karakter/murid/sari.png" } },
@@ -60,64 +67,46 @@ const DAFTAR_MAJAS = [
     nama: "Apa itu Majas?",
     kategori: "Pengantar",
     dialog: [
-      "Majas itu gaya bahasa yang dipakai biar kalimat\nkita lebih hidup dan menarik, teman-teman!",
+      "Majas adalah gaya bahasa yang memakai KATA-KATA KIASAN\nsupaya kalimat kita lebih hidup dan menarik, teman-teman!",
       "Contoh: daripada bilang 'dia pintar banget',\nkita bisa bilang 'dia itu bintang kelas'.\nLebih seru kan dengernya?",
     ],
-    jawabanMurid: "Paham, Kak! Majas itu gaya bahasa biar kalimat lebih hidup dan seru!",
+    jawabanMurid: "Paham, Kak! Majas itu gaya bahasa yang memakai kata-kata kiasan!",
+  },
+  {
+    nama: "Jenis-jenis Majas",
+    kategori: "Pengantar",
+    dialog: [
+      "Majas itu ada beberapa jenis. Hari ini kita belajar 3 JENIS MAJAS, teman-teman: METAFORA, PERSONIFIKASI, dan HIPERBOLA!",
+      "Kita bahas satu per satu, ya!\nDimulai dari yang pertama: METAFORA.",
+    ],
+    jawabanMurid: "Siap, Kak! Ada 3 jenis: metafora, personifikasi, dan hiperbola!",
   },
   {
     nama: "Metafora",
-    kategori: "Perbandingan",
+    kategori: "Jenis 1",
     dialog: [
-      "Yang pertama: METAFORA!\nIni ngebandingin dua hal secara LANGSUNG,\ntanpa pakai kata 'seperti' atau 'bagai'.",
-      "Contoh: \"Dia adalah bintang kelas di sekolah kami.\"\n(Maksudnya dia murid paling menonjol!)",
+      "Yang pertama: METAFORA!\nMetafora adalah majas yang menggunakan kata\nsebagai SIMBOL dari makna sebenarnya.",
+      "Contoh: \"Dia adalah bintang kelas di sekolah kami.\"\n(\"Bintang kelas\" itu simbol untuk murid paling pintar!)",
     ],
-    jawabanMurid: "Paham, Kak! Metafora itu membandingkan langsung, tanpa kata 'seperti'!",
+    jawabanMurid: "Paham, Kak! Metafora memakai kata sebagai simbol dari makna sebenarnya!",
   },
   {
     nama: "Personifikasi",
-    kategori: "Perbandingan",
+    kategori: "Jenis 2",
     dialog: [
-      "Sekarang PERSONIFIKASI!\nIni waktu benda mati dikasih sifat kayak manusia,\nseolah-olah bisa bergerak atau punya perasaan.",
+      "Yang kedua: PERSONIFIKASI!\nIni waktu benda mati dikasih sifat kayak manusia,\nseolah-olah bisa bergerak atau punya perasaan.",
       "Contoh: \"Angin berbisik lembut di telinga Rani.\"\n(Padahal angin kan gak bisa ngomong beneran, hehe)",
     ],
     jawabanMurid: "Aku paham! Personifikasi bikin benda mati seolah hidup kayak manusia!",
   },
   {
     nama: "Hiperbola",
-    kategori: "Penegasan",
+    kategori: "Jenis 3",
     dialog: [
-      "Nah ini HIPERBOLA, lumayan sering dipakai!\nMajas yang MELEBIH-LEBIHKAN sesuatu,\nbiar kesannya lebih dramatis.",
+      "Yang ketiga, terakhir: HIPERBOLA!\nMajas yang MELEBIH-LEBIHKAN sesuatu,\nbiar kesannya lebih dramatis.",
       "Contoh: \"Aku udah bilang beribu-ribu kali,\ntapi kamu tetep aja lupa!\"",
     ],
     jawabanMurid: "Paham banget! Hiperbola itu melebih-lebihkan, kayak 'PR-ku segunung'!",
-  },
-  {
-    nama: "Perumpamaan",
-    kategori: "Perbandingan",
-    dialog: [
-      "Lanjut PERUMPAMAAN!\nMirip metafora, tapi pakai kata pembanding\nseperti 'seperti', 'bagai', atau 'laksana'.",
-      "Contoh: \"Wajahnya pucat bagai mayat hidup.\"\nSerem, tapi kebayang kan maksudnya?",
-    ],
-    jawabanMurid: "Paham, Kak! Perumpamaan pakai kata 'seperti', 'bagai', atau 'laksana'!",
-  },
-  {
-    nama: "Litotes",
-    kategori: "Penegasan",
-    dialog: [
-      "Sekarang LITOTES, agak unik nih~\nIni majas MERENDAHKAN DIRI,\npadahal kenyataannya enggak seperti itu.",
-      "Contoh: \"Silakan mampir ke gubuk kami yang sederhana ini.\"\n(Padahal rumahnya gede banget, hehe)",
-    ],
-    jawabanMurid: "Aku ngerti! Litotes itu merendahkan diri, padahal aslinya hebat!",
-  },
-  {
-    nama: "Paradoks",
-    kategori: "Pertentangan",
-    dialog: [
-      "Terakhir, PARADOKS!\nIni ngungkapin dua hal yang KELIATANNYA bertentangan,\ntapi sebenarnya sama-sama benar.",
-      "Contoh: \"Di keramaian kota ini,\naku justru merasa sangat sendirian.\"",
-    ],
-    jawabanMurid: "Paham, Kak! Paradoks kelihatannya bertentangan, tapi ternyata benar!",
   },
 ];
 
@@ -211,12 +200,16 @@ function buatTokoh(data, el) {
     poseEls[nama] = img;
   });
 
+  const posePertama = Object.keys(data.pose)[0];
   const tokoh = {
     el,
     poseEls,
+    /** ganti pose; kalau tokoh ini gak punya pose itu, pakai pose pertamanya */
     gantiPose(nama) {
+      if (!poseEls[nama]) nama = posePertama;
       Object.entries(poseEls).forEach(([n, img]) => img.classList.toggle("is-active", n === nama));
     },
+    punyaPose(nama) { return !!poseEls[nama]; },
   };
   tokoh.gantiPose(Object.keys(data.pose)[0]); // pose pertama = pose awal
   aturRasioTokoh(el, Object.values(poseEls)[0]);
@@ -248,8 +241,38 @@ function siapkanPembicara(tokoh, idBubble, pose) {
 }
 const PEMBICARA = {
   guru: siapkanPembicara(guru, "bubbleGuru", { ngomong: "bicara", selesai: "senyum", diam: "senyum" }),
-  dito: siapkanPembicara(dito, "bubbleMurid", { ngomong: "bicara", selesai: "senang", diam: "diam" }),
+  // "murid" = siapa pun murid yang lagi jawab (diganti lewat pilihMurid)
+  murid: siapkanPembicara(dito, "bubbleMurid", { ngomong: "bicara", selesai: "senang", diam: "diam" }),
 };
+
+/**
+ * Pilih murid ke-i (0 Dito, 1 Sari, 2 Bima, 3 Keke) jadi yang jawab, lalu
+ * pindahin EKOR balon kata murid biar nunjuk ke kepala murid itu.
+ */
+function pilihMurid(i) {
+  const p = PEMBICARA.murid;
+  murid.forEach((m) => m.gantiPose("diam"));
+  p.tokoh = murid[i];
+
+  const balon = p.bubble;
+  // posisi tengah murid (kaki) relatif ke balon, dalam persen lebar balon
+  const tengah = p.tokoh.el.offsetLeft;
+  const rel = ((tengah - balon.offsetLeft) / balon.offsetWidth) * 100;
+  const ujung = Math.round(rel + 6);                    // ujung ekor (ke kepala)
+  const pangkal = Math.max(22, Math.min(66, ujung - 8)); // pangkal ekor harus di dalam elips
+  const hp = window.matchMedia("(max-width:820px)").matches;
+  const yUjung = hp ? 135 : 136;
+  balon.querySelectorAll(".tail-desktop, .tail-mobile").forEach((path) => {
+    path.setAttribute("d",
+      `M${pangkal} 88 Q${(pangkal + ujung) / 2} 112 ${ujung} ${yUjung} Q${(pangkal + 12 + ujung) / 2 + 3} 112 ${pangkal + 14} 95 Z`);
+  });
+  balon.style.transformOrigin = `${ujung}% ${yUjung}%`;
+}
+
+/* urutan murid yang jawab "paham?" tiap bagian materi (gantian) */
+function penjawab(idx) {
+  return (idx + 1) % murid.length; // pembuka = Dito, lalu Sari, Bima, Keke, Dito, ...
+}
 
 /* ==========================================================================
    8) BALON KATA + EFEK NGETIK
@@ -275,6 +298,7 @@ function bicara(siapa, teks, opsi = {}) {
   p.cursor.classList.remove("is-hidden");
   p.tokoh.gantiPose(pembicaraAktif.poseNgomong);
   p.tokoh.el.classList.add("is-talking");
+  mulaiMulut(p.tokoh, pembicaraAktif.poseNgomong);
   playSuaraAsli(opsi.suara);
 
   let i = 0;
@@ -301,6 +325,8 @@ function selesaiNgetik() {
   p.isi.textContent = teksSekarang; // kalau di-skip, langsung tampil penuh
   p.cursor.classList.add("is-hidden");
   p.tokoh.el.classList.remove("is-talking");
+  hentikanMulut();
+  p.tokoh.gantiPose(poseNgomong);
 
   // habis ngomong ganti pose "selesai" (pose nunjuk/ide ditahan sebentar biar keliatan)
   const tahan = poseNgomong === "nunjuk" || poseNgomong === "ide" ? 1100 : 250;
@@ -321,9 +347,31 @@ function jalankanGiliranBerikut() {
   if (fn) fn();
 }
 
+/**
+ * Mulut buka-tutup: gonta-ganti pose "bicara" <-> "bicara_tutup" (gambarnya
+ * sama persis, cuma beda mulut) dengan jeda acak biar kayak ngomong beneran.
+ * Kalau tokohnya gak punya versi "_tutup", ya diam aja (cuma badan goyang).
+ */
+let timerMulut = null;
+function mulaiMulut(tokoh, pose) {
+  hentikanMulut();
+  if (!tokoh.punyaPose(pose + "_tutup")) return;
+  let buka = true;
+  (function kedip() {
+    buka = !buka;
+    tokoh.gantiPose(buka ? pose : pose + "_tutup");
+    timerMulut = setTimeout(kedip, 90 + Math.random() * 110);
+  })();
+}
+function hentikanMulut() {
+  clearTimeout(timerMulut);
+  timerMulut = null;
+}
+
 /** stop semua ketikan/jeda yang lagi jalan (dipakai sebelum pindah baris) */
 function hentikanSemua() {
   clearTimeout(timerKetik);
+  hentikanMulut();
   clearTimeout(timerGiliran);
   giliranBerikut = null;
   Object.values(PEMBICARA).forEach((p) => {
@@ -372,7 +420,7 @@ function renderIntro() {
   setTimeout(() => {
     guru.el.classList.remove("is-masuk");
     bicara("guru", SAPAAN_GURU, {
-      lalu: () => bicara("dito", SAPAAN_MURID),
+      lalu: () => { pilihMurid(0); bicara("murid", SAPAAN_MURID); },
     });
   }, 1350);
 
@@ -390,9 +438,9 @@ function renderKonten() {
 
   if (diPromptPaham) {
     bicara("guru", `Gimana teman-teman, paham soal "${majas.nama}"? 😊`, {
-      lalu: () => bicara("dito", majas.jawabanMurid, { pose: "ide" }),
+      lalu: () => { pilihMurid(penjawab(idxMajas)); bicara("murid", majas.jawabanMurid, { pose: "ide" }); },
     });
-    btnAction.innerHTML = diMajasTerakhir ? "Selesai! 🎉" : 'Paham! <i class="fa-solid fa-thumbs-up"></i>';
+    btnAction.innerHTML = diMajasTerakhir ? 'Lanjut ke Video <i class="fa-solid fa-clapperboard"></i>' : 'Paham! <i class="fa-solid fa-thumbs-up"></i>';
   } else {
     const baris = majas.dialog[idxDialog];
     bicara("guru", baris, { pose: baris.includes("Contoh") ? "nunjuk" : "bicara" });
@@ -456,7 +504,7 @@ btnAction.addEventListener("click", () => {
     idxDialog = 0;
     renderKonten();
   } else {
-    window.location.href = "kuis.html";
+    window.location.href = "video.html"; // alur: Materi -> Video -> Kuis -> Game
   }
 });
 

@@ -485,8 +485,15 @@
   .pulau-main{ grid-column:1 / -1; justify-self:stretch; justify-content:center; }
 
   .game-body{ padding:14px 14px 16px; }
-  .hud{ justify-content:center; }
-  .hud-titik{ order:10; flex-basis:100%; }
+  /* HUD HP: 1 baris chip kecil + titik progres di baris kedua */
+  .hud{ justify-content:space-between; gap:6px; padding:10px 12px; }
+  .hud-level, .kuis-skor, .hud-waktu, .hud-bintang{ padding:3px 9px; font-size:.82rem; }
+  .hud-waktu{ min-width:0; }
+  .hud .kuis-nomor{ font-size:1rem; }
+  .hud .btn-suara{ width:32px; height:32px; }
+  .hud-titik{ order:10; flex-basis:100%; min-width:0; }
+  .hud-titik span{ width:14px; height:14px; }
+  .tg-gambar{ max-width:320px; }
 
   .kr-keranjang-baris{ gap:8px; }
   .keranjang-gagang{ height:22px; border-width:4px; }

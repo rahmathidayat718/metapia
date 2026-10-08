@@ -82,7 +82,35 @@ function initNavToggle() {
   });
 }
 
+/**
+ * Menu bawah ala aplikasi (cuma muncul di HP/tablet, lihat common.css).
+ * Isinya diambil dari menu navbar yang sudah ada, jadi gak perlu nulis
+ * ulang di tiap halaman HTML.
+ */
+function initMenuBawah() {
+  const navLinks = document.getElementById("navLinks");
+  if (!navLinks) return;
+  const menu = document.createElement("nav");
+  menu.className = "menu-bawah";
+  menu.setAttribute("aria-label", "Menu utama");
+  navLinks.querySelectorAll("a").forEach((a) => {
+    const item = document.createElement("a");
+    item.href = a.getAttribute("href");
+    if (a.classList.contains("active")) {
+      item.className = "is-aktif";
+      item.setAttribute("aria-current", "page");
+    }
+    const ikon = a.querySelector("i");
+    item.innerHTML = `<span class="menu-bawah-ikon">${ikon ? ikon.outerHTML : ""}</span><span class="menu-bawah-teks"></span>`;
+    item.querySelector(".menu-bawah-teks").textContent = a.textContent.trim();
+    menu.appendChild(item);
+  });
+  document.body.appendChild(menu);
+  document.body.classList.add("ada-menu-bawah");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initNavToggle();
+  initMenuBawah();
   renderUserInNav();
 });

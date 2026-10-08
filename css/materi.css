@@ -25,11 +25,12 @@
    murid berjejer kecil di kanan bawah
    ========================================================================== */
 @media (max-width:820px){
-  .guru{ left:30%; bottom:4%; height:60%; }
-  .murid{ bottom:4%; height:26%; }
+  /* kaki agak diturunin biar napak di jalan setapak (gak "melayang") */
+  .guru{ left:30%; bottom:-3%; height:58%; }
+  .murid{ bottom:-3%; height:26%; }
   .murid-1{ left:56%; } .murid-2{ left:67%; } .murid-3{ left:78%; } .murid-4{ left:89%; }
 
-  .bubble-guru { left:4%;  top:3%;  width:92%; height:26%; transform-origin:39% 137%; }
-  .bubble-murid{ left:44%; top:42%; width:53%; height:22%; transform-origin:32% 135%; }
+  .bubble-guru { left:4%;  top:9%;  width:92%; height:23.5%; transform-origin:39% 137%; } /* di bawah label kuning */
+  .bubble-murid{ left:44%; top:46%; width:53%; height:22%; transform-origin:32% 135%; }
   .bubble-murid .speech-text{ font-size:3.6cqw; padding:3% 9%; }
 }

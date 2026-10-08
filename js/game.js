@@ -26,6 +26,9 @@ const Game = (() => {
     senyum: "assets/karakter/guru/guru-senyum.png",
     bicara: "assets/karakter/guru/guru-bicara.png",
     nunjuk: "assets/karakter/guru/guru-nunjuk.png",
+    // versi mulut tertutup -> gantian sama yang terbuka waktu ngomong (lip-sync)
+    bicara_tutup: "assets/karakter/guru/guru-bicara-tutup.png",
+    nunjuk_tutup: "assets/karakter/guru/guru-nunjuk-tutup.png",
   };
   const elGuru = document.getElementById("teacherSlot");
   const elBubble = document.getElementById("bubbleGuru");
@@ -60,16 +63,35 @@ const Game = (() => {
     elIsi.textContent = "";
     gantiPose(poseNgomong);
     elGuru.classList.add("is-talking");
+    mulaiMulut(poseNgomong);
     let i = 0;
     (function ketik() {
       if (i < teks.length) {
         elIsi.textContent += teks.charAt(i++);
         timerKetik = setTimeout(ketik, 20);
       } else {
+        hentikanMulut();
+        gantiPose(poseNgomong);
         elGuru.classList.remove("is-talking");
         timerPose = setTimeout(() => gantiPose(poseAkhir), 200);
       }
     })();
+  }
+
+  /** mulut buka-tutup: gonta-ganti pose "x" <-> "x_tutup" selama ngomong */
+  let timerMulut = null;
+  function mulaiMulut(pose) {
+    hentikanMulut();
+    if (!poseEls[pose + "_tutup"]) return;
+    let buka = true;
+    (function kedip() {
+      buka = !buka;
+      gantiPose(buka ? pose : pose + "_tutup");
+      timerMulut = setTimeout(kedip, 90 + Math.random() * 110);
+    })();
+  }
+  function hentikanMulut() {
+    clearTimeout(timerMulut);
   }
 
   /** Kak Rara lompat kecil (buat ngerayain jawaban benar) */

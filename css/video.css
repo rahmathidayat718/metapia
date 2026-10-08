@@ -6,8 +6,6 @@
    Urutan load: common.css -> komik.css -> video.css
    ========================================================================== */
 
-/* panggung tanpa baris tombol di bawahnya, jadi boleh lebih tinggi */
-body.panggung{ --sisa-bawah:28px; }
 
 /* ---------- 2 bocah (berdua di sisi kiri, layar video di kanan) ---------- */
 .bocah{ bottom:5%; height:46%; }
@@ -83,14 +81,18 @@ body.panggung{ --sisa-bawah:28px; }
    balon kata di antara layar & kepala bocah
    ========================================================================== */
 @media (max-width:820px){
-  body.panggung{ --sisa-bawah:40px; }
+  .comic-controls{ grid-template-columns:1fr; }
+  .comic-controls > span{ display:none; }
+  .comic-controls-right{ justify-self:stretch; }
+  .comic-controls-right .comic-btn{ width:100%; justify-content:center; }
   .layar-video{ left:4%; top:9%; width:92%; border-width:4px; border-radius:10px; }
-  .bocah{ bottom:4%; height:33%; }
+  .bocah{ bottom:-2%; height:33%; }
   .bocah-kiri{ left:25%; }
   .bocah-kanan{ left:75%; }
 
-  .bubble-ajakan{ left:8%; top:49%; width:60%; height:13%; transform-origin:32% 113%; }
-  .bubble-ajakan .speech-text{ font-size:3.6cqw; padding:2% 10%; }
+  /* balon lebih kecil & agak turun, biar gak mepet ke layar video */
+  .bubble-ajakan{ left:10%; top:54%; width:50%; height:10.5%; transform-origin:32% 113%; }
+  .bubble-ajakan .speech-text{ font-size:3.1cqw; padding:2% 11%; }
 
   .tombol-play{ width:16cqw; height:16cqw; font-size:6.5cqw; border-width:3px; box-shadow:4px 4px 0 var(--ink); }
   .label-play{ font-size:4cqw; }

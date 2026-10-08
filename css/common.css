@@ -234,9 +234,48 @@ button{ font-family:var(--font-body); cursor:pointer; }
 /* =========================================================================
    RESPONSIVE — bagian yang DIPAKAI BARENG (navbar & menu HP)
    ========================================================================= */
+/* ==========================================================================
+   MENU BAWAH ALA APLIKASI (HP & tablet) — dibikin js/app.js
+   Di HP, menu navbar atas diganti 5 tombol besar di bawah layar (gampang
+   dijangkau jempol anak-anak). Navbar atas tinggal logo + nama.
+   ========================================================================== */
+.menu-bawah{ display:none; }
+
 @media (max-width:980px){
-  .nav-links{ display:none; }   /* menu navbar disembunyiin */
-  .nav-toggle{ display:block; } /* tombol hamburger dimunculin */
+  .nav-links{ display:none; }   /* menu navbar atas disembunyiin */
+  .nav-toggle{ display:none; }  /* gak perlu hamburger lagi, ada menu bawah */
+
+  body.ada-menu-bawah{
+    --tinggi-menu-bawah:calc(72px + env(safe-area-inset-bottom, 0px));
+    padding-bottom:var(--tinggi-menu-bawah);
+  }
+  .menu-bawah{
+    position:fixed; z-index:60;
+    left:10px; right:10px; bottom:calc(8px + env(safe-area-inset-bottom, 0px));
+    display:grid; grid-template-columns:repeat(5, 1fr);
+    height:62px; padding:6px;
+    background:#fff;
+    border:3px solid var(--ink); border-radius:22px;
+    box-shadow:0 6px 0 rgba(44,36,80,.55), 0 12px 26px rgba(20,10,60,.35);
+  }
+  .menu-bawah a{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    border-radius:16px;
+    color:var(--ink-soft);
+    font-family:var(--font-display); font-weight:800; font-size:.72rem; line-height:1;
+    transition:background .15s, color .15s, transform .15s;
+  }
+  .menu-bawah-ikon{ font-size:1.25rem; line-height:1; }
+  .menu-bawah a:active{ transform:scale(.92); }
+  .menu-bawah a.is-aktif{
+    background:var(--yellow); color:var(--ink);
+    box-shadow:inset 0 0 0 2px var(--ink);
+  }
+  .menu-bawah a.is-aktif .menu-bawah-ikon{ animation:ikonLoncat .5s ease; }
+  @keyframes ikonLoncat{ 40%{ transform:translateY(-4px) scale(1.15); } }
+
+  /* footer pindah ke atas menu bawah */
+  .site-footer{ padding-bottom:6px; }
 }
 /* laptop yang layarnya PENDEK (banyak laptop + bookmark bar): navbar diringkas
    biar ruang buat isi halaman lebih banyak */
@@ -253,5 +292,9 @@ button{ font-family:var(--font-body); cursor:pointer; }
   .avatar-ikon{ width:28px; height:28px; }
 }
 @media (max-width:380px){
-  .brand-name{ display:none; } /* HP kecil banget: logo aja, biar nama siswa muat */
+  /* HP kecil: tulisan METAPIA tetap tampil, cuma dikecilin; pil nama dipersempit */
+  .brand{ gap:7px; }
+  .brand-badge{ width:34px; height:34px; }
+  .brand-name{ font-size:.98rem; }
+  .avatar-btn{ max-width:112px; }
 }
