@@ -1,8 +1,9 @@
 /* ==========================================================================
    METAPIA — komik.css
-   Gaya "panel komik" yang DIPAKAI BARENG halaman Materi & Video:
-   panel bergaris tebal + background bgMateri.jpg, tokoh (guru/murid)
-   dengan pose yang bisa gonta-ganti, balon kata lonjong, dan baris tombol.
+   Gaya "panggung komik" yang DIPAKAI BARENG halaman Materi & Video (plus
+   tokoh/balon/tombolnya dipakai Kuis & Game): panggung layar penuh di atas
+   background bgMateri.jpg, tokoh (guru/murid) dengan pose yang bisa
+   gonta-ganti, balon kata lonjong, dan baris tombol.
 
    POSISI tokoh & balon kata TIDAK ada di sini — itu diatur di CSS
    masing-masing halaman (materi.css / video.css), karena tiap halaman
@@ -14,51 +15,60 @@
    Urutan load: common.css -> komik.css -> materi.css / video.css
    ========================================================================== */
 
-/* background halaman (bgMateri diburamin) sekarang diatur di common.css,
-   dipakai bareng semua halaman */
-
 /* ==========================================================================
-   PEMBUNGKUS
+   PANGGUNG LAYAR PENUH (Materi & Video, <body class="layar-penuh panggung">)
    -------------------------------------------------------------------------
-   Lebar panel dihitung dari TINGGI layar, biar panel + tombol di bawahnya
-   selalu muat 1 layar tanpa kepotong. Angka 225px = tinggi navbar + jarak
-   + baris tombol + footer. (svh = tinggi layar HP tanpa ketutup address bar;
-   dibagi --skala karena di layar besar halamannya di-zoom, lihat common.css)
-   ========================================================================== */
-/* panel ditaruh di TENGAH ruang antara navbar & footer (kepake di HP yang tinggi) */
-.wrap{ display:flex; flex-direction:column; justify-content:center; }
+   Gak ada kotak panel lagi: background bgMateri.jpg (dari common.css,
+   TANPA blur) jadi panggungnya, tokoh & balon kata berdiri langsung di
+   atasnya. ".comic-panel" sekarang cuma "area tak terlihat" tempat tokoh
+   diatur posisinya (pakai persen), ukurannya dibikin sebesar mungkin:
 
-.comic-stage{
-  width:min(100%, calc((100vh / var(--skala) - 225px) * 1.7917));
-  width:min(100%, calc((100svh / var(--skala) - 225px) * 1.7917));
-  margin:16px auto 10px;
+   - tinggi = sisa tinggi layar (dikurangi navbar + tombol)  -> --tinggi-panggung
+   - lebar  = selebar layar, tapi maks 2.1x tinggi (biar tokoh gak kepisah jauh)
+   - layar yang lebih "kotak" dari 16:9 -> tingginya ngikut lebar (rasio 16:9)
+
+   Ukuran teks pakai min(cqw, cqh) biar gak meluber walau panggungnya lebar.
+   (dibagi --skala karena di layar besar halamannya di-zoom, lihat common.css)
+   ========================================================================== */
+body.panggung{
+  /* ruang di luar panggung: navbar + jarak + baris tombol */
+  --sisa-bawah:86px;
+  --tinggi-panggung:calc(100svh / var(--skala) - var(--tinggi-navbar) - var(--sisa-bawah));
+}
+@supports not (height:100svh){
+  body.panggung{ --tinggi-panggung:calc(100vh / var(--skala) - var(--tinggi-navbar) - var(--sisa-bawah)); }
 }
 
-/* ==========================================================================
-   PANEL KOMIK — rasio = rasio gambar bgMateri.jpg (1376 x 768)
-   ========================================================================== */
+/* panggung nempel ke bawah (rumput di background juga di bawah) */
+.panggung .wrap{
+  display:flex; flex-direction:column; justify-content:flex-end;
+  max-width:none;
+  padding-bottom:10px;
+}
+
+.comic-stage{
+  width:min(100%, calc(var(--tinggi-panggung) * 2.1));
+  margin:8px auto 0;
+}
+
 .comic-panel{
   position:relative;
-  container-type:inline-size; /* bikin satuan cqw = persen lebar panel */
+  container-type:size; /* bikin satuan cqw & cqh = persen lebar & tinggi panggung */
   width:100%;
-  aspect-ratio:1376 / 768;
-  background:url('../assets/bgMateri.jpg') center / cover no-repeat;
-  border:5px solid var(--ink);
-  border-radius:22px;
-  box-shadow:8px 8px 0 rgba(44,36,80,0.55), 0 20px 40px rgba(15,8,45,0.3);
-  overflow:hidden; /* tokoh yang jalan masuk dari luar gak nyembul */
+  height:min(var(--tinggi-panggung), calc((100vw / var(--skala) - 48px) / 1.7917));
+  min-height:320px;
 }
 
 /* kotak keterangan kuning di pojok (kayak "Sementara itu..." di komik) */
 .comic-caption{
   position:absolute; top:3.5%; left:2%; z-index:4;
-  padding:.5cqw 1.3cqw;
+  padding:min(.5cqw, .9cqh) min(1.3cqw, 2.3cqh);
   background:var(--yellow);
   border:3px solid var(--ink);
   border-radius:6px;
   box-shadow:3px 3px 0 var(--ink);
   font-family:var(--font-display); font-weight:800;
-  font-size:1.5cqw; color:var(--ink);
+  font-size:min(1.5cqw, 2.7cqh); color:var(--ink);
   text-transform:uppercase; letter-spacing:.5px;
   transform:rotate(-2deg);
 }
@@ -153,7 +163,7 @@
   padding:3% 11%;
   text-align:center;
   font-family:var(--font-display); font-weight:700;
-  font-size:1.9cqw; line-height:1.3;
+  font-size:min(1.9cqw, 3.4cqh); line-height:1.3;
   color:var(--ink);
 }
 .speech-cursor{ font-weight:800; color:var(--purple-700); animation:blink 1s step-start infinite; }
@@ -167,8 +177,10 @@
   display:grid;
   grid-template-columns:1fr auto 1fr;
   align-items:center; gap:12px;
-  margin-top:16px;
+  margin-top:12px;
 }
+/* titik progres di atas background langsung -> dikasih bayangan biar keliatan */
+.comic-dot{ box-shadow:0 1px 4px rgba(15,8,45,.5); }
 .comic-controls > #btnPrev{ justify-self:start; }
 .comic-controls-right{ justify-self:end; display:flex; align-items:center; gap:12px; }
 
@@ -206,17 +218,13 @@
    & balon versi HP diatur di CSS halaman. Ekor balon pakai versi "mobile".
    ========================================================================== */
 @media (max-width:820px){
+  /* HP: panggung tegak 3:4, background digeser ke kiri (buku & bunga) */
+  body.panggung{ background-position:18% bottom; --sisa-bawah:130px; }
   .comic-stage{
-    width:min(100%, calc((100vh / var(--skala) - 215px) * 0.75));
-    width:min(100%, calc((100svh / var(--skala) - 215px) * 0.75));
-    margin-top:14px;
+    width:min(100%, calc(var(--tinggi-panggung) * 0.75));
+    margin-top:8px;
   }
-  .comic-panel{
-    aspect-ratio:3 / 4;
-    background-position:18% center;
-    border-width:4px;
-    box-shadow:6px 6px 0 rgba(44,36,80,0.55), 0 14px 30px rgba(15,8,45,0.3);
-  }
+  .comic-panel{ height:auto; aspect-ratio:3 / 4; min-height:0; }
   .tail-desktop{ display:none; }
   .tail-mobile{ display:inline; }
   .speech-text{ font-size:4.3cqw; padding:3% 10%; }

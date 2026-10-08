@@ -43,8 +43,16 @@ function renderUserInNav() {
     // tampilkan nama lengkap; kalau kepanjangan CSS motong jadi "..."
     avatarEl.innerHTML = `<span class="avatar-ikon"><i class="fa-solid fa-user"></i></span><span class="avatar-nama"></span>`;
     avatarEl.querySelector(".avatar-nama").textContent = user.nama;
-    avatarEl.title = user.nama; // nama lengkap muncul pas kursor diarahkan
+    avatarEl.title = `${user.nama} — klik untuk keluar`; // nama lengkap muncul pas kursor diarahkan
     avatarEl.classList.toggle("nama-panjang", user.nama.length > 14);
+    // pil nama = tombol Keluar (footer disembunyikan di halaman layar penuh)
+    avatarEl.setAttribute("role", "button");
+    avatarEl.tabIndex = 0;
+    const tanyaKeluar = () => {
+      if (confirm(`Keluar dari METAPIA, ${user.nama.split(" ")[0]}?`)) logout();
+    };
+    avatarEl.addEventListener("click", tanyaKeluar);
+    avatarEl.addEventListener("keydown", (e) => { if (e.key === "Enter") tanyaKeluar(); });
   }
 }
 

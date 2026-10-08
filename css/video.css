@@ -6,11 +6,8 @@
    Urutan load: common.css -> komik.css -> video.css
    ========================================================================== */
 
-/* panel tanpa baris tombol di bawahnya, jadi boleh sedikit lebih besar */
-.comic-stage{
-  width:min(100%, calc((100vh / var(--skala) - 180px) * 1.7917));
-  width:min(100%, calc((100svh / var(--skala) - 180px) * 1.7917));
-}
+/* panggung tanpa baris tombol di bawahnya, jadi boleh lebih tinggi */
+body.panggung{ --sisa-bawah:28px; }
 
 /* ---------- 2 bocah (berdua di sisi kiri, layar video di kanan) ---------- */
 .bocah{ bottom:5%; height:46%; }
@@ -19,7 +16,7 @@
 
 /* ---------- balon kata ajakan (transform-origin = ujung ekor) ---------- */
 .bubble-ajakan{ left:2%; top:16%; width:30%; height:22%; transform-origin:40% 145%; }
-.bubble-ajakan .speech-text{ font-size:1.6cqw; padding:3% 12%; }
+.bubble-ajakan .speech-text{ font-size:min(1.6cqw, 2.9cqh); padding:3% 12%; }
 
 /* ==========================================================================
    LAYAR VIDEO — bingkai tebal ala komik, rasio 16:9, di sisi kanan panel
@@ -55,13 +52,13 @@
 
 .tombol-play{
   position:relative;
-  width:9cqw; height:9cqw;
+  width:min(9cqw, 16cqh); height:min(9cqw, 16cqh);
   display:flex; align-items:center; justify-content:center;
   border-radius:50%;
   background:var(--yellow); color:var(--ink);
   border:4px solid var(--ink);
   box-shadow:5px 5px 0 var(--ink);
-  font-size:3.6cqw;
+  font-size:min(3.6cqw, 6.4cqh);
   padding-left:.6cqw; /* segitiga play keliatan lebih di tengah */
   transition:transform .15s;
   animation:denyut 1.8s ease-in-out infinite;
@@ -72,7 +69,7 @@
 
 .label-play{
   position:relative;
-  font-family:var(--font-display); font-weight:800; font-size:2cqw;
+  font-family:var(--font-display); font-weight:800; font-size:min(2cqw, 3.6cqh);
   text-shadow:0 2px 6px rgba(15,8,45,0.6);
 }
 
@@ -86,10 +83,7 @@
    balon kata di antara layar & kepala bocah
    ========================================================================== */
 @media (max-width:820px){
-  .comic-stage{
-    width:min(100%, calc((100vh / var(--skala) - 140px) * 0.75));
-    width:min(100%, calc((100svh / var(--skala) - 140px) * 0.75));
-  }
+  body.panggung{ --sisa-bawah:40px; }
   .layar-video{ left:4%; top:9%; width:92%; border-width:4px; border-radius:10px; }
   .bocah{ bottom:4%; height:33%; }
   .bocah-kiri{ left:25%; }

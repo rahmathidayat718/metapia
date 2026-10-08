@@ -101,20 +101,20 @@ body{
   display:flex; flex-direction:column;
 
   background-image:url('../assets/bgMateri.jpg');
-  background-size:cover;          /* foto nutupin seluruh layar */
-  background-position:center;
+  background-size:cover;            /* foto nutupin seluruh layar */
+  background-position:center bottom; /* rumputnya selalu di bawah -> tokoh "napak" */
   background-repeat:no-repeat;
-  background-attachment:fixed;    /* foto diam waktu halaman di-scroll */
+  background-attachment:fixed;      /* foto diam waktu halaman di-scroll */
 
   overflow-x:hidden; /* jaga-jaga biar gak ada scroll horizontal gak sengaja */
+
+  /* tinggi navbar + jaraknya (dipakai ngitung ukuran panggung/kartu) */
+  --tinggi-navbar:82px;
 }
-body::before{
-  content:''; position:fixed; inset:0; z-index:0;
-  background:rgba(46,35,89,0.35);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  pointer-events:none;
-}
+
+/* halaman "layar penuh" (Materi, Video, Kuis, Game): footer disembunyikan biar
+   panggung/kartunya bisa sebesar mungkin. Tombol Keluar ada di pil nama. */
+body.layar-penuh .site-footer{ display:none; }
 
 /* Judul (h1-h4) pakai font display, teks biasa (p) pakai font body */
 h1,h2,h3,h4{ font-family:var(--font-display); margin:0; color:var(--purple-900); }
@@ -180,6 +180,7 @@ button{ font-family:var(--font-body); cursor:pointer; }
 .nav-right{ display:flex; align-items:center; gap:12px; }
 /* pil nama siswa di kanan navbar: [ikon] Nama Siswa */
 .avatar-btn{
+  cursor:pointer; /* diklik = keluar (lihat js/app.js) */
   display:flex; align-items:center; gap:8px;
   height:42px; max-width:220px;
   padding:0 16px 0 5px;
@@ -236,6 +237,12 @@ button{ font-family:var(--font-body); cursor:pointer; }
 @media (max-width:980px){
   .nav-links{ display:none; }   /* menu navbar disembunyiin */
   .nav-toggle{ display:block; } /* tombol hamburger dimunculin */
+}
+/* laptop yang layarnya PENDEK (banyak laptop + bookmark bar): navbar diringkas
+   biar ruang buat isi halaman lebih banyak */
+@media (max-height:760px){
+  body{ --tinggi-navbar:64px; }
+  .navbar{ margin-top:10px; top:10px; padding:6px 18px; }
 }
 @media (max-width:600px){
   .navbar{ margin:14px 12px 0; padding:10px 14px; }
