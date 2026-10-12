@@ -9,6 +9,11 @@
    - majas    : harus salah satu dari JENIS_MAJAS di bawah (tulisannya sama)
    - petunjuk : muncul (lewat Kak Rara) waktu siswa salah
    - pembahasan : muncul setelah soal selesai
+
+   VERSI 3D (js/game3d/): pakai data soal yang SAMA persis. Yang ditambah
+   cuma nama/deskripsi/cara main versi 3D (judul3d, deskripsi3d, caraMain3d)
+   dan pengaturan kecepatan (kecepatan3d). Nama yang dikirim ke Google Sheet
+   tetap "judul" (nama lama) biar data penelitian gak kepisah.
    ========================================================================== */
 
 /* urutan tombol/keranjang jenis majas (tetap) */
@@ -35,6 +40,15 @@ const DATA_GAME = {
     ikon: "🖼️",
     warna: "kuning",
     deskripsi: "Lihat gambarnya, temukan kalimat bermajas yang cocok, lalu tebak jenis majasnya!",
+    judul3d: "Lari Gerbang Majas",
+    deskripsi3d: "Lari di jalan ajaib! Pilih gerbang kalimat yang cocok dengan gambar, lalu gerbang jenis majasnya.",
+    caraMain3d: [
+      "Geser kiri/kanan (atau tombol panah / A-D) buat pindah jalur.",
+      "Gelombang 1: masuk gerbang huruf kalimat yang cocok dengan gambar.",
+      "Gelombang 2: masuk gerbang jenis majasnya. Benar = combo & makin cepat!",
+    ],
+    // kecepatan lari tiap soal (makin besar makin cepat). Soal 1..5
+    kecepatan3d: [9, 10.5, 12, 13.5, 15],
     caraMain: [
       "Perhatikan gambar baik-baik.",
       "Pilih kalimat yang paling cocok dengan gambar.",
@@ -122,6 +136,15 @@ const DATA_GAME = {
     warna: "biru",
     detikPerSoal: 30,
     deskripsi: "Seret kartu kalimat ke keranjang majas yang tepat sebelum waktunya habis!",
+    judul3d: "Pabrik Sortir Majas",
+    deskripsi3d: "Kotak kalimat datang di ban berjalan. Lempar kotaknya ke tong majas yang tepat!",
+    caraMain3d: [
+      "Baca kalimat di kotak yang datang lewat ban berjalan.",
+      "Tarik kotaknya lalu lempar ke atas ke tong yang tepat (atau ketuk tongnya).",
+      "Cepat! Tiap kotak cuma 30 detik, ban makin cepat tiap soal.",
+    ],
+    // kecepatan ban berjalan tiap soal (makin besar makin cepat). Soal 1..5
+    kecepatan3d: [2.2, 2.8, 3.4, 4.0, 4.6],
     caraMain: [
       "Seret kartu kalimat ke keranjang yang tepat.",
       "Bisa juga: ketuk kartunya, lalu ketuk keranjangnya.",
@@ -174,6 +197,17 @@ const DATA_GAME = {
     ikon: "🪄",
     warna: "pink",
     deskripsi: "Pakai tongkat ajaibmu! Ubah kalimat biasa menjadi kalimat bermajas.",
+    judul3d: "Pesawat Perakit Kalimat",
+    deskripsi3d: "Terbang di luar angkasa! Tembak kata-kata sesuai urutan untuk merakit kalimat bermajas.",
+    caraMain3d: [
+      "Baca kalimat biasa & jenis majas yang diminta.",
+      "Ketuk kata (atau tembak pakai Spasi) SESUAI URUTAN kalimat bermajasnya.",
+      "Hati-hati kata pengecoh! Makin sedikit salah, makin banyak bintang.",
+    ],
+    // kecepatan kata melayang tiap soal (makin besar makin cepat). Soal 1..5
+    kecepatan3d: [0.35, 0.45, 0.55, 0.65, 0.75],
+    /* kata pengecoh otomatis diambil dari pilihan yang salah. Kalau mau
+       nentuin sendiri, tambahin di soalnya:  kataPengecoh: ["batu", "meja"] */
     caraMain: [
       "Baca kalimat biasa dan jenis majas yang diminta.",
       "Pilih kalimat bermajas yang tepat.",

@@ -11,6 +11,11 @@
 <link rel="stylesheet" href="css/komik.css">
 <link rel="stylesheet" href="css/kuis.css">
 <link rel="stylesheet" href="css/game.css">
+<link rel="stylesheet" href="css/game3d.css">
+<!-- Three.js (game 3D) dari CDN, versi dikunci. Lihat js/game3d/ -->
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js" } }
+</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="layar-penuh">
@@ -76,5 +81,11 @@
 <script src="js/game-keranjang.js"></script>
 <script src="js/game-ubah.js"></script>
 <script>requireLogin(); Game.mulai();</script>
+<!-- modul game 3D: kalau gagal dimuat (internet/CDN/browser lama), otomatis main versi 2D -->
+<script type="module">
+  import("./js/game3d/index.js")
+    .then(() => Game.siap3d(true))
+    .catch((err) => { console.warn("[METAPIA] game 3D gak bisa dimuat, pakai versi 2D:", err); Game.siap3d(false); });
+</script>
 </body>
 </html>

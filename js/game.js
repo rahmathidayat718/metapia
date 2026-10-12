@@ -7,6 +7,15 @@
    - Layar MENU (peta 3 level), layar PEMBUKA, HUD (header game), layar HASIL
    - Simpan skor: ke browser (buat Dashboard) + Google Sheet (js/sheet.js)
 
+   VERSI 3D vs 2D:
+   Tiap game punya versi 3D (js/game3d/, didaftarin lewat Game.daftar3d) dan
+   versi 2D (game-tebak/keranjang/ubah.js, didaftarin lewat Game.daftar).
+   Versi 3D dipakai kalau: perangkat dukung WebGL + modul 3D berhasil dimuat
+   + siswa gak milih "Versi 2D" di layar pembuka. Selain itu otomatis 2D.
+   Skor yang dikirim ke Google Sheet SAMA aturannya (maks 100) & nama game-nya
+   tetap nama lama, jadi data penelitian gak berubah. Poin Bonus (combo dll)
+   cuma tampil di layar, gak dikirim.
+
    Alamat halaman:
      game.html          -> menu peta
      game.html?main=2   -> langsung ke layar pembuka Game 2
@@ -17,7 +26,26 @@ const Game = (() => {
   const namaPanggilan = user.nama.split(" ")[0];
   const elCard = document.getElementById("gameCard");
   const mesin = {}; // aturan main tiap game, didaftarin lewat Game.daftar()
+  const mesin3d = {}; // versi 3D, didaftarin lewat Game.daftar3d()
   let sedangMain = false;
+
+  /* ---------- 3D atau 2D? ---------- */
+  const DUKUNG_WEBGL = (() => {
+    try {
+      const c = document.createElement("canvas");
+      return !!(window.WebGLRenderingContext && (c.getContext("webgl2") || c.getContext("webgl")));
+    } catch (e) { return false; }
+  })();
+  /** siswa milih "2d" di layar pembuka? (disimpan di browser) */
+  function modePilihan() { return localStorage.getItem("metapia_mode_game") || "3d"; }
+  /** perkiraan: game ini bakal main versi 3D? */
+  function pakai3d(id) {
+    return DUKUNG_WEBGL && modePilihan() === "3d" && (mesin3d[id] || !window.__gagal3d);
+  }
+  /** judul/deskripsi/cara main yang ditampilkan (versi 3D punya nama baru) */
+  function teks(g, kunci) {
+    return pakai3d(g.id) && g[kunci + "3d"] ? g[kunci + "3d"] : g[kunci];
+  }
 
   /* ========================================================================
      1) KAK RARA — pose + balon kata (sama kayak di kuis.js)
@@ -225,8 +253,8 @@ const Game = (() => {
                   <span class="pulau-level">${g.id}</span>
                 </div>
                 <span class="pulau-label">${g.label}</span>
-                <h3>${esc(g.judul)}</h3>
-                <p class="pulau-desk">${esc(g.deskripsi)}</p>
+                <h3>${esc(teks(g, "judul"))}</h3>
+                <p class="pulau-desk">${esc(teks(g, "deskripsi"))}</p>
                 <div class="pulau-bintang">${htmlBintang(s ? jumlahBintang(s.terbaik) : 0)}</div>
                 <p class="pulau-skor">${s ? `Skor terbaik: <b>${s.terbaik}</b>` : "Belum dimainkan"}</p>
                 <span class="comic-btn comic-btn-primary pulau-main">${s ? "Main Lagi" : "Main!"} <i class="fa-solid fa-play"></i></span>
@@ -252,16 +280,24 @@ const Game = (() => {
     sedangMain = false;
     const g = DATA_GAME[id];
     const s = skorTersimpan(id);
+    const tiga = pakai3d(id);
+    const ringan = localStorage.getItem("metapia_grafis") === "ringan";
     elCard.innerHTML = `
       <div class="layar">
         <div class="layar-tengah layar-pembuka warna-${g.warna}">
-          <div class="lencana">${g.ikon}</div>
-          <span class="pulau-label">LEVEL ${g.id} · ${g.label}</span>
-          <h1>${esc(g.judul)}</h1>
-          <p class="sapa">Halo, <b>${esc(user.nama)}</b>! ${esc(g.deskripsi)}</p>
+          ${tiga ? `<div class="tutorial tutorial-${id}" aria-hidden="true">${htmlTutorial(id)}</div>` : `<div class="lencana">${g.ikon}</div>`}
+          <span class="pulau-label">LEVEL ${g.id} · ${g.label}${tiga ? " · 3D" : ""}</span>
+          <h1>${esc(teks(g, "judul"))}</h1>
+          <p class="sapa">Halo, <b>${esc(user.nama)}</b>! ${esc(teks(g, "deskripsi"))}</p>
           <ol class="cara-main">
-            ${g.caraMain.map((c, i) => `<li><span>${i + 1}</span>${esc(c)}</li>`).join("")}
+            ${teks(g, "caraMain").map((c, i) => `<li><span>${i + 1}</span>${esc(c)}</li>`).join("")}
           </ol>
+          ${!DUKUNG_WEBGL ? `<p class="info-3d">ℹ️ Perangkatmu belum mendukung game 3D, jadi kita main versi 2D, ya.</p>` : `
+          <div class="pilih-mode">
+            <button class="chip-mode ${tiga ? "is-aktif" : ""}" data-mode="3d"><i class="fa-solid fa-cube"></i> Versi 3D</button>
+            <button class="chip-mode ${!tiga ? "is-aktif" : ""}" data-mode="2d"><i class="fa-regular fa-square"></i> Versi 2D</button>
+            ${tiga ? `<button class="chip-mode chip-grafis" title="Grafis ringan untuk HP yang lambat"><i class="fa-solid fa-gauge-simple${ringan ? "" : "-high"}"></i> Grafis: ${ringan ? "Ringan" : "Normal"}</button>` : ""}
+          </div>`}
           <div class="info-kuis">
             <span><i class="fa-solid fa-list-ol"></i> ${g.soal.length} soal</span>
             <span><i class="fa-solid fa-trophy"></i> Skor maks 100</span>
@@ -278,7 +314,38 @@ const Game = (() => {
       suara.klik();
       mainkan(id);
     });
-    guru(`Siap main ${g.judul}, ${namaPanggilan}? Baca cara mainnya dulu, ya!`);
+    elCard.querySelectorAll(".chip-mode[data-mode]").forEach((b) => b.addEventListener("click", () => {
+      localStorage.setItem("metapia_mode_game", b.dataset.mode);
+      suara.klik();
+      renderPembuka(id);
+    }));
+    const chipGrafis = elCard.querySelector(".chip-grafis");
+    if (chipGrafis) chipGrafis.addEventListener("click", () => {
+      const sekarang = localStorage.getItem("metapia_grafis") === "ringan";
+      localStorage.setItem("metapia_grafis", sekarang ? "normal" : "ringan");
+      suara.klik();
+      renderPembuka(id);
+    });
+    guru(`Siap main ${teks(g, "judul")}, ${namaPanggilan}? Baca cara mainnya dulu, ya!`);
+  }
+
+  /** animasi tutorial kecil di layar pembuka versi 3D */
+  function htmlTutorial(id) {
+    if (id === 1) return `
+      <div class="tut-jalan"><span></span><span></span><span></span></div>
+      <div class="tut-anak">🏃</div>
+      <div class="tut-gerbang"><b>A</b><b>B</b><b>C</b></div>
+      <div class="tut-jari">👆</div>`;
+    if (id === 2) return `
+      <div class="tut-ban"></div>
+      <div class="tut-kotak">📦</div>
+      <div class="tut-tong"><b>🌟</b><b>🗣️</b><b>📢</b></div>
+      <div class="tut-jari">👆</div>`;
+    return `
+      <div class="tut-bintang"></div>
+      <div class="tut-kata k1">Angin</div><div class="tut-kata k2">berbisik</div><div class="tut-kata k3">batu</div>
+      <div class="tut-pesawat">🚀</div>
+      <div class="tut-jari">👆</div>`;
   }
 
   /* ========================================================================
@@ -286,11 +353,22 @@ const Game = (() => {
      ======================================================================== */
   function mainkan(id) {
     const g = DATA_GAME[id];
+    // modul 3D belum selesai dimuat -> tunggu sebentar (siap3d manggil lagi)
+    if (pakai3d(id) && !mesin3d[id] && !window.__gagal3d) {
+      elCard.innerHTML = `<div class="layar"><div class="layar-tengah"><div class="lencana">⏳</div>
+        <h1>Menyiapkan dunia 3D...</h1><p class="sapa">Sebentar, ya!</p></div></div>`;
+      window.__tunggu3d = () => mainkan(id);
+      return;
+    }
+    const versi3d = pakai3d(id) && !!mesin3d[id];
     sedangMain = true;
+    elCard.classList.toggle("mode-3d", versi3d);
     elCard.innerHTML = `
       <div class="layar">
         <div class="kuis-head hud">
           <span class="hud-level warna-${g.warna}">${g.ikon} Lv ${g.id}</span>
+          ${versi3d ? `<span class="hud-nyawa" title="Nyawa">${"<i class='fa-solid fa-heart'></i>".repeat(3)}</span>
+          <span class="hud-bonus" title="Poin Bonus (combo)"><i class="fa-solid fa-bolt"></i> <b>0</b></span>` : ""}
           <span class="kuis-nomor">Soal <b class="hud-no">1</b><small>/${g.soal.length}</small></span>
           <div class="hud-titik">${g.soal.map(() => "<span></span>").join("")}</div>
           <span class="hud-waktu" hidden><i class="fa-solid fa-stopwatch"></i> <b>0</b><i class="hud-waktu-bar"></i></span>
@@ -299,6 +377,7 @@ const Game = (() => {
           <button class="btn-suara ${suaraNyala ? "" : "is-muted"}" title="Nyalakan/matikan suara">
             <i class="fa-solid ${suaraNyala ? "fa-volume-high" : "fa-volume-xmark"}"></i>
           </button>
+          ${versi3d ? `<button class="btn-suara btn-jeda" title="Jeda"><i class="fa-solid fa-pause"></i></button>` : ""}
           <button class="btn-suara btn-keluar" title="Keluar ke menu game"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="game-body"></div>
@@ -311,6 +390,25 @@ const Game = (() => {
     });
 
     let skor = 0;
+    let bonus = 0;
+    let saatJeda = null; // fungsi dari game 3D: (dijeda:boolean) => void
+    let dijeda = false;
+    function aturJeda(jeda) {
+      if (!versi3d || dijeda === jeda) return;
+      dijeda = jeda;
+      const btn = hud.querySelector(".btn-jeda");
+      if (btn) btn.innerHTML = `<i class="fa-solid ${jeda ? "fa-play" : "fa-pause"}"></i>`;
+      let lapis = api.body.querySelector(".lapis-jeda");
+      if (jeda && !lapis) {
+        lapis = document.createElement("div");
+        lapis.className = "lapis-jeda";
+        lapis.innerHTML = `<div class="kotak-jeda"><h2>⏸️ Jeda</h2><p>Istirahat dulu, ya!</p>
+          <button class="comic-btn comic-btn-primary btn-besar">Lanjut Main <i class="fa-solid fa-play"></i></button></div>`;
+        lapis.querySelector("button").addEventListener("click", () => { suara.klik(); aturJeda(false); });
+        api.body.appendChild(lapis);
+      } else if (!jeda && lapis) lapis.remove();
+      if (saatJeda) saatJeda(jeda);
+    }
     const api = {
       data: g,
       body: elCard.querySelector(".game-body"),
@@ -324,6 +422,31 @@ const Game = (() => {
       acak,
       poinMelayang,
       skalaHalaman,
+      versi3d,
+      /** suara lagi nyala? (buat musik latar game 3D) */
+      suaraNyala: () => suaraNyala,
+      tebarKonfeti,
+      /** game 3D daftarin fungsi yang dipanggil waktu dijeda/dilanjut */
+      saatJeda(fn) { saatJeda = fn; },
+      jeda: aturJeda,
+      get dijeda() { return dijeda; },
+      /** nyawa di HUD (0..3) */
+      nyawa(n) {
+        const el = hud.querySelector(".hud-nyawa");
+        if (!el) return;
+        el.innerHTML = [0, 1, 2].map((i) => `<i class="fa-${i < n ? "solid" : "regular"} fa-heart"></i>`).join("");
+        el.classList.remove("is-kurang"); void el.offsetWidth; el.classList.add("is-kurang");
+      },
+      /** tambah Poin Bonus (combo/kecepatan) — cuma tampil, gak dikirim ke sheet */
+      tambahBonus(n) {
+        if (n <= 0) return;
+        bonus += n;
+        const el = hud.querySelector(".hud-bonus");
+        if (!el) return;
+        el.querySelector("b").textContent = bonus;
+        el.classList.remove("is-naik"); void el.offsetWidth; el.classList.add("is-naik");
+      },
+      get bonus() { return bonus; },
 
       /** pindah ke soal ke-i (mulai dari 0) */
       soalKe(i) {
@@ -409,11 +532,32 @@ const Game = (() => {
       /** game selesai -> layar hasil */
       selesai(hasil) {
         sedangMain = false;
-        renderHasil(id, { ...hasil, skor });
+        Game.saatKeluar = null;
+        elCard.classList.remove("mode-3d");
+        renderHasil(id, { ...hasil, skor, bonus: versi3d ? bonus : undefined });
       },
     };
 
-    mesin[id].main(api);
+    if (versi3d) {
+      hud.querySelector(".btn-jeda").addEventListener("click", () => { suara.klik(); aturJeda(!dijeda); });
+      document.addEventListener("keydown", function tombolJeda(e) {
+        if (!document.body.contains(hud)) return document.removeEventListener("keydown", tombolJeda);
+        if (e.key === "Escape" || e.key === "p" || e.key === "P") aturJeda(!dijeda);
+      });
+      try {
+        mesin3d[id].main(api);
+      } catch (err) {
+        // 3D gagal jalan (mis. WebGL error) -> otomatis pindah ke versi 2D
+        console.error("[METAPIA] game 3D gagal, pindah ke 2D:", err);
+        if (typeof Game.saatKeluar === "function") Game.saatKeluar();
+        Game.saatKeluar = null;
+        window.__gagal3d = true;
+        delete mesin3d[id];
+        mainkan(id);
+      }
+    } else {
+      mesin[id].main(api);
+    }
   }
 
   function keluar() {
@@ -441,8 +585,9 @@ const Game = (() => {
       <div class="layar">
         <div class="layar-tengah layar-hasil">
           <div class="bintang">${htmlBintang(n)}</div>
-          <h1>Level ${g.id} Selesai!</h1>
+          <h1>${esc(hasil.bonus !== undefined && g.judul3d ? g.judul3d : `Level ${g.id}`)} Selesai!</h1>
           <div class="nilai-bulat"><b>${hasil.skor}</b><small>SKOR</small></div>
+          ${hasil.bonus !== undefined ? `<span class="chip-bonus"><i class="fa-solid fa-bolt"></i> Poin Bonus: <b>${hasil.bonus}</b></span>` : ""}
           <p class="sapa"><b>${esc(user.nama)}</b> — ${esc(hasil.benar)} ${esc(hasil.satuan)} benar dari ${hasil.dari}${hasil.bintang !== undefined ? `, dapat <b>${hasil.bintang}/15 ⭐</b>` : ""}.<br>${predikat}</p>
           <div class="rekap" aria-label="Rekap tiap soal">
             ${hasil.rekap.map((r, i) => `<span class="is-${r}" title="Soal ${i + 1}">${i + 1}</span>`).join("")}
@@ -505,6 +650,16 @@ const Game = (() => {
     else renderMenu();
   }
 
+  /** dipanggil js/game3d/index.js setelah modul 3D selesai dimuat (atau gagal) */
+  function siap3d(berhasil) {
+    if (!berhasil) window.__gagal3d = true;
+    if (window.__tunggu3d) { const f = window.__tunggu3d; window.__tunggu3d = null; return f(); }
+    if (sedangMain) return;
+    const id = Number(new URLSearchParams(location.search).get("main"));
+    if (elCard.querySelector(".layar-pembuka") && DATA_GAME[id]) renderPembuka(id);
+    else if (elCard.querySelector(".layar-menu")) renderMenu();
+  }
+
   // peringatan kalau nutup/pindah halaman di tengah game
   window.addEventListener("beforeunload", (e) => {
     if (sedangMain) e.preventDefault();
@@ -514,6 +669,9 @@ const Game = (() => {
     mulai,
     /** dipanggil file game-xxx.js: Game.daftar(1, { main(api) { ... } }) */
     daftar(id, aturan) { mesin[id] = aturan; },
+    /** dipanggil js/game3d/index.js: Game.daftar3d(1, { main(api) { ... } }) */
+    daftar3d(id, aturan) { mesin3d[id] = aturan; },
+    siap3d,
     saatKeluar: null,
     get sedangMain() { return sedangMain; },
     set sedangMain(v) { sedangMain = v; },
