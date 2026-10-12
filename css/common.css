@@ -112,6 +112,34 @@ body{
   --tinggi-navbar:82px;
 }
 
+/* ==========================================================================
+   KUPU-KUPU di background yang kepak-kepak sayap (dipasang js/kupu.js)
+   Sayap "buka-tutup" = gambarnya dipipihin ke samping (scaleX) dengan poros
+   di badan kupu-kupu, plus melayang naik-turun pelan.
+   ========================================================================== */
+.kupu{
+  position:fixed; z-index:0;
+  pointer-events:none;
+  animation:kupuMelayang 3.2s ease-in-out infinite;
+}
+.kupu img{
+  display:block; width:100%; height:100%;
+  max-width:none;
+  animation:kupuKepak .55s ease-in-out infinite alternate;
+}
+@keyframes kupuKepak{
+  0%  { transform:scaleX(1); }
+  100%{ transform:scaleX(.25) skewY(-6deg); }
+}
+@keyframes kupuMelayang{
+  0%,100%{ transform:translate(0,0) rotate(0); }
+  50%    { transform:translate(-3px,-7px) rotate(-4deg); }
+}
+/* yang gak suka animasi (pengaturan HP/laptop) -> kupu-kupu diam */
+@media (prefers-reduced-motion:reduce){
+  .kupu, .kupu img{ animation:none; }
+}
+
 /* halaman "layar penuh" (Materi, Video, Kuis, Game): footer disembunyikan biar
    panggung/kartunya bisa sebesar mungkin. Tombol Keluar ada di pil nama. */
 body.layar-penuh .site-footer{ display:none; }
