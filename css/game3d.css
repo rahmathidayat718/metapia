@@ -79,6 +79,86 @@
 .papan-jarak{ height:7px; margin-top:8px; background:#EDE6FF; border-radius:100px; overflow:hidden; }
 .papan-jarak span{ display:block; height:100%; width:0; background:linear-gradient(90deg, var(--green), var(--yellow), var(--pink)); border-radius:100px; }
 
+/* gambar soal besar (Game 1 langkah 1) */
+.papan-gambar-besar{
+  display:block; margin:8px auto 0;
+  width:min(200px, 60%); aspect-ratio:4/3; object-fit:cover;
+  border:3px solid var(--ink); border-radius:12px; background:#F6F2FF;
+}
+.papan-gambar-besar.is-kosong{ display:flex; align-items:center; justify-content:center; padding:8px; font-size:.8rem; font-weight:700; text-align:center; color:var(--ink-soft); }
+
+/* kartu pilihan besar di bawah layar (Game 1) */
+.g3d-kartu{
+  position:absolute; left:12px; right:12px; bottom:12px;
+  max-width:860px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;
+}
+.g3d-kartu[hidden]{ display:none; }
+.g3d-kartu.is-muncul .kartu-pilih{ animation:kartuNaik .4s cubic-bezier(.34,1.56,.64,1) both; }
+.g3d-kartu.is-muncul .kartu-pilih:nth-child(2){ animation-delay:.08s; }
+.g3d-kartu.is-muncul .kartu-pilih:nth-child(3){ animation-delay:.16s; }
+@keyframes kartuNaik{ from{ opacity:0; transform:translateY(30px); } }
+.kartu-pilih{
+  display:flex; align-items:center; gap:10px;
+  min-height:64px; padding:10px 14px 10px 10px;
+  background:#fff; color:var(--ink);
+  border:3px solid var(--ink); border-left:12px solid var(--warna);
+  border-radius:16px;
+  box-shadow:4px 4px 0 var(--ink);
+  font-family:var(--font-display); font-weight:800; font-size:1.05rem; line-height:1.25; text-align:left;
+  transition:transform .12s, box-shadow .12s;
+}
+.kartu-pilih:not(:disabled):hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink); background:#FBF9FF; }
+.kartu-pilih:not(:disabled):active{ transform:translate(3px,3px); box-shadow:1px 1px 0 var(--ink); }
+.kartu-warna{ flex:none; font-size:1.3rem; }
+.kartu-pilih.is-dipilih{ background:var(--warna); transform:scale(1.04); }
+.kartu-pilih.is-mati{ opacity:.45; text-decoration:line-through; box-shadow:none; }
+.kartu-pilih:disabled{ cursor:default; }
+.g3d-kartu.is-majas .kartu-pilih{ justify-content:center; text-align:center; font-size:1.1rem; }
+
+/* label kalimat di balon (Game 1), posisinya diatur JS tiap frame */
+.g3d-balon-label{ position:absolute; inset:0; pointer-events:none !important; }
+.balon-teks{
+  position:absolute; left:0; top:0;
+  width:min(30%, 250px);
+  margin-left:calc(min(30%, 250px) / -2); margin-top:0;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  padding:8px 12px;
+  background:#fff; color:var(--ink);
+  border:3px solid var(--ink); border-top:8px solid var(--warna);
+  border-radius:16px;
+  box-shadow:4px 4px 0 rgba(44,36,80,.6);
+  font-family:var(--font-display); font-weight:800; font-size:1.02rem; line-height:1.25; text-align:center;
+  pointer-events:auto;
+  transition:opacity .25s, background .2s;
+}
+.balon-teks:hover{ background:#FBF9FF; }
+.balon-ikon{ font-size:1.2rem; }
+.balon-teks.is-mati{ opacity:.5 !important; text-decoration:line-through; background:#EEE; }
+.balon-teks.is-benar{ background:#D9FBEA; border-color:#0E8A5F; animation:sorotBenar .5s ease 3; }
+.balon-teks.is-meletus{ pointer-events:none; }
+/* HP: balon zig-zag di kiri, tulisan di kanannya */
+.g3d-balon-label.is-tegak .balon-teks{
+  width:auto; max-width:none; left:0; right:auto;
+  margin-left:34px; margin-top:-22px;
+  width:calc(100% - 34px);
+  max-width:min(62vw, 260px);
+  justify-content:flex-start; text-align:left;
+  border-top-width:3px; border-left:8px solid var(--warna);
+  font-size:.92rem;
+}
+
+/* tutorial Game 1: balon naik, satu meletus */
+.tutorial-1{ background:linear-gradient(#b7a3f2, #f2b9de 60%, #bfe7f7); }
+.tut-balon{ position:absolute; bottom:-30px; font-size:2.1rem; animation:balonNaik 2.8s ease-out infinite; }
+.tut-balon.b1{ left:18%; } .tut-balon.b2{ left:44%; animation-name:balonNaikPecah; } .tut-balon.b3{ left:70%; animation-delay:.2s; }
+@keyframes balonNaik{ 0%{ bottom:-40px; } 50%,100%{ bottom:40px; } }
+@keyframes balonNaikPecah{ 0%{ bottom:-40px; opacity:1; } 50%{ bottom:40px; opacity:1; } 62%,100%{ bottom:40px; opacity:0; } }
+.tut-dor{ position:absolute; left:42%; bottom:44px; font-size:2.2rem; opacity:0; animation:dor 2.8s ease infinite; }
+@keyframes dor{ 0%,58%{ opacity:0; transform:scale(.3); } 64%{ opacity:1; transform:scale(1.2); } 80%,100%{ opacity:0; transform:scale(1.4); } }
+.tutorial-1 .tut-jari{ left:48%; bottom:10px; animation:jariKetuk 2.8s ease infinite; }
+@keyframes jariKetuk{ 0%,35%{ opacity:0; transform:translateY(20px); } 50%{ opacity:1; transform:translateY(0); } 58%{ transform:translateY(-6px); } 70%,100%{ opacity:0; } }
+
 /* tulisan besar sebentar (COMBO, Level naik, dll) */
 .g3d-combo{
   position:absolute; left:50%; top:46%;
@@ -169,9 +249,10 @@
   background-color:#fff;
   box-shadow:4px 4px 0 rgba(44,36,80,.55);
 }
-/* petunjuk di tengah layar: gak ngalangin ketukan & hilang sendiri setelah 7 detik */
+/* petunjuk di bawah (di atas tombol), gak nutupin papan soal; gak ngalangin
+   ketukan & hilang sendiri setelah 7 detik */
 .mode-3d .game-body > .petunjuk{
-  bottom:auto; top:50%; transform:translateY(-50%);
+  bottom:86px;
   background:#FFF7DD; pointer-events:none;
   animation:layarMasuk .3s ease-out, petunjukHilang 7s ease forwards;
 }
@@ -305,8 +386,10 @@
    RESPONSIVE
    ========================================================================== */
 @media (max-width:820px){
-  /* HP: area main setinggi sisa layar (dikurangi navbar, Kak Rara, HUD, menu bawah) */
-  .g3d{ min-height:max(380px, calc(100svh - 470px)); }
+  /* HP: strip Kak Rara disembunyiin selama main 3D biar area main lebih luas */
+  .kuis-stage:has(.mode-3d) .kuis-guru{ display:none; }
+  /* area main setinggi sisa layar (dikurangi navbar, HUD, menu bawah) */
+  .g3d{ min-height:max(420px, calc(100svh - 300px)); }
   .g3d-papan{ left:8px; right:8px; top:8px; padding:8px 10px 10px; border-radius:14px; }
   .papan-judul{ font-size:.92rem; }
   .papan-tambahan{ display:none !important; }  /* teks tambahan disembunyiin di HP */
@@ -317,6 +400,12 @@
   .papan-pilihan li b{ width:22px; height:22px; font-size:.8rem; }
   .papan-kutipan{ font-size:.92rem; }
   .g3d-tombol-jalur button{ width:54px; height:54px; font-size:1.3rem; }
+  .papan-gambar-besar{ width:min(190px, 62%); margin-top:6px; }
+  /* HP: kartu kalimat numpuk ke bawah, kartu majas tetap 3 sejajar */
+  .g3d-kartu{ left:8px; right:8px; bottom:8px; grid-template-columns:1fr; gap:7px; }
+  .g3d-kartu.is-majas{ grid-template-columns:repeat(3, 1fr); }
+  .kartu-pilih{ min-height:50px; padding:7px 10px 7px 8px; font-size:.92rem; border-left-width:10px; }
+  .g3d-kartu.is-majas .kartu-pilih{ flex-direction:column; gap:2px; font-size:.8rem; padding:6px 4px; }
   .hud-nyawa{ padding:3px 8px; font-size:.8rem; }
   .hud-bonus{ padding:3px 9px; font-size:.82rem; }
   .g3d-rakit{ right:88px; min-height:46px; padding:6px 8px; }

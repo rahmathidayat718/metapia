@@ -40,15 +40,13 @@ const DATA_GAME = {
     ikon: "🖼️",
     warna: "kuning",
     deskripsi: "Lihat gambarnya, temukan kalimat bermajas yang cocok, lalu tebak jenis majasnya!",
-    judul3d: "Lari Gerbang Majas",
-    deskripsi3d: "Lari di jalan ajaib! Pilih gerbang kalimat yang cocok dengan gambar, lalu gerbang jenis majasnya.",
+    judul3d: "Pecah Balon Majas",
+    deskripsi3d: "Lihat gambarnya, lalu pecahkan balon kalimat yang cocok dan balon jenis majasnya!",
     caraMain3d: [
-      "Geser kiri/kanan (atau tombol panah / A-D) buat pindah jalur.",
-      "Gelombang 1: masuk gerbang huruf kalimat yang cocok dengan gambar.",
-      "Gelombang 2: masuk gerbang jenis majasnya. Benar = combo & makin cepat!",
+      "Lihat gambar di atas baik-baik. Santai, gak ada waktu!",
+      "Ketuk balon berisi kalimat yang cocok dengan gambar. Dor! 🎈",
+      "Lalu ketuk balon jenis majasnya. Benar terus = combo! 🔥",
     ],
-    // kecepatan lari tiap soal (makin besar makin cepat). Soal 1..5
-    kecepatan3d: [9, 10.5, 12, 13.5, 15],
     caraMain: [
       "Perhatikan gambar baik-baik.",
       "Pilih kalimat yang paling cocok dengan gambar.",

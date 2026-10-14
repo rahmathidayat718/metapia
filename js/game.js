@@ -332,9 +332,8 @@ const Game = (() => {
   /** animasi tutorial kecil di layar pembuka versi 3D */
   function htmlTutorial(id) {
     if (id === 1) return `
-      <div class="tut-jalan"><span></span><span></span><span></span></div>
-      <div class="tut-anak">🏃</div>
-      <div class="tut-gerbang"><b>A</b><b>B</b><b>C</b></div>
+      <div class="tut-balon b1">🎈</div><div class="tut-balon b2">🎈</div><div class="tut-balon b3">🎈</div>
+      <div class="tut-dor">💥</div>
       <div class="tut-jari">👆</div>`;
     if (id === 2) return `
       <div class="tut-ban"></div>
