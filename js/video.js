@@ -28,8 +28,8 @@ const VIDEO = {
 };
 
 /* 2 bocah yang nemenin (pose senyum) */
-const BOCAH_KIRI = { nama: "Dito", gambar: "assets/karakter/murid/dito-diam.png" };
-const BOCAH_KANAN = { nama: "Sari", gambar: "assets/karakter/murid/sari.png" };
+const BOCAH_KIRI = { nama: "Dito", gambar: "assets/karakter/murid/dito-diam.webp" };
+const BOCAH_KANAN = { nama: "Sari", gambar: "assets/karakter/murid/sari.webp" };
 
 /* ==========================================================================
    2) UBAH LINK BIASA -> LINK EMBED (biar bisa diputar di dalam halaman)
@@ -61,7 +61,7 @@ function pasangBocah(el, data) {
   el.innerHTML = `
     <div class="tokoh-figure">
       <div class="tokoh-shadow"></div>
-      <div class="tokoh-body"><img class="pose is-active" src="${data.gambar}" alt="${data.nama}" draggable="false"></div>
+      <div class="tokoh-body"><img class="pose is-active" src="${data.gambar}" decoding="async" alt="${data.nama}" draggable="false"></div>
     </div>`;
   aturRasioTokoh(el, el.querySelector("img"));
 }

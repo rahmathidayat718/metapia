@@ -51,12 +51,12 @@ const Game = (() => {
      1) KAK RARA — pose + balon kata (sama kayak di kuis.js)
      ======================================================================== */
   const GURU_POSE = {
-    senyum: "assets/karakter/guru/guru-senyum.png",
-    bicara: "assets/karakter/guru/guru-bicara.png",
-    nunjuk: "assets/karakter/guru/guru-nunjuk.png",
+    senyum: "assets/karakter/guru/guru-senyum.webp",
+    bicara: "assets/karakter/guru/guru-bicara.webp",
+    nunjuk: "assets/karakter/guru/guru-nunjuk.webp",
     // versi mulut tertutup -> gantian sama yang terbuka waktu ngomong (lip-sync)
-    bicara_tutup: "assets/karakter/guru/guru-bicara-tutup.png",
-    nunjuk_tutup: "assets/karakter/guru/guru-nunjuk-tutup.png",
+    bicara_tutup: "assets/karakter/guru/guru-bicara-tutup.webp",
+    nunjuk_tutup: "assets/karakter/guru/guru-nunjuk-tutup.webp",
   };
   const elGuru = document.getElementById("teacherSlot");
   const elBubble = document.getElementById("bubbleGuru");
@@ -69,6 +69,7 @@ const Game = (() => {
   elGuru.innerHTML = `<div class="tokoh-figure"><div class="tokoh-shadow"></div><div class="tokoh-body"></div></div>`;
   Object.entries(GURU_POSE).forEach(([nama, src]) => {
     const img = document.createElement("img");
+    img.decoding = "async"; // gambar dibongkar di belakang layar, halaman gak tersendat
     img.className = "pose";
     img.src = src;
     img.alt = "Kak Rara";

@@ -24,12 +24,12 @@
 const GURU = {
   nama: "Kak Rara",
   pose: {
-    senyum: "assets/karakter/guru/guru-senyum.png",
-    bicara: "assets/karakter/guru/guru-bicara.png",
-    nunjuk: "assets/karakter/guru/guru-nunjuk.png",
+    senyum: "assets/karakter/guru/guru-senyum.webp",
+    bicara: "assets/karakter/guru/guru-bicara.webp",
+    nunjuk: "assets/karakter/guru/guru-nunjuk.webp",
     // versi mulut TERTUTUP -> gantian sama yang terbuka waktu ngomong (lip-sync)
-    bicara_tutup: "assets/karakter/guru/guru-bicara-tutup.png",
-    nunjuk_tutup: "assets/karakter/guru/guru-nunjuk-tutup.png",
+    bicara_tutup: "assets/karakter/guru/guru-bicara-tutup.webp",
+    nunjuk_tutup: "assets/karakter/guru/guru-nunjuk-tutup.webp",
   },
 };
 
@@ -39,17 +39,17 @@ const MURID = [
   {
     nama: "Dito",
     pose: {
-      diam: "assets/karakter/murid/dito-diam.png",
-      senang: "assets/karakter/murid/dito-senang.png",
-      bicara: "assets/karakter/murid/dito-bicara.png",
-      ide: "assets/karakter/murid/dito-ide.png",
-      bicara_tutup: "assets/karakter/murid/dito-bicara-tutup.png",
-      ide_tutup: "assets/karakter/murid/dito-ide-tutup.png",
+      diam: "assets/karakter/murid/dito-diam.webp",
+      senang: "assets/karakter/murid/dito-senang.webp",
+      bicara: "assets/karakter/murid/dito-bicara.webp",
+      ide: "assets/karakter/murid/dito-ide.webp",
+      bicara_tutup: "assets/karakter/murid/dito-bicara-tutup.webp",
+      ide_tutup: "assets/karakter/murid/dito-ide-tutup.webp",
     },
   },
-  { nama: "Sari", pose: { diam: "assets/karakter/murid/sari.png" } },
-  { nama: "Bima", pose: { diam: "assets/karakter/murid/bima.png" } },
-  { nama: "Keke", pose: { diam: "assets/karakter/murid/keke.png" } },
+  { nama: "Sari", pose: { diam: "assets/karakter/murid/sari.webp" } },
+  { nama: "Bima", pose: { diam: "assets/karakter/murid/bima.webp" } },
+  { nama: "Keke", pose: { diam: "assets/karakter/murid/keke.webp" } },
 ];
 
 /* ==========================================================================
@@ -192,6 +192,7 @@ function buatTokoh(data, el) {
 
   Object.entries(data.pose).forEach(([nama, src]) => {
     const img = document.createElement("img");
+    img.decoding = "async"; // gambar dibongkar di belakang layar, halaman gak tersendat
     img.className = "pose";
     img.src = src;
     img.alt = data.nama;

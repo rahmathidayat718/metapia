@@ -175,11 +175,14 @@ export default {
     function mulaiSoal() {
       const s = soal[idx];
       langkah = 1; salahKalimat = 0; poinSoal = 0; terkunci = false;
+      // muat diam-diam gambar soal BERIKUTNYA selagi siswa mengerjakan soal ini,
+      // biar pas pindah soal gambarnya langsung muncul (gak nunggu internet)
+      if (soal[idx + 1]) new Image().src = soal[idx + 1].gambar;
       api.soalKe(idx);
       api.hapusPetunjuk();
       g.papan(`
         <div class="papan-judul"><span class="papan-langkah">1</span> Kalimat mana yang cocok dengan gambar ini?</div>
-        <img class="papan-gambar-besar" src="${s.gambar}" alt="${esc(s.deskripsiGambar)}"
+        <img class="papan-gambar-besar" src="${s.gambar}" width="880" height="657" decoding="async" alt="${esc(s.deskripsiGambar)}"
           onload="window.__aturBalon && window.__aturBalon()"
           onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'papan-gambar-besar is-kosong',textContent:'🖼️ ' + this.alt}))">`);
       tiupBalon(s.pilihan.map((p) => ({ teks: p })));
@@ -198,7 +201,7 @@ export default {
       g.papan(`
         <div class="papan-judul"><span class="papan-langkah">2</span> Kalimat ini memakai majas apa?</div>
         <div class="papan-isi">
-          <img class="papan-gambar" src="${s.gambar}" alt="" onerror="this.remove()">
+          <img class="papan-gambar" src="${s.gambar}" width="880" height="657" decoding="async" alt="" onerror="this.remove()">
           <p class="papan-kutipan">“${esc(s.pilihan[s.jawaban])}”</p>
         </div>`);
       tiupBalon(JENIS_MAJAS.map((m) => ({ teks: m, ikon: GAYA_MAJAS[m].ikon })));

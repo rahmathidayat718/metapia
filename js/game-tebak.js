@@ -23,12 +23,15 @@ Game.daftar(1, {
       let salahLangkah1 = 0;
       let poinSoal = 0;
       api.soalKe(idx);
+      // muat diam-diam gambar soal BERIKUTNYA selagi siswa mengerjakan soal ini,
+      // biar pas pindah soal gambarnya langsung muncul (gak nunggu internet)
+      if (soal[idx + 1]) new Image().src = soal[idx + 1].gambar;
 
       api.body.innerHTML = `
         <div class="tg">
           <figure class="tg-gambar">
             <span class="tg-selotip"></span>
-            <img src="${s.gambar}" alt="${api.esc(s.deskripsiGambar)}" draggable="false">
+            <img src="${s.gambar}" width="880" height="657" decoding="async" alt="${api.esc(s.deskripsiGambar)}" draggable="false">
           </figure>
 
           <div class="tg-sisi">

@@ -2,7 +2,7 @@
    METAPIA — komik.css
    Gaya "panggung komik" yang DIPAKAI BARENG halaman Materi & Video (plus
    tokoh/balon/tombolnya dipakai Kuis & Game): panggung layar penuh di atas
-   background bgMateri.jpg, tokoh (guru/murid) dengan pose yang bisa
+   background bgMateri.webp, tokoh (guru/murid) dengan pose yang bisa
    gonta-ganti, balon kata lonjong, dan baris tombol.
 
    POSISI tokoh & balon kata TIDAK ada di sini — itu diatur di CSS
@@ -18,7 +18,7 @@
 /* ==========================================================================
    PANGGUNG LAYAR PENUH (Materi & Video, <body class="layar-penuh panggung">)
    -------------------------------------------------------------------------
-   Gak ada kotak panel lagi: background bgMateri.jpg (dari common.css,
+   Gak ada kotak panel lagi: background bgMateri.webp (dari common.css,
    TANPA blur) jadi panggungnya, tokoh & balon kata berdiri langsung di
    atasnya. ".comic-panel" sekarang cuma "area tak terlihat" tempat tokoh
    diatur posisinya (pakai persen), ukurannya dibikin sebesar mungkin:

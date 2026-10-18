@@ -1,9 +1,9 @@
 /* ==========================================================================
    METAPIA — kupu.js
-   2 kupu-kupu di background (bgMateri.jpg) yang KEPAK-KEPAK sayap.
+   2 kupu-kupu di background (bgMateri.webp) yang KEPAK-KEPAK sayap.
    -------------------------------------------------------------------------
-   Kupu-kupu aslinya sudah dihapus dari bgMateri.jpg dan dipotong jadi
-   gambar sendiri (assets/kupu-pink.png & kupu-ungu.png). Script ini naruh
+   Kupu-kupu aslinya sudah dihapus dari bgMateri.webp dan dipotong jadi
+   gambar sendiri (assets/kupu-pink.webp & kupu-ungu.webp). Script ini naruh
    lagi kedua gambar itu PERSIS di posisi aslinya di background, lalu CSS
    (lihat common.css, "KUPU-KUPU") bikin sayapnya buka-tutup.
 
@@ -11,11 +11,11 @@
    background "cover" ditaruh (posisi background diambil dari CSS body).
    ========================================================================== */
 (function () {
-  const BG_W = 1376, BG_H = 768; // ukuran asli bgMateri.jpg
+  const BG_W = 1376, BG_H = 768; // ukuran asli bgMateri.webp
   // x, y, w, h = kotak kupu-kupu di gambar asli; poros = titik badan (sumbu kepak)
   const KUPU = [
-    { src: "assets/kupu-pink.png", x: 1286, y: 506, w: 68, h: 72, poros: "22% 80%", jeda: 0 },
-    { src: "assets/kupu-ungu.png", x: 1171, y: 593, w: 63, h: 62, poros: "72% 78%", jeda: 0.35 },
+    { src: "assets/kupu-pink.webp", x: 1286, y: 506, w: 68, h: 72, poros: "22% 80%", jeda: 0 },
+    { src: "assets/kupu-ungu.webp", x: 1171, y: 593, w: 63, h: 62, poros: "72% 78%", jeda: 0.35 },
   ];
 
   const els = KUPU.map((k) => {
@@ -23,6 +23,7 @@
     wadah.className = "kupu";
     wadah.style.animationDelay = `${k.jeda}s`;
     const img = document.createElement("img");
+    img.decoding = "async"; // gambar dibongkar di belakang layar, halaman gak tersendat
     img.src = k.src;
     img.alt = "";
     img.draggable = false;

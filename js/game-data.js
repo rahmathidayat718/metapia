@@ -54,7 +54,7 @@ const DATA_GAME = {
     ],
     soal: [
       {
-        gambar: "assets/game/g1-soal1.jpg",
+        gambar: "assets/game/g1-soal1.webp",
         deskripsiGambar: "Pohon kelapa yang daunnya bergoyang, di sampingnya ada tangan melambai.",
         pilihan: [
           "Daun kelapa jatuh ke tanah.",
@@ -67,7 +67,7 @@ const DATA_GAME = {
         pembahasan: "Melambai adalah gerakan tangan manusia. Daun kelapa dibuat seolah-olah bisa melambai, jadi ini personifikasi.",
       },
       {
-        gambar: "assets/game/g1-soal2.jpg",
+        gambar: "assets/game/g1-soal2.webp",
         deskripsiGambar: "Bulan dengan dua mata kecil muncul dari balik awan.",
         pilihan: [
           "Bulan mengintip dari balik awan.",
@@ -80,7 +80,7 @@ const DATA_GAME = {
         pembahasan: "Mengintip adalah perbuatan manusia. Bulan dibuat seolah-olah bisa mengintip, jadi ini personifikasi.",
       },
       {
-        gambar: "assets/game/g1-soal3.jpg",
+        gambar: "assets/game/g1-soal3.webp",
         deskripsiGambar: "Anak laki-laki berlari, di belakangnya ada kilatan petir.",
         pilihan: [
           "Anak itu berjalan ke sekolah.",
@@ -93,7 +93,7 @@ const DATA_GAME = {
         pembahasan: "Tidak ada anak yang benar-benar secepat kilat. Kalimat ini melebih-lebihkan, jadi ini hiperbola.",
       },
       {
-        gambar: "assets/game/g1-soal4.jpg",
+        gambar: "assets/game/g1-soal4.webp",
         deskripsiGambar: "Murid perempuan memegang piala, di atas kepalanya ada bintang besar bersinar.",
         pilihan: [
           "Rina membawa bintang ke kelas.",
@@ -106,7 +106,7 @@ const DATA_GAME = {
         pembahasan: "Rina langsung disebut \"bintang kelas\" tanpa kata seperti. Artinya murid yang berprestasi, jadi ini metafora.",
       },
       {
-        gambar: "assets/game/g1-soal5.jpg",
+        gambar: "assets/game/g1-soal5.webp",
         deskripsiGambar: "Anak duduk di depan tumpukan buku PR yang sangat tinggi sampai menyentuh awan.",
         pilihan: [
           "Tumpukan PR-ku setinggi gunung.",

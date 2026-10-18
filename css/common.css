@@ -85,7 +85,7 @@ html{
 }
 
 /* ==========================================================================
-   BODY — background bgMateri.jpg yang diburamin + lapisan ungu tipis,
+   BODY — background bgMateri.webp yang diburamin + lapisan ungu tipis,
    SAMA di semua halaman biar serasi (panel komik di Materi/Video/Kuis
    pakai gambar yang sama tapi tajam, jadi keliatan "nyambung").
 
@@ -100,7 +100,7 @@ body{
   min-height:100svh;
   display:flex; flex-direction:column;
 
-  background-image:url('../assets/bgMateri.jpg');
+  background-image:url('../assets/bgMateri.webp');
   background-size:cover;            /* foto nutupin seluruh layar */
   background-position:center bottom; /* rumputnya selalu di bawah -> tokoh "napak" */
   background-repeat:no-repeat;
