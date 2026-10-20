@@ -16,7 +16,7 @@ Cara hitung:
 import os, re, gzip, sys
 
 AKAR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-HALAMAN = ["index.html", "dashboard.html", "materi.html", "video.html", "kuis.html", "game.html"]
+HALAMAN = ["index.html", "dashboard.html", "materi.html", "video.html", "kuis.html", "game.html", "panduan.html"]
 TEKS = (".html", ".css", ".js", ".json", ".svg", ".webmanifest")
 
 # ukuran file CDN (bytes mentah, bytes setelah gzip) — diukur 18-10-2026
@@ -67,6 +67,8 @@ def kumpulkan(halaman):
         if p.endswith(".html"):
             refs = re.findall(r'(?:href|src)="([^"]+)"', isi)
             refs += re.findall(r'import\(\s*"([^"]+)"', isi)
+            refs += re.findall(r'"three"\s*:\s*"(\./[^"]+)"', isi)   # importmap three.js lokal
+            refs += re.findall(r'serviceWorker\.register\("([^"]+)"', isi)
         elif p.endswith(".css"):
             refs = re.findall(r"url\(['\"]?([^'\")]+)['\"]?\)", isi)
         elif p.endswith(".js"):
@@ -80,9 +82,9 @@ def kumpulkan(halaman):
                 eksternal.update(["fonts.googleapis.com (CSS)", "Baloo 2 (woff2)", "Nunito (woff2)"])
             if "font-awesome" in r:
                 eksternal.update(["font-awesome all.min.css", "fa-solid-900.woff2"])
-        if p.endswith(".js") and "fa-regular" in isi:
+        if p.endswith(".js") and "fa-regular" in isi and "font-awesome all.min.css" in eksternal:
             eksternal.add("fa-regular-400.woff2")
-        if p.endswith(".html") and "importmap" in isi and "three" in isi:
+        if p.endswith(".html") and "importmap" in isi and "cdn.jsdelivr" in isi:
             eksternal.add("three.module.js (three.js 0.165)")
         for r in refs:
             # path di JS ditulis relatif ke halaman HTML (bukan ke file JS-nya)
@@ -117,7 +119,17 @@ def main():
             semua[f] = ukuran(f)
         print(f"| {h} | {len(lokal)} | {kb(m)} | {kb(z)} | {kb(e)} | **{kb(z + e)}** | {kb(s) if s else '-'} |")
 
-    aset = [f for f in os.popen(f'cd "{AKAR}" && git ls-files assets').read().split() if f]
+    # service worker: unduhan latar belakang SEKALI per perangkat (precache)
+    sw = baca("sw.js")
+    daftar = re.findall(r'^\s*"([^"]+)",\s*$', sw, re.M)
+    if daftar:
+        pre_m = sum(ukuran(f)[0] for f in daftar if ukuran(f))
+        pre_z = sum(ukuran(f)[1] for f in daftar if ukuran(f))
+        print(f"\nPrecache service worker (sekali per perangkat, di latar belakang): {len(daftar)} file, "
+              f"{kb(pre_m)} mentah / {kb(pre_z)} gzip; three.js disimpan saat Game dibuka.")
+    # semua file di folder assets/ (termasuk yang belum di-commit)
+    aset = [os.path.relpath(os.path.join(d, f), AKAR).replace("\\", "/")
+            for d, _, fs in os.walk(os.path.join(AKAR, "assets")) for f in fs]
     total_aset = sum(os.path.getsize(os.path.join(AKAR, f)) for f in aset if os.path.isfile(os.path.join(AKAR, f)))
     print(f"\nTotal folder assets/ yang dipakai web: {kb(total_aset)} ({len(aset)} file)\n")
     print("| File terbesar | Ukuran |")

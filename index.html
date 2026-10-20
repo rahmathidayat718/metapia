@@ -7,7 +7,11 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
 <link rel="stylesheet" href="css/common.css">
 <link rel="stylesheet" href="css/index.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- PWA: bisa dipasang ke layar utama HP & dibuka offline (lihat sw.js, js/pwa.js) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5B3FD9">
+<link rel="apple-touch-icon" href="assets/ikon/apple-touch-icon.png">
+<link rel="stylesheet" href="css/ikon.css">
 </head>
 <body>
 
@@ -70,9 +74,11 @@
     <p class="login-foot">
       Khusus untuk siswa &amp; siswi. Nama &amp; PIN dipakai untuk mencatat nilai kuismu ✨
     </p>
+    <p class="login-foot"><a href="panduan.html" style="color:var(--purple-700); text-decoration:underline; font-weight:800;"><i class="fa-solid fa-circle-question"></i> Baca panduan</a> · <a href="panduan.html#guru" style="color:var(--purple-700); text-decoration:underline; font-weight:800;">Untuk guru</a></p>
   </div>
 </div>
 
+<script src="js/pwa.js"></script>
 <script src="js/kupu.js"></script>
 <script src="js/sheet.js"></script>
 <script src="js/auth.js"></script>

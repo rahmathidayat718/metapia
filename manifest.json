@@ -1,0 +1,17 @@
+{
+  "name": "METAPIA — Media Pembelajaran Majas",
+  "short_name": "METAPIA",
+  "description": "Belajar majas metafora, personifikasi, dan hiperbola lewat materi, video, kuis, dan game seru.",
+  "lang": "id",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#D9C8FF",
+  "theme_color": "#5B3FD9",
+  "icons": [
+    { "src": "assets/ikon/ikon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/ikon/ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/ikon/ikon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -21,6 +21,8 @@ export { THREE };
 export function grafisRingan() {
   const simpan = localStorage.getItem("metapia_grafis");
   if (simpan) return simpan === "ringan";
+  // jaringan lambat / hemat data -> otomatis ringan (fungsi dari js/pwa.js)
+  if (typeof jaringanLambat === "function" && jaringanLambat()) return true;
   const inti = navigator.hardwareConcurrency || 4;
   const memori = navigator.deviceMemory || 4;
   return inti <= 4 || memori <= 3;

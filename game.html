@@ -12,11 +12,15 @@
 <link rel="stylesheet" href="css/kuis.css">
 <link rel="stylesheet" href="css/game.css">
 <link rel="stylesheet" href="css/game3d.css">
-<!-- Three.js (game 3D) dari CDN, versi dikunci. Lihat js/game3d/ -->
+<!-- Three.js 0.165 (game 3D), disimpan sendiri di js/vendor/ biar bisa offline. Lihat js/game3d/ -->
 <script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js" } }
+{ "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- PWA: bisa dipasang ke layar utama HP & dibuka offline (lihat sw.js, js/pwa.js) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5B3FD9">
+<link rel="apple-touch-icon" href="assets/ikon/apple-touch-icon.png">
+<link rel="stylesheet" href="css/ikon.css">
 </head>
 <body class="layar-penuh">
 
@@ -34,6 +38,7 @@
   </ul>
   <div class="nav-right">
     <button class="nav-toggle" id="navToggle"><i class="fa-solid fa-bars"></i></button>
+    <a class="btn-panduan" href="panduan.html" title="Panduan" aria-label="Panduan"><i class="fa-solid fa-circle-question"></i></a>
     <div class="avatar-btn" id="navAvatar" title="Profil">👤</div>
   </div>
 </nav>
@@ -72,6 +77,7 @@
   <p>© 2026 METAPIA — Media Pembelajaran Majas Interaktif · <a href="#" onclick="logout(); return false;" style="text-decoration:underline;">Keluar</a></p>
 </footer>
 
+<script src="js/pwa.js"></script>
 <script src="js/kupu.js"></script>
 <script src="js/app.js"></script>
 <script src="js/sheet.js"></script>

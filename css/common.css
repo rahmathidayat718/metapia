@@ -6,10 +6,20 @@
    dashboard.css, materi.css, dst).
    ==========================================================================
 
-/* Ambil font dari Google Fonts.
+/* Font METAPIA:
    - Baloo 2  : buat judul / teks besar, bentuknya bulat & playful (cocok anak SD)
    - Nunito   : buat teks biasa / paragraf, biar tetap enak dibaca */
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap');
+/* font disimpan sendiri di assets/font/ (bukan dari Google Fonts) biar
+   ikut tersimpan offline. Keduanya font "variable": 1 file = semua ketebalan.
+   Sumber: Google Fonts (lisensi SIL Open Font License), subset huruf latin. */
+@font-face{
+  font-family:'Baloo 2'; font-style:normal; font-weight:400 800; font-display:swap;
+  src:url('../assets/font/baloo2.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Nunito'; font-style:normal; font-weight:200 1000; font-display:swap;
+  src:url('../assets/font/nunito.woff2') format('woff2');
+}
 
 /* ==========================================================================
    VARIABEL WARNA & UKURAN (CSS Variables)
@@ -111,6 +121,30 @@ body{
   /* tinggi navbar + jaraknya (dipakai ngitung ukuran panggung/kartu) */
   --tinggi-navbar:82px;
 }
+
+/* ==========================================================================
+   PENANDA OFFLINE (dipasang js/pwa.js, muncul otomatis waktu internet putus)
+   ========================================================================== */
+.penanda-offline{
+  position:fixed; z-index:80; left:50%; bottom:18px; transform:translateX(-50%);
+  max-width:calc(100% - 24px);
+  cursor:pointer;
+  padding:7px 14px;
+  background:#2C2450; color:#fff;
+  border:2px solid #fff; border-radius:100px;
+  box-shadow:0 6px 16px rgba(20,10,60,.35);
+  font-family:var(--font-body); font-weight:800; font-size:.82rem; text-align:center;
+  animation:offlineMuncul .35s ease-out;
+}
+.penanda-offline[hidden]{ display:none; }
+@keyframes offlineMuncul{ from{ opacity:0; transform:translate(-50%,10px); } }
+.penanda-singkat{ display:none; }
+.penanda-offline.is-kecil{ left:14px; transform:none; padding:5px 12px; }
+.penanda-offline.is-kecil .penanda-teks{ display:none; }
+.penanda-offline.is-kecil .penanda-singkat{ display:inline; }
+/* HP: di atas menu bawah */
+@media (max-width:980px){ .penanda-offline{ bottom:calc(var(--tinggi-menu-bawah, 0px) + 10px); } }
+@media (max-width:600px){ .penanda-offline{ font-size:.74rem; } }
 
 /* ==========================================================================
    KUPU-KUPU di background yang kepak-kepak sayap (dipasang js/kupu.js)
@@ -230,6 +264,13 @@ button{ font-family:var(--font-body); cursor:pointer; }
   text-overflow:ellipsis; /* nama kepanjangan -> "Muhammad Rah..." */
 }
 .avatar-btn.nama-panjang{ font-size:.86rem; } /* nama panjang: huruf dikecilin dikit */
+.btn-panduan{ /* tombol "?" ke halaman Panduan */
+  width:42px; height:42px; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid var(--purple-700); border-radius:50%;
+  background:#fff; color:var(--purple-700); font-size:1.2rem;
+}
+.btn-panduan:hover, .btn-panduan.is-aktif{ background:var(--purple-700); color:#fff; }
 .nav-toggle{ display:none; background:none; border:none; font-size:1.4rem; color:var(--purple-700); } /* tombol hamburger, cuma muncul di HP */
 
 /* ==========================================================================
@@ -316,6 +357,7 @@ button{ font-family:var(--font-body); cursor:pointer; }
   .brand-name{ font-size:1.05rem; }
   .nav-right{ gap:8px; min-width:0; }
   .avatar-btn{ max-width:130px; height:38px; padding:0 12px 0 4px; font-size:.88rem; }
+  .btn-panduan{ width:38px; height:38px; font-size:1.05rem; }
   .avatar-btn.nama-panjang{ font-size:.8rem; }
   .avatar-ikon{ width:28px; height:28px; }
 }
@@ -324,5 +366,5 @@ button{ font-family:var(--font-body); cursor:pointer; }
   .brand{ gap:7px; }
   .brand-badge{ width:34px; height:34px; }
   .brand-name{ font-size:.98rem; }
-  .avatar-btn{ max-width:112px; }
+  .avatar-btn{ max-width:96px; }
 }

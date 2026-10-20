@@ -37,7 +37,10 @@ const Game = (() => {
     } catch (e) { return false; }
   })();
   /** siswa milih "2d" di layar pembuka? (disimpan di browser) */
-  function modePilihan() { return localStorage.getItem("metapia_mode_game") || "3d"; }
+  /** jaringan lambat (2G/3G) / mode hemat data? (fungsi dari js/pwa.js) */
+  const LAMBAT = typeof jaringanLambat === "function" && jaringanLambat();
+  /** pilihan siswa; kalau belum pernah milih: jaringan lambat -> 2D, selain itu 3D */
+  function modePilihan() { return localStorage.getItem("metapia_mode_game") || (LAMBAT ? "2d" : "3d"); }
   /** perkiraan: game ini bakal main versi 3D? */
   function pakai3d(id) {
     return DUKUNG_WEBGL && modePilihan() === "3d" && (mesin3d[id] || !window.__gagal3d);
@@ -282,7 +285,8 @@ const Game = (() => {
     const g = DATA_GAME[id];
     const s = skorTersimpan(id);
     const tiga = pakai3d(id);
-    const ringan = localStorage.getItem("metapia_grafis") === "ringan";
+    const ringan = localStorage.getItem("metapia_grafis") === "ringan" || (LAMBAT && !localStorage.getItem("metapia_grafis"));
+    const otomatisLambat = LAMBAT && !localStorage.getItem("metapia_mode_game");
     elCard.innerHTML = `
       <div class="layar">
         <div class="layar-tengah layar-pembuka warna-${g.warna}">
@@ -294,6 +298,7 @@ const Game = (() => {
             ${teks(g, "caraMain").map((c, i) => `<li><span>${i + 1}</span>${esc(c)}</li>`).join("")}
           </ol>
           ${!DUKUNG_WEBGL ? `<p class="info-3d">ℹ️ Perangkatmu belum mendukung game 3D, jadi kita main versi 2D, ya.</p>` : `
+          ${otomatisLambat ? `<p class="info-3d">📶 Internet lambat / hemat data terdeteksi, jadi otomatis pakai Versi 2D yang lebih ringan. Kamu tetap bisa pilih 3D.</p>` : ""}
           <div class="pilih-mode">
             <button class="chip-mode ${tiga ? "is-aktif" : ""}" data-mode="3d"><i class="fa-solid fa-cube"></i> Versi 3D</button>
             <button class="chip-mode ${!tiga ? "is-aktif" : ""}" data-mode="2d"><i class="fa-regular fa-square"></i> Versi 2D</button>

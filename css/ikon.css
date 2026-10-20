@@ -1,0 +1,50 @@
+/* METAPIA — ikon.css (DIBUAT OTOMATIS oleh docs/buat-ikon.py, jangan diedit manual)
+   Font Awesome Free 6.5.1 (https://fontawesome.com, lisensi ikon CC BY 4.0, font SIL OFL 1.1)
+   dipangkas: hanya ikon yang dipakai METAPIA. */
+@font-face{font-family:'FA Solid';font-style:normal;font-weight:900;font-display:block;src:url('../assets/font/fa-solid.woff2') format('woff2');}
+@font-face{font-family:'FA Regular';font-style:normal;font-weight:400;font-display:block;src:url('../assets/font/fa-regular.woff2') format('woff2');}
+.fa-solid,.fa-regular{display:inline-block;font-style:normal;font-variant:normal;line-height:1;text-rendering:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+.fa-solid{font-family:'FA Solid';font-weight:900;}
+.fa-regular{font-family:'FA Regular';font-weight:400;}
+.fa-solid::before,.fa-regular::before{content:var(--fa);}
+.fa-spin{animation:fa-spin 1.2s linear infinite;}
+@keyframes fa-spin{to{transform:rotate(360deg);}}
+.fa-arrow-left{--fa:"\f060";}
+.fa-arrow-right{--fa:"\f061";}
+.fa-bars{--fa:"\f0c9";}
+.fa-bolt{--fa:"\f0e7";}
+.fa-book{--fa:"\f02d";}
+.fa-box-archive{--fa:"\f187";}
+.fa-circle-check{--fa:"\f058";}
+.fa-circle-question{--fa:"\f059";}
+.fa-clapperboard{--fa:"\e131";}
+.fa-cube{--fa:"\f1b2";}
+.fa-download{--fa:"\f019";}
+.fa-eye{--fa:"\f06e";}
+.fa-eye-slash{--fa:"\f070";}
+.fa-flag-checkered{--fa:"\f11e";}
+.fa-gamepad{--fa:"\f11b";}
+.fa-gauge-simple{--fa:"\f629";}
+.fa-gauge-simple-high{--fa:"\f62a";}
+.fa-hand{--fa:"\f256";}
+.fa-heart{--fa:"\f004";}
+.fa-house{--fa:"\f015";}
+.fa-image{--fa:"\f03e";}
+.fa-key{--fa:"\f084";}
+.fa-list-ol{--fa:"\f0cb";}
+.fa-map{--fa:"\f279";}
+.fa-pause{--fa:"\f04c";}
+.fa-pen-to-square{--fa:"\f044";}
+.fa-play{--fa:"\f04b";}
+.fa-rotate-right{--fa:"\f2f9";}
+.fa-spinner{--fa:"\f110";}
+.fa-square{--fa:"\f0c8";}
+.fa-star{--fa:"\f005";}
+.fa-stopwatch{--fa:"\f2f2";}
+.fa-thumbs-up{--fa:"\f164";}
+.fa-trophy{--fa:"\f091";}
+.fa-user{--fa:"\f007";}
+.fa-user-astronaut{--fa:"\f4fb";}
+.fa-volume-high{--fa:"\f028";}
+.fa-volume-xmark{--fa:"\f6a9";}
+.fa-xmark{--fa:"\f00d";}

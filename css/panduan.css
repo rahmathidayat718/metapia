@@ -1,0 +1,85 @@
+/* ==========================================================================
+   METAPIA — panduan.css
+   Halaman Panduan (panduan.html): kartu langkah bergaya komik, tab Siswa/Guru.
+   Butuh common.css duluan.
+   ========================================================================== */
+.panduan{
+  max-width:860px; margin:20px auto 30px;
+  display:flex; flex-direction:column; gap:16px;
+}
+
+.panduan-kepala{
+  display:flex; align-items:center; gap:18px;
+  padding:16px 22px;
+  background:#fff;
+  border:4px solid var(--ink); border-radius:22px;
+  box-shadow:6px 6px 0 rgba(44,36,80,.55);
+}
+.panduan-kepala img{ width:120px; height:auto; flex:none; }
+.panduan-kepala h1{ font-size:2rem; line-height:1.1; }
+.panduan-kepala p{ margin-top:6px; font-weight:700; color:var(--ink-soft); }
+
+.panduan-tab{ display:flex; gap:10px; }
+.panduan-tab .tab{
+  flex:1;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:12px;
+  background:#fff; color:var(--ink);
+  border:3px solid var(--ink); border-radius:16px;
+  box-shadow:4px 4px 0 var(--ink);
+  font-family:var(--font-display); font-weight:800; font-size:1.05rem;
+}
+.panduan-tab .tab.is-aktif{ background:var(--purple-700); color:#fff; }
+
+.panduan-isi{ display:flex; flex-direction:column; gap:14px; }
+.panduan-isi[hidden]{ display:none; }
+
+.langkah{
+  display:flex; gap:14px; align-items:flex-start;
+  padding:16px 20px;
+  background:#fff;
+  border:3px solid var(--ink); border-left:10px solid var(--warna);
+  border-radius:18px;
+  box-shadow:4px 4px 0 rgba(44,36,80,.5);
+}
+.warna-kuning{ --warna:var(--yellow); }
+.warna-biru{ --warna:var(--blue); }
+.warna-pink{ --warna:var(--pink); }
+.langkah-nomor{
+  flex:none; width:38px; height:38px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--warna); color:var(--ink);
+  border:3px solid var(--ink); border-radius:50%;
+  font-family:var(--font-display); font-weight:800; font-size:1.15rem;
+}
+.langkah h2{ font-size:1.25rem; margin-bottom:4px; }
+.langkah p, .langkah li{ font-weight:600; font-size:.98rem; line-height:1.55; color:var(--ink); }
+.langkah p + p{ margin-top:6px; }
+.langkah ul{ margin:6px 0 0; padding-left:20px; display:flex; flex-direction:column; gap:4px; }
+.langkah .comic-btn{ margin:8px 0 4px; }
+.info-pasang{ margin-top:8px; color:#0E8A5F !important; font-weight:800 !important; }
+
+.panduan-aksi{ display:flex; justify-content:center; }
+
+/* tombol kuning ala komik (dipakai juga di halaman ini) */
+.comic-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  height:48px; padding:0 22px;
+  border:3px solid var(--ink); border-radius:100px;
+  box-shadow:4px 4px 0 var(--ink);
+  font-family:var(--font-display); font-weight:800; font-size:1rem;
+}
+.comic-btn-primary{ background:var(--yellow); color:var(--ink); }
+
+@media (max-width:600px){
+  .panduan{ margin-top:14px; gap:12px; }
+  .panduan-kepala{ padding:12px 14px; gap:12px; }
+  .panduan-kepala img{ width:76px; }
+  .panduan-kepala h1{ font-size:1.5rem; }
+  .panduan-kepala p{ font-size:.9rem; }
+  .panduan-tab .tab{ font-size:.92rem; padding:10px 6px; }
+  .langkah{ padding:12px 14px; gap:10px; border-left-width:8px; }
+  .langkah-nomor{ width:32px; height:32px; font-size:1rem; }
+  .langkah h2{ font-size:1.08rem; }
+  .langkah p, .langkah li{ font-size:.92rem; }
+}

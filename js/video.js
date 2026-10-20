@@ -110,11 +110,32 @@ function tampilkanCover() {
 }
 
 /* ==========================================================================
-   5) MULAI!
+   5) SAAT OFFLINE — video butuh internet (YouTube/Drive), jadi yang tampil
+      Kak Rara dengan pesan ramah + tombol ke Materi (Materi bisa offline)
+   ========================================================================== */
+function tampilkanOffline() {
+  elLayar.innerHTML = `
+    <div class="layar-offline">
+      <img src="assets/karakter/guru/guru-senyum.webp" width="546" height="520" decoding="async" alt="Kak Rara">
+      <div class="layar-offline-teks">
+        <p><b>Video butuh internet.</b> Sambil menunggu, yuk baca Materi dulu! 📖</p>
+        <a class="comic-btn comic-btn-primary" href="materi.html"><i class="fa-solid fa-book"></i> Buka Materi</a>
+      </div>
+    </div>`;
+}
+function aturLayar() {
+  if (navigator.onLine === false) tampilkanOffline();
+  else tampilkanCover();
+}
+window.addEventListener("offline", () => { if (!elLayar.querySelector("iframe")) tampilkanOffline(); });
+window.addEventListener("online", () => { if (elLayar.querySelector(".layar-offline")) tampilkanCover(); });
+
+/* ==========================================================================
+   6) MULAI!
    ========================================================================== */
 document.getElementById("comicCaption").textContent = VIDEO.judul;
 document.getElementById("teksAjakan").textContent = VIDEO.ajakan;
-tampilkanCover();
+aturLayar();
 
 // balon ajakan "keluar" dari bocah kiri setelah halaman kebuka sebentar
 setTimeout(() => document.getElementById("bubbleAjakan").classList.add("is-show"), 500);

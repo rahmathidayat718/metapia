@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan — METAPIA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/panduan.css">
+<!-- PWA: bisa dipasang ke layar utama HP & dibuka offline (lihat sw.js, js/pwa.js) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5B3FD9">
+<link rel="apple-touch-icon" href="assets/ikon/apple-touch-icon.png">
+<link rel="stylesheet" href="css/ikon.css">
+</head>
+<body>
+<!-- halaman ini SENGAJA bisa dibuka tanpa login (buat siswa baru & guru) -->
+
+<nav class="navbar">
+  <a href="dashboard.html" class="brand">
+    <div class="brand-badge">📖</div>
+    <div class="brand-name"><span>META</span><span>PIA</span></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Beranda</a></li>
+    <li><a href="materi.html"><i class="fa-solid fa-book"></i> Materi</a></li>
+    <li><a href="video.html"><i class="fa-solid fa-clapperboard"></i> Video</a></li>
+    <li><a href="kuis.html"><i class="fa-solid fa-pen-to-square"></i> Kuis</a></li>
+    <li><a href="game.html"><i class="fa-solid fa-gamepad"></i> Game</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="btn-panduan is-aktif" href="panduan.html" title="Panduan" aria-label="Panduan"><i class="fa-solid fa-circle-question"></i></a>
+    <div class="avatar-btn" id="navAvatar" title="Profil">👤</div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <section class="panduan">
+
+    <header class="panduan-kepala">
+      <img src="assets/karakter/guru/guru-senyum.webp" width="546" height="520" decoding="async" alt="Kak Rara">
+      <div>
+        <h1>Panduan METAPIA</h1>
+        <p>Halo! Aku Kak Rara. Yuk, pelajari cara memakai METAPIA bareng-bareng! 😊</p>
+      </div>
+    </header>
+
+    <div class="panduan-tab" role="tablist">
+      <button class="tab is-aktif" data-tab="siswa" role="tab" aria-selected="true"><i class="fa-solid fa-user-astronaut"></i> Untuk Siswa</button>
+      <button class="tab" data-tab="guru" role="tab" aria-selected="false"><i class="fa-solid fa-user"></i> Untuk Guru</button>
+    </div>
+
+    <!-- ==================== SISWA ==================== -->
+    <div class="panduan-isi" id="tab-siswa" role="tabpanel">
+
+      <article class="langkah warna-kuning">
+        <span class="langkah-nomor">1</span>
+        <div>
+          <h2>🔑 Cara Masuk</h2>
+          <p>Ketik <b>nama lengkapmu</b>, lalu buat <b>PIN rahasia 4 angka</b> (misalnya 2468). Tekan <b>Ayo Masuk!</b></p>
+          <p>Ingat baik-baik PIN-mu, ya! PIN dipakai lagi kalau kamu masuk dari HP atau komputer lain. Jangan kasih tahu PIN ke teman.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-biru">
+        <span class="langkah-nomor">2</span>
+        <div>
+          <h2>📚 Belajar di Materi</h2>
+          <p>Kak Rara akan menjelaskan majas <b>metafora</b>, <b>personifikasi</b>, dan <b>hiperbola</b>. Baca tulisan di balon kata, lalu tekan <b>Lanjut</b>.</p>
+          <p>Mau mengulang? Tekan <b>Sebelumnya</b>. Tombol 🔊 untuk menyalakan/mematikan suara.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-pink">
+        <span class="langkah-nomor">3</span>
+        <div>
+          <h2>🎬 Menonton Video</h2>
+          <p>Tekan tombol <b>▶ Putar Video</b> di tengah layar. Video butuh internet, ya.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-kuning">
+        <span class="langkah-nomor">4</span>
+        <div>
+          <h2>📝 Mengerjakan Kuis</h2>
+          <p>Ada 10 soal pilihan ganda. Baca soalnya, lalu ketuk jawaban A, B, C, atau D. Setelah menjawab, baca penjelasannya, lalu tekan <b>Lanjut</b>.</p>
+          <p>Di akhir kuis, kamu akan melihat nilaimu. Nilai otomatis terkirim ke guru.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-biru">
+        <span class="langkah-nomor">5</span>
+        <div>
+          <h2>🎮 Bermain Game</h2>
+          <p>Ada 3 level. Mulai dari yang paling mudah:</p>
+          <ul>
+            <li><b>🎈 Pecah Balon Majas</b> — ketuk balon kalimat yang cocok dengan gambar, lalu balon jenis majasnya.</li>
+            <li><b>🏭 Pabrik Sortir Majas</b> — lempar kotak kalimat ke tong majas yang tepat.</li>
+            <li><b>🚀 Pesawat Perakit Kalimat</b> — tembak kata-kata sesuai urutan sampai jadi kalimat bermajas.</li>
+          </ul>
+          <p>HP terasa lambat? Di layar pembuka game, pilih <b>Versi 2D</b> atau <b>Grafis: Ringan</b>.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-pink">
+        <span class="langkah-nomor">6</span>
+        <div>
+          <h2>⭐ Melihat Nilaimu</h2>
+          <p>Buka <b>Beranda</b>. Di bagian <b>Pencapaianmu</b> ada nilai kuis dan skor game terakhirmu.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-kuning" id="pasang">
+        <span class="langkah-nomor">7</span>
+        <div>
+          <h2>📲 Pasang METAPIA di Layar Utama HP</h2>
+          <p>Biar bisa dibuka seperti aplikasi, tanpa mengetik alamat lagi:</p>
+          <button class="comic-btn comic-btn-primary" id="btnPasang" hidden><i class="fa-solid fa-download"></i> Pasang METAPIA</button>
+          <ul>
+            <li><b>HP Android (Chrome):</b> tekan tombol titik tiga <b>⋮</b> di pojok kanan atas, lalu pilih <b>Tambahkan ke layar utama</b> atau <b>Instal aplikasi</b>.</li>
+            <li><b>iPhone (Safari):</b> tekan tombol <b>Bagikan</b> (kotak dengan panah ke atas), lalu pilih <b>Tambah ke Layar Utama</b>.</li>
+          </ul>
+          <p class="info-pasang" id="infoPasang" hidden>✅ METAPIA sudah terpasang di perangkat ini.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-biru">
+        <span class="langkah-nomor">8</span>
+        <div>
+          <h2>📴 Kalau Internet Putus</h2>
+          <p>Tenang! Kalau kamu sudah pernah membuka METAPIA sebelumnya, kamu tetap bisa belajar Materi, mengerjakan Kuis, dan bermain Game.</p>
+          <p>Nilaimu <b>disimpan dulu di HP</b> dan <b>dikirim otomatis</b> ke guru begitu internet nyambung lagi. Hanya Video yang butuh internet.</p>
+        </div>
+      </article>
+    </div>
+
+    <!-- ==================== GURU ==================== -->
+    <div class="panduan-isi" id="tab-guru" role="tabpanel" hidden>
+
+      <article class="langkah warna-kuning">
+        <span class="langkah-nomor">1</span>
+        <div>
+          <h2>🧭 Alur Belajar yang Disarankan</h2>
+          <p><b>Materi → Video → Kuis → Game.</b> Setiap halaman sudah memiliki tombol lanjut ke tahap berikutnya.</p>
+          <p>Untuk presentasi di kelas, buka METAPIA di laptop yang tersambung ke proyektor. Tampilan otomatis menyesuaikan ukuran layar.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-biru">
+        <span class="langkah-nomor">2</span>
+        <div>
+          <h2>📊 Melihat Nilai Siswa (Google Sheets)</h2>
+          <ul>
+            <li>Tab <b>Daftar Siswa</b>: semua siswa yang pernah masuk, PIN, nilai kuis terakhir, dan game terakhir.</li>
+            <li>Tab <b>Kuis DD-MM-YYYY</b>: nilai kuis per tanggal (nilai pertama, terbaik, terakhir, jumlah mencoba).</li>
+            <li>Tab <b>Game DD-MM-YYYY</b>: skor game per tanggal untuk setiap siswa dan setiap game.</li>
+          </ul>
+          <p>Gunakan <b>Nilai Pertama</b> bila ingin melihat hasil percobaan pertama siswa.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-pink">
+        <span class="langkah-nomor">3</span>
+        <div>
+          <h2>🔐 Siswa Lupa PIN</h2>
+          <p>Buka tab <b>Daftar Siswa</b>, cari nama siswa, lalu lihat kolom <b>PIN</b>. Bisa juga <b>kosongkan sel PIN</b>-nya, supaya siswa dapat membuat PIN baru saat masuk berikutnya.</p>
+        </div>
+      </article>
+
+      <article class="langkah warna-kuning">
+        <span class="langkah-nomor">4</span>
+        <div>
+          <h2>📶 Sekolah dengan Internet Terbatas</h2>
+          <ul>
+            <li>Minta siswa membuka METAPIA <b>sekali saat ada internet</b> (termasuk halaman Game). Setelah itu METAPIA bisa dibuka offline di perangkat yang sama.</li>
+            <li>Siswa yang <b>pernah masuk</b> di perangkat itu tetap bisa masuk saat offline. Siswa baru perlu internet untuk masuk pertama kali.</li>
+            <li>Nilai yang dikerjakan saat offline otomatis terkirim ke Google Sheets ketika siswa membuka METAPIA lagi dalam keadaan online.</li>
+            <li>Pada HP lambat atau mode hemat data, game otomatis memakai versi 2D yang lebih ringan.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="langkah warna-biru">
+        <span class="langkah-nomor">5</span>
+        <div>
+          <h2>💡 Tips</h2>
+          <ul>
+            <li>Satu perangkat dipakai bergantian? Tekan nama siswa di pojok kanan atas lalu pilih <b>Keluar</b> sebelum siswa berikutnya masuk.</li>
+            <li>Pasang METAPIA di layar utama HP (lihat langkah 7 di bagian siswa) supaya siswa mudah membukanya.</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="panduan-aksi">
+      <a class="comic-btn comic-btn-primary" href="index.html"><i class="fa-solid fa-play"></i> Mulai Belajar</a>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">
+  <p>© 2026 METAPIA — Media Pembelajaran Majas Interaktif · <a href="panduan.html" style="text-decoration:underline;">Panduan</a></p>
+</footer>
+
+<script src="js/pwa.js"></script>
+<script src="js/kupu.js"></script>
+<script src="js/app.js"></script>
+<script>
+// tab Siswa / Guru
+document.querySelectorAll(".panduan-tab .tab").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll(".panduan-tab .tab").forEach((x) => {
+    const aktif = x === b;
+    x.classList.toggle("is-aktif", aktif);
+    x.setAttribute("aria-selected", aktif);
+    document.getElementById("tab-" + x.dataset.tab).hidden = !aktif;
+  });
+}));
+if (location.hash === "#guru") document.querySelector('[data-tab="guru"]').click();
+
+// tombol "Pasang METAPIA" (muncul kalau browser mendukung pemasangan langsung)
+let tawaranPasang = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  tawaranPasang = e;
+  document.getElementById("btnPasang").hidden = false;
+});
+document.getElementById("btnPasang").addEventListener("click", async () => {
+  if (!tawaranPasang) return;
+  tawaranPasang.prompt();
+  await tawaranPasang.userChoice;
+  tawaranPasang = null;
+  document.getElementById("btnPasang").hidden = true;
+});
+const sudahTerpasang = () => {
+  document.getElementById("btnPasang").hidden = true;
+  document.getElementById("infoPasang").hidden = false;
+};
+window.addEventListener("appinstalled", sudahTerpasang);
+if (window.matchMedia("(display-mode: standalone)").matches || navigator.standalone) sudahTerpasang();
+</script>
+</body>
+</html>

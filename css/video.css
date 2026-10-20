@@ -76,6 +76,18 @@
 .layar-cover.is-goyang .tombol-play{ animation:goyang .4s ease; }
 @keyframes goyang{ 0%,100%{ transform:translateX(0); } 25%{ transform:translateX(-8%); } 75%{ transform:translateX(8%); } }
 
+/* layar saat offline: Kak Rara + pesan ramah */
+.layar-offline{
+  height:100%;
+  display:flex; align-items:center; justify-content:center; gap:4%;
+  padding:4%;
+  background:linear-gradient(135deg, #FFF7DD, #EDE6FF);
+}
+.layar-offline img{ height:88%; width:auto; flex:none; }
+.layar-offline-teks{ display:flex; flex-direction:column; align-items:flex-start; gap:1.4cqw; max-width:55%; }
+.layar-offline-teks p{ font-family:var(--font-display); font-weight:700; font-size:min(2.1cqw, 3.8cqh); line-height:1.35; color:var(--ink); }
+.layar-offline-teks .comic-btn{ height:auto; padding:min(.9cqw,1.6cqh) min(2cqw,3.6cqh); font-size:min(1.6cqw, 2.9cqh); }
+
 /* ==========================================================================
    RESPONSIVE — HP: layar video melebar di atas, 2 bocah di bawah,
    balon kata di antara layar & kepala bocah
@@ -96,4 +108,6 @@
 
   .tombol-play{ width:16cqw; height:16cqw; font-size:6.5cqw; border-width:3px; box-shadow:4px 4px 0 var(--ink); }
   .label-play{ font-size:4cqw; }
+  .layar-offline-teks p{ font-size:4cqw; }
+  .layar-offline-teks .comic-btn{ font-size:3.4cqw; padding:1.6cqw 3.4cqw; }
 }

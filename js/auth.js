@@ -42,6 +42,8 @@ function simpanLogin(nama, pin) {
   }));
 }
 
+// fungsi login offline (ingatAkun, cekAkunOffline) ada di js/pwa.js
+
 document.addEventListener("DOMContentLoaded", () => {
   // kalau sudah login sebelumnya (nama + PIN), langsung ke dashboard
   try {
@@ -102,17 +104,30 @@ document.addEventListener("DOMContentLoaded", () => {
     btnMasuk.disabled = true;
     btnMasuk.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengecek nama...';
 
-    let hasil;
-    try {
-      hasil = await tanyaSheet({ aksi: "masuk", nama, pin });
-    } catch (err) {
-      hasil = null;
+    let hasil = null;
+    if (navigator.onLine !== false) {
+      try {
+        hasil = await tanyaSheet({ aksi: "masuk", nama, pin });
+      } catch (err) {
+        hasil = null;
+      }
     }
     btnMasuk.disabled = false;
     btnMasuk.innerHTML = isiTombol;
 
     if (!hasil) {
-      showLoginError("Gagal terhubung ke server. Cek internet, lalu coba lagi ya.");
+      // gak bisa nyambung ke server -> coba login offline (akun yang pernah masuk di HP ini)
+      const off = await cekAkunOffline(nama, pin);
+      if (off.status === "cocok") {
+        simpanLogin(off.nama, pin);
+        window.location.href = "dashboard.html";
+      } else if (off.status === "pin_salah") {
+        showLoginError("PIN-nya belum cocok. Coba cek lagi, ya.");
+        inputPin.value = "";
+        inputPin.focus();
+      } else {
+        showLoginError("Sedang offline. Untuk masuk pertama kali di HP/komputer ini, butuh internet dulu, ya.");
+      }
       return;
     }
     if (!hasil.ok) {
@@ -131,6 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // berhasil: pakai ejaan nama dari sheet (mis. ngetik "acel" -> "Acel")
     simpanLogin(hasil.nama, pin);
+    await ingatAkun(hasil.nama, pin); // biar nanti bisa login offline di perangkat ini
     if (hasil.nilai) simpanNilaiLokal(hasil.nama, hasil.nilai.nilai, hasil.nilai.tanggal);
     if (hasil.game) simpanGameTerakhirLokal(hasil.nama, hasil.game.game, hasil.game.skor, hasil.game.tanggal);
 
