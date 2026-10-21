@@ -55,16 +55,16 @@ const DATA_GAME = {
     soal: [
       {
         gambar: "assets/game/g1-soal1.webp",
-        deskripsiGambar: "Pohon kelapa yang daunnya bergoyang, di sampingnya ada tangan melambai.",
+        deskripsiGambar: "Matahari pagi terbit di balik bukit dengan wajah tersenyum, burung-burung terbang di langit.",
         pilihan: [
-          "Daun kelapa jatuh ke tanah.",
-          "Daun kelapa melambai-lambai ditiup angin.",
-          "Daun kelapa berwarna hijau.",
+          "Matahari tersenyum menyapa pagi.",
+          "Matahari terbit di sebelah timur.",
+          "Ayah adalah tulang punggung keluarga.",
         ],
-        jawaban: 1,
+        jawaban: 0,
         majas: "Personifikasi",
-        petunjuk: "Lihat tangan yang melambai di samping pohon. Daunnya bergerak seperti apa?",
-        pembahasan: "Melambai adalah gerakan tangan manusia. Daun kelapa dibuat seolah-olah bisa melambai, jadi ini personifikasi.",
+        petunjuk: "Lihat wajah mataharinya. Matahari itu sedang melakukan apa, seperti manusia?",
+        pembahasan: "Personifikasi. Matahari dibuat seolah-olah bisa tersenyum dan menyapa seperti manusia.",
       },
       {
         gambar: "assets/game/g1-soal2.webp",

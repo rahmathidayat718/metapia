@@ -35,7 +35,7 @@ export default {
 
     const g = siapkanGame(api,
       { warnaLangit: 0xcfe6ff, fov: 52, update, saatResize: aturKamera },
-      { tempo: 116, pola: [523, 0, 659, 784, 0, 659, 587, 0], bass: [131, 131, 98, 110] });
+      { tempo: 116, pola: [523, 0, 659, 784, 0, 659, 587, 0], bass: [131, 131, 98, 110], tipe: "square", volume: 0.05, ketukan: "mesin" });
     const { dunia } = g;
     const { scene } = dunia;
     const ringan = dunia.ringan;

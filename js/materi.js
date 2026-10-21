@@ -1,7 +1,7 @@
 /* ==========================================================================
    METAPIA — materi.js
    Alurnya (konsep komik):
-   1) Guru jalan masuk dari kiri -> sapa "Siap?" -> Dito jawab "Siap, Kak!"
+   1) Guru jalan masuk dari kiri -> sapa "Siap?" -> Dito jawab "Siap, Ibu Rara!"
    2) Guru jelasin tiap majas lewat balon kata -> di akhir nanya "Paham?"
       -> Dito jawab pakai balon katanya sendiri (nunjukin dia paham)
    3) Majas terakhir -> tombol "Lanjut ke Video" -> pindah ke video.html
@@ -22,7 +22,7 @@
    "lompat" pas gantian. Pose PERTAMA di daftar = pose awal.
    ========================================================================== */
 const GURU = {
-  nama: "Kak Rara",
+  nama: "Ibu Rara",
   pose: {
     senyum: "assets/karakter/guru/guru-senyum.webp",
     bicara: "assets/karakter/guru/guru-bicara.webp",
@@ -60,7 +60,7 @@ const MURID = [
                      maksimal ~70 huruf biar muat di balon kata)
    ========================================================================== */
 const SAPAAN_GURU = "Halo teman-teman! 👋 Hari ini kita mau belajar MAJAS. Teman-teman siap?";
-const SAPAAN_MURID = "Siap, Kak Rara! Aku udah gak sabar! 🙌";
+const SAPAAN_MURID = "Siap, Ibu Rara! Aku sudah tidak sabar! 🙌";
 
 const DAFTAR_MAJAS = [
   {
@@ -70,7 +70,7 @@ const DAFTAR_MAJAS = [
       "Majas adalah gaya bahasa yang memakai KATA-KATA KIASAN\nsupaya kalimat kita lebih hidup dan menarik, teman-teman!",
       "Contoh: daripada bilang 'dia pintar banget',\nkita bisa bilang 'dia itu bintang kelas'.\nLebih seru kan dengernya?",
     ],
-    jawabanMurid: "Paham, Kak! Majas itu gaya bahasa yang memakai kata-kata kiasan!",
+    jawabanMurid: "Paham, Bu! Majas itu gaya bahasa yang memakai kata-kata kiasan!",
   },
   {
     nama: "Jenis-jenis Majas",
@@ -79,7 +79,7 @@ const DAFTAR_MAJAS = [
       "Majas itu ada beberapa jenis. Hari ini kita belajar 3 JENIS MAJAS, teman-teman: METAFORA, PERSONIFIKASI, dan HIPERBOLA!",
       "Kita bahas satu per satu, ya!\nDimulai dari yang pertama: METAFORA.",
     ],
-    jawabanMurid: "Siap, Kak! Ada 3 jenis: metafora, personifikasi, dan hiperbola!",
+    // tanpa jawabanMurid -> murid gak ditanya "paham?", langsung lanjut ke Metafora
   },
   {
     nama: "Metafora",
@@ -88,7 +88,7 @@ const DAFTAR_MAJAS = [
       "Yang pertama: METAFORA!\nMetafora adalah majas yang menggunakan kata\nsebagai SIMBOL dari makna sebenarnya.",
       "Contoh: \"Dia adalah bintang kelas di sekolah kami.\"\n(\"Bintang kelas\" itu simbol untuk murid paling pintar!)",
     ],
-    jawabanMurid: "Paham, Kak! Metafora memakai kata sebagai simbol dari makna sebenarnya!",
+    jawabanMurid: "Paham, Bu! Metafora memakai kata sebagai simbol dari makna sebenarnya!",
   },
   {
     nama: "Personifikasi",
@@ -108,7 +108,21 @@ const DAFTAR_MAJAS = [
     ],
     jawabanMurid: "Paham banget! Hiperbola itu melebih-lebihkan, kayak 'PR-ku segunung'!",
   },
+  {
+    // penutup: ngarahin siswa ke halaman Video (alur Materi -> Video -> Kuis -> Game)
+    nama: "Yuk Nonton Video!",
+    kategori: "Penutup",
+    dialog: [
+      "Hebat, teman-teman! Kita sudah belajar 3 jenis majas: METAFORA, PERSONIFIKASI, dan HIPERBOLA. 🎉",
+      "Supaya makin paham, yuk kita tonton VIDEO majas!\nTekan tombol \"Lanjut ke Video\" di bawah, ya. 🎬",
+    ],
+  },
 ];
+
+/** langkah terakhir 1 bagian materi: dialog guru (+1 kalau ada pertanyaan "paham?" ke murid) */
+function langkahTerakhir(majas) {
+  return majas.dialog.length - 1 + (majas.jawabanMurid ? 1 : 0);
+}
 
 /* ==========================================================================
    3) STATE
@@ -433,6 +447,7 @@ function renderKonten() {
   const majas = DAFTAR_MAJAS[idxMajas];
   const diPromptPaham = idxDialog >= majas.dialog.length;
   const diMajasTerakhir = idxMajas === DAFTAR_MAJAS.length - 1;
+  const diLangkahTerakhir = diMajasTerakhir && idxDialog >= langkahTerakhir(majas);
 
   renderProgress();
   elCaption.textContent = majas.nama;
@@ -441,12 +456,13 @@ function renderKonten() {
     bicara("guru", `Gimana teman-teman, paham soal "${majas.nama}"? 😊`, {
       lalu: () => { pilihMurid(penjawab(idxMajas)); bicara("murid", majas.jawabanMurid, { pose: "ide" }); },
     });
-    btnAction.innerHTML = diMajasTerakhir ? 'Lanjut ke Video <i class="fa-solid fa-clapperboard"></i>' : 'Paham! <i class="fa-solid fa-thumbs-up"></i>';
+    btnAction.innerHTML = 'Paham! <i class="fa-solid fa-thumbs-up"></i>';
   } else {
     const baris = majas.dialog[idxDialog];
     bicara("guru", baris, { pose: baris.includes("Contoh") ? "nunjuk" : "bicara" });
     btnAction.innerHTML = 'Lanjut <i class="fa-solid fa-arrow-right"></i>';
   }
+  if (diLangkahTerakhir) btnAction.innerHTML = 'Lanjut ke Video <i class="fa-solid fa-clapperboard"></i>';
 
   btnPrev.disabled = idxMajas === 0 && idxDialog === 0;
 }
@@ -495,9 +511,8 @@ btnAction.addEventListener("click", () => {
   }
 
   const majas = DAFTAR_MAJAS[idxMajas];
-  const diPromptPaham = idxDialog >= majas.dialog.length;
 
-  if (!diPromptPaham) {
+  if (idxDialog < langkahTerakhir(majas)) {
     idxDialog++;
     renderKonten();
   } else if (idxMajas < DAFTAR_MAJAS.length - 1) {
@@ -517,7 +532,7 @@ btnPrev.addEventListener("click", () => {
     idxDialog--;
   } else if (idxMajas > 0) {
     idxMajas--;
-    idxDialog = DAFTAR_MAJAS[idxMajas].dialog.length;
+    idxDialog = langkahTerakhir(DAFTAR_MAJAS[idxMajas]);
   }
   renderKonten();
 });

@@ -26,7 +26,7 @@ export default {
 
     const g = siapkanGame(api,
       { warnaLangit: 0xbfe7f7, fov: 50, update, saatResize: aturBatas },
-      { tempo: 112, pola: [523, 659, 784, 659, 698, 880, 784, 0], bass: [131, 175, 147, 196] });
+      { tempo: 112, pola: [523, 659, 784, 659, 698, 880, 784, 0], bass: [131, 175, 147, 196], tipe: "triangle", ketukan: "pop" });
     const { dunia } = g;
     const { scene } = dunia;
     const ringan = dunia.ringan;

@@ -272,13 +272,17 @@ export class Partikel {
    MUSIK LATAR (Web Audio, gak butuh file). Ikut tombol 🔊 di HUD.
    ========================================================================== */
 export class Musik {
-  /** pola = deretan nada (Hz, 0 = diam), tempo = ketukan per menit */
-  constructor(nyalaFn, { pola, bass, tempo = 120, volume = 0.035 } = {}) {
+  /** pola = deretan nada (Hz, 0 = diam), tempo = ketukan per menit,
+      tipe = bentuk gelombang melodi (beda tiap game), ketukan = bunyi drum
+      ("pop" balon, "mesin" pabrik, "angkasa" pesawat) */
+  constructor(nyalaFn, { pola, bass, tempo = 120, volume = 0.07, tipe = "triangle", ketukan = "" } = {}) {
     this.nyala = nyalaFn;
     this.pola = pola || [523, 659, 784, 659, 587, 698, 880, 698];
     this.bass = bass || [131, 131, 175, 175];
     this.ketuk = 60 / tempo / 2;
     this.volume = volume;
+    this.tipe = tipe;
+    this.ketukan = ketukan;
     this.jalan = false;
     this.i = 0;
   }
@@ -286,7 +290,16 @@ export class Musik {
     if (this.jalan) return;
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
-    this.ctx = this.ctx || new AC();
+    if (!this.ctx) {
+      this.ctx = new AC();
+      // penguat + kompresor: lebih keras tapi gak pecah
+      const kompresor = this.ctx.createDynamicsCompressor();
+      kompresor.threshold.value = -12;
+      kompresor.ratio.value = 6;
+      this.keluar = this.ctx.createGain();
+      this.keluar.gain.value = 1.6;
+      this.keluar.connect(kompresor).connect(this.ctx.destination);
+    }
     if (this.ctx.state === "suspended") this.ctx.resume();
     this.jalan = true;
     this.berikut = this.ctx.currentTime + 0.05;
@@ -297,8 +310,9 @@ export class Musik {
     while (this.berikut < this.ctx.currentTime + 0.2) {
       if (this.nyala()) {
         const f = this.pola[this.i % this.pola.length];
-        if (f) this.nada(f, this.berikut, this.ketuk * 0.9, this.volume, "triangle");
+        if (f) this.nada(f, this.berikut, this.ketuk * 0.9, this.volume, this.tipe);
         if (this.i % 2 === 0) this.nada(this.bass[(this.i / 2) % this.bass.length | 0], this.berikut, this.ketuk * 1.8, this.volume * 1.2, "sine");
+        this.drum(this.berikut);
       }
       this.berikut += this.ketuk;
       this.i++;
@@ -310,8 +324,18 @@ export class Musik {
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g).connect(this.ctx.destination);
+    o.connect(g).connect(this.keluar);
     o.start(t); o.stop(t + dur + 0.05);
+  }
+  /** bunyi ketukan sesuai tema game */
+  drum(t) {
+    const k = this.i % 4, v = this.volume;
+    if (this.ketukan === "pop" && k === 0) this.nada(1200, t, 0.05, v * 0.8, "sine");
+    if (this.ketukan === "mesin") {
+      if (k === 0) this.nada(70, t, 0.12, v * 2, "square");
+      else this.nada(3000, t, 0.02, v * 0.5, "square");
+    }
+    if (this.ketukan === "angkasa" && this.i % 8 === 0) this.nada(55, t, this.ketuk * 3, v * 1.5, "sawtooth");
   }
   /** efek suara pendek (pakai context yang sama) */
   efek(f1, f2, dur = 0.2, vol = 0.08, tipe = "square") {
@@ -320,9 +344,9 @@ export class Musik {
     o.type = tipe;
     o.frequency.setValueAtTime(f1, t);
     o.frequency.exponentialRampToValueAtTime(f2, t + dur);
-    g.gain.setValueAtTime(vol, t);
+    g.gain.setValueAtTime(vol * 2, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-    o.connect(g).connect(this.ctx.destination);
+    o.connect(g).connect(this.keluar);
     o.start(t); o.stop(t + dur);
   }
   berhenti() {

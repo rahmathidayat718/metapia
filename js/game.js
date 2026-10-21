@@ -75,7 +75,7 @@ const Game = (() => {
     img.decoding = "async"; // gambar dibongkar di belakang layar, halaman gak tersendat
     img.className = "pose";
     img.src = src;
-    img.alt = "Kak Rara";
+    img.alt = "Ibu Rara";
     img.draggable = false;
     elGuru.querySelector(".tokoh-body").appendChild(img);
     poseEls[nama] = img;
@@ -139,32 +139,81 @@ const Game = (() => {
      ======================================================================== */
   let suaraNyala = localStorage.getItem("metapia_suara") !== "0";
   let audioCtx = null;
-  function nada(frekuensi, mulai, durasi, volume = 0.08, tipe = "sine") {
+  let keluaran = null; // penguat + kompresor: suara lebih keras tapi gak pecah
+  /** nada pendek; frekAkhir (opsional) = nada meluncur naik/turun */
+  function nada(frekuensi, mulai, durasi, volume = 0.2, tipe = "sine", frekAkhir = 0) {
     if (!suaraNyala) return;
     if (!audioCtx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       audioCtx = new AC();
+      const kompresor = audioCtx.createDynamicsCompressor();
+      kompresor.threshold.value = -12;
+      kompresor.ratio.value = 6;
+      keluaran = audioCtx.createGain();
+      keluaran.gain.value = 1.6;
+      keluaran.connect(kompresor).connect(audioCtx.destination);
     }
+    if (audioCtx.state === "suspended") audioCtx.resume();
     const t = audioCtx.currentTime + mulai;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = tipe;
     osc.frequency.setValueAtTime(frekuensi, t);
+    if (frekAkhir) osc.frequency.exponentialRampToValueAtTime(frekAkhir, t + durasi);
     gain.gain.setValueAtTime(volume, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + durasi);
-    osc.connect(gain).connect(audioCtx.destination);
+    osc.connect(gain).connect(keluaran);
     osc.start(t);
     osc.stop(t + durasi);
   }
+  /* tiap game punya "tema" suara sendiri:
+     1 = Balon (ceria, "pop" & lonceng), 2 = Pabrik (mesin, bel & buzzer),
+     3 = Pesawat (luar angkasa, laser & sweep). 0 = menu/umum. */
+  const TEMA_SUARA = {
+    0: {
+      benar() { nada(523, 0, 0.15); nada(659, 0.1, 0.15); nada(784, 0.2, 0.3); },
+      salah() { nada(220, 0, 0.2, 0.18, "triangle"); nada(175, 0.15, 0.35, 0.18, "triangle"); },
+      ambil() { nada(440, 0, 0.08, 0.14); nada(660, 0.05, 0.08, 0.14); },
+      tik() { nada(1000, 0, 0.05, 0.1, "square"); },
+      habis() { nada(330, 0, 0.25, 0.14, "sawtooth"); nada(250, 0.2, 0.4, 0.14, "sawtooth"); },
+      selesai() { [523, 659, 784, 1047].forEach((f, i) => nada(f, i * 0.12, 0.3)); },
+    },
+    1: {
+      benar() { nada(1568, 0, 0.12, 0.16, "sine"); [784, 988, 1175, 1568].forEach((f, i) => nada(f, 0.05 + i * 0.07, 0.25, 0.2, "triangle")); },
+      salah() { nada(400, 0, 0.45, 0.22, "sine", 140); nada(300, 0.05, 0.4, 0.12, "triangle", 110); },
+      ambil() { nada(700, 0, 0.1, 0.18, "sine", 1400); },
+      tik() { nada(1320, 0, 0.06, 0.12, "triangle"); },
+      habis() { nada(600, 0, 0.6, 0.2, "sine", 120); },
+      selesai() { [784, 988, 1175, 1568, 1976].forEach((f, i) => nada(f, i * 0.1, 0.35, 0.2, "triangle")); },
+    },
+    2: {
+      benar() { nada(880, 0, 0.35, 0.2, "square"); nada(1320, 0, 0.35, 0.1, "sine"); nada(1760, 0.12, 0.4, 0.14, "sine"); },
+      salah() { nada(110, 0, 0.18, 0.2, "sawtooth"); nada(104, 0.2, 0.3, 0.2, "sawtooth"); },
+      ambil() { nada(180, 0, 0.06, 0.22, "square"); nada(360, 0.04, 0.06, 0.14, "square"); },
+      tik() { nada(2000, 0, 0.03, 0.12, "square"); nada(1500, 0.05, 0.03, 0.1, "square"); },
+      habis() { [440, 330, 440, 330].forEach((f, i) => nada(f, i * 0.2, 0.18, 0.16, "square")); },
+      selesai() { [392, 523, 659, 784, 1047].forEach((f, i) => nada(f, i * 0.11, 0.25, 0.14, "square")); },
+    },
+    3: {
+      benar() { nada(400, 0, 0.3, 0.16, "sawtooth", 1600); nada(1047, 0.2, 0.3, 0.16, "triangle"); nada(1568, 0.3, 0.4, 0.14, "triangle"); },
+      salah() { nada(500, 0, 0.5, 0.2, "sawtooth", 60); nada(80, 0.05, 0.4, 0.2, "square", 40); },
+      ambil() { nada(1800, 0, 0.12, 0.14, "square", 600); },
+      tik() { nada(880, 0, 0.08, 0.12, "sine", 1760); },
+      habis() { nada(1200, 0, 0.8, 0.18, "sawtooth", 80); },
+      selesai() { [523, 784, 1047, 1568, 2093].forEach((f, i) => nada(f, i * 0.12, 0.45, 0.16, "sawtooth")); },
+    },
+  };
+  let temaSuara = 0;
+  const bunyi = (n) => (TEMA_SUARA[temaSuara] || TEMA_SUARA[0])[n]();
   const suara = {
-    benar() { nada(523, 0, 0.15); nada(659, 0.1, 0.15); nada(784, 0.2, 0.3); },
-    salah() { nada(220, 0, 0.2, 0.07, "triangle"); nada(175, 0.15, 0.35, 0.07, "triangle"); },
-    klik() { nada(600, 0, 0.08, 0.05); },
-    ambil() { nada(440, 0, 0.08, 0.05); nada(660, 0.05, 0.08, 0.05); },
-    tik() { nada(1000, 0, 0.05, 0.04, "square"); },
-    habis() { nada(330, 0, 0.25, 0.08, "sawtooth"); nada(250, 0.2, 0.4, 0.08, "sawtooth"); },
-    selesai() { [523, 659, 784, 1047].forEach((f, i) => nada(f, i * 0.12, 0.3)); },
+    benar: () => bunyi("benar"),
+    salah: () => bunyi("salah"),
+    klik() { nada(600, 0, 0.08, 0.14); },
+    ambil: () => bunyi("ambil"),
+    tik: () => bunyi("tik"),
+    habis: () => bunyi("habis"),
+    selesai: () => bunyi("selesai"),
   };
   function gantiSuara(btn) {
     suaraNyala = !suaraNyala;
@@ -366,6 +415,7 @@ const Game = (() => {
       return;
     }
     const versi3d = pakai3d(id) && !!mesin3d[id];
+    temaSuara = id;
     sedangMain = true;
     elCard.classList.toggle("mode-3d", versi3d);
     elCard.innerHTML = `

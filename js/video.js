@@ -116,7 +116,7 @@ function tampilkanCover() {
 function tampilkanOffline() {
   elLayar.innerHTML = `
     <div class="layar-offline">
-      <img src="assets/karakter/guru/guru-senyum.webp" width="546" height="520" decoding="async" alt="Kak Rara">
+      <img src="assets/karakter/guru/guru-senyum.webp" width="546" height="520" decoding="async" alt="Ibu Rara">
       <div class="layar-offline-teks">
         <p><b>Video butuh internet.</b> Sambil menunggu, yuk baca Materi dulu! 📖</p>
         <a class="comic-btn comic-btn-primary" href="materi.html"><i class="fa-solid fa-book"></i> Buka Materi</a>

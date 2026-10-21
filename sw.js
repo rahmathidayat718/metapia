@@ -21,7 +21,7 @@
    berubah bikin cache lama di HP siswa dihapus & diganti yang baru.
    ========================================================================== */
 
-const CACHE_VERSI = "metapia-fd8c853e1a"; // diatur docs/perbarui-sw.py
+const CACHE_VERSI = "metapia-a3fde489c6"; // diatur docs/perbarui-sw.py
 const DAFTAR_FILE = [
   // diatur docs/perbarui-sw.py
   "assets/bgMateri.webp",

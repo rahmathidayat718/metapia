@@ -148,7 +148,7 @@ let timerPose = null;
     img.decoding = "async"; // gambar dibongkar di belakang layar, halaman gak tersendat
     img.className = "pose";
     img.src = src;
-    img.alt = "Kak Rara";
+    img.alt = "Ibu Rara";
     img.draggable = false;
     body.appendChild(img);
     poseEls[nama] = img;
