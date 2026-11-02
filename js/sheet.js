@@ -1,8 +1,9 @@
 /* ==========================================================================
    METAPIA — sheet.js
    Komunikasi dengan Google Sheet (lewat Google Apps Script).
-   Dipakai di: index.html (login nama + PIN), kuis.html (kirim nilai),
-   dashboard.html (ambil nilai terbaru).
+   Dipakai di: index.html (login siswa/guru + daftar sekolah), kuis.html &
+   game.html (kirim nilai), dashboard.html (ambil nilai terbaru),
+   guru.html (rekap nilai siswa satu sekolah).
 
    ISI URL DI BAWAH dengan "URL aplikasi web" (berakhiran /exec) dari
    Google Apps Script. Cara bikinnya ada di google-sheet/Code.gs.
@@ -56,6 +57,12 @@ function tulisAntrean(daftar) {
  *  "error"      -> error di Apps Script, diantre
  */
 async function kirimData(data, { antreKalauGagal = true } = {}) {
+  // sekolah ikut dikirim (data lama di antrean yang belum punya sekolah
+  // dilengkapi dari akun yang sedang masuk)
+  if (!data.sekolah) {
+    const u = bacaUserLokal();
+    if (u && u.sekolah && u.nama === data.nama) data = { ...data, sekolah: u.sekolah };
+  }
   let balas = null;
   try {
     balas = await tanyaSheet(data);
@@ -113,11 +120,70 @@ if (typeof window !== "undefined" && localStorage.getItem("metapia_user")) {
   setTimeout(kirimAntrean, 1500);
 }
 
+function bacaUserLokal() {
+  try { return JSON.parse(localStorage.getItem("metapia_user")); } catch (e) { return null; }
+}
+
+/* ==========================================================================
+   KODE SEKOLAH (6 huruf/angka, dibuat otomatis waktu guru mendaftarkan
+   sekolah). Tiap sekolah punya KODE SISWA (dibagikan lewat link/QR) dan
+   KODE GURU (khusus untuk guru lain yang mau bergabung).
+   Kode yang pernah cocok disimpan di perangkat ("metapia_kode") biar nama
+   sekolahnya tetap bisa ditampilkan waktu offline.
+   ========================================================================== */
+/** "k7q-2mx " -> "K7Q2MX" ("" kalau bukan 6 huruf/angka) */
+function rapikanKodeSekolah(teks) {
+  const k = String(teks || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  return k.length === 6 ? k : "";
+}
+
+/** GET ke Apps Script, balas JSON (null kalau gagal / kelamaan) */
+async function ambilSheet(param) {
+  const kontrol = new AbortController();
+  const timer = setTimeout(() => kontrol.abort(), 20000);
+  try {
+    const res = await fetch(`${GOOGLE_SHEET_URL}?${new URLSearchParams(param)}`, { signal: kontrol.signal });
+    return await res.json();
+  } catch (e) {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * Cek kode sekolah. jenis: "siswa" | "guru" | "semua". Hasil:
+ *  { ok: true, sekolah, kode }  -> kode benar
+ *  { ok: false, kode: "kode_salah" }
+ *  null                         -> gak bisa dicek (offline & belum pernah dipakai di perangkat ini)
+ */
+async function cekKodeSekolah(teks, jenis = "siswa") {
+  const kode = rapikanKodeSekolah(teks);
+  if (!kode) return { ok: false, kode: "kode_salah" };
+  let simpan = {};
+  try { simpan = JSON.parse(localStorage.getItem("metapia_kode")) || {}; } catch (e) {}
+  const dariSimpan = jenis === "siswa" && simpan[kode] ? { ok: true, sekolah: simpan[kode], kode, offline: true } : null;
+  if (navigator.onLine === false) return dariSimpan;
+  const hasil = await ambilSheet({ aksi: "cekKode", kode, jenis });
+  if (!hasil || (!hasil.ok && hasil.kode !== "kode_salah")) return dariSimpan; // gagal konek / Apps Script versi lama
+  if (hasil.ok && jenis === "siswa") {
+    simpan[kode] = hasil.sekolah;
+    localStorage.setItem("metapia_kode", JSON.stringify(simpan));
+  }
+  return hasil;
+}
+
+/** perlu kode pembuat sekolah (KODE_DAFTAR_GURU di Code.gs)? null = gak tau */
+async function infoServer() {
+  const hasil = await ambilSheet({ aksi: "info" });
+  return hasil && hasil.ok ? hasil : null;
+}
+
 /** Ambil nilai kuis terakhir siswa dari sheet (buat Dashboard). Gagal -> null. */
-async function ambilStatusSiswa(nama, pin) {
+async function ambilStatusSiswa(nama, pin, sekolah = "") {
   if (!GOOGLE_SHEET_URL) return null;
   try {
-    const url = `${GOOGLE_SHEET_URL}?aksi=status&nama=${encodeURIComponent(nama)}&pin=${encodeURIComponent(pin)}`;
+    const url = `${GOOGLE_SHEET_URL}?aksi=status&nama=${encodeURIComponent(nama)}&pin=${encodeURIComponent(pin)}&sekolah=${encodeURIComponent(sekolah)}`;
     const res = await fetch(url);
     return await res.json();
   } catch (e) {

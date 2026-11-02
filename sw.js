@@ -12,6 +12,10 @@
        * gambar/font/three.js : dari cache saja (cache-first), unduh kalau
                         belum ada. three.js baru disimpan waktu halaman Game
                         pertama kali dibuka (biar kunjungan pertama ringan).
+   - Video MP4 (assets/video/) TIDAK ikut disimpan otomatis (ukurannya
+     besar). Siswa menyimpannya sendiri lewat tombol "Simpan untuk offline"
+     di halaman Video -> masuk cache "video-metapia" (gak ikut terhapus
+     waktu versi web berganti) dan diputar dari sana, termasuk offline.
    - Request ke server lain (Google Apps Script, YouTube, Google Drive)
      TIDAK disentuh/di-cache sama sekali -> nilai tetap lewat antrean sheet.js.
 
@@ -21,7 +25,8 @@
    berubah bikin cache lama di HP siswa dihapus & diganti yang baru.
    ========================================================================== */
 
-const CACHE_VERSI = "metapia-a3fde489c6"; // diatur docs/perbarui-sw.py
+const CACHE_VERSI = "metapia-14aeba45ed"; // diatur docs/perbarui-sw.py
+const CACHE_VIDEO = "video-metapia"; // sama dengan di js/video.js
 const DAFTAR_FILE = [
   // diatur docs/perbarui-sw.py
   "assets/bgMateri.webp",
@@ -60,6 +65,7 @@ const DAFTAR_FILE = [
   "css/dashboard.css",
   "css/game.css",
   "css/game3d.css",
+  "css/guru.css",
   "css/ikon.css",
   "css/index.css",
   "css/komik.css",
@@ -69,8 +75,10 @@ const DAFTAR_FILE = [
   "css/video.css",
   "dashboard.html",
   "game.html",
+  "guru.html",
   "index.html",
   "js/app.js",
+  "js/auth-guru.js",
   "js/auth.js",
   "js/cek-login.js",
   "js/game-data.js",
@@ -84,6 +92,7 @@ const DAFTAR_FILE = [
   "js/game3d/pecah-balon.js",
   "js/game3d/pesawat-kalimat.js",
   "js/game3d/ui3d.js",
+  "js/guru.js",
   "js/kuis.js",
   "js/kupu.js",
   "js/materi.js",
@@ -122,6 +131,7 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // Apps Script, YouTube, Drive: langsung ke internet
+  if (url.pathname.includes("/assets/video/")) { event.respondWith(putarVideo(req)); return; }
 
   const teks = req.mode === "navigate" || /\.(html|css|js|json)$/.test(url.pathname) || url.pathname.endsWith("/");
   const bukanVendor = !url.pathname.includes("/js/vendor/");
@@ -153,6 +163,37 @@ async function cacheFirst(req) {
   } catch (e) {
     return halamanOffline(req);
   }
+}
+
+/**
+ * Video: kalau sudah disimpan (tombol "Simpan untuk offline"), putar dari
+ * simpanan. Pemutar video minta potongan-potongan file (header Range), jadi
+ * dibalas potongan yang diminta (status 206). Belum disimpan -> internet.
+ */
+async function putarVideo(req) {
+  const cache = await caches.open(CACHE_VIDEO);
+  const simpan = await cache.match(req.url, { ignoreSearch: true });
+  if (!simpan) {
+    try { return await fetch(req); } catch (e) { return new Response("Video belum disimpan", { status: 503 }); }
+  }
+  const range = req.headers.get("range");
+  if (!range) return simpan;
+  const blob = await simpan.blob();
+  const m = /bytes=(\d*)-(\d*)/.exec(range) || [];
+  let awal = m[1] ? Number(m[1]) : 0;
+  let akhir = m[2] ? Number(m[2]) : blob.size - 1;
+  if (!m[1] && m[2]) { awal = Math.max(0, blob.size - Number(m[2])); akhir = blob.size - 1; } // "bytes=-500" = 500 byte terakhir
+  akhir = Math.min(akhir, blob.size - 1);
+  if (awal > akhir) return new Response("", { status: 416, headers: { "Content-Range": `bytes */${blob.size}` } });
+  return new Response(blob.slice(awal, akhir + 1), {
+    status: 206,
+    headers: {
+      "Content-Type": simpan.headers.get("Content-Type") || "video/mp4",
+      "Content-Range": `bytes ${awal}-${akhir}/${blob.size}`,
+      "Content-Length": String(akhir - awal + 1),
+      "Accept-Ranges": "bytes",
+    },
+  });
 }
 
 function stripQuery(req) {

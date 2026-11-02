@@ -1,0 +1,131 @@
+/* ==========================================================================
+   METAPIA — guru.css
+   Halaman Guru (guru.html): rekap nilai siswa satu sekolah. Butuh common.css.
+   ========================================================================== */
+.guru-wrap{ width:100%; max-width:1180px; margin:0 auto; padding:18px 16px 40px; display:flex; flex-direction:column; gap:16px; }
+
+/* navbar kanan: nama guru + keluar */
+.guru-nama{ font-weight:800; color:var(--purple-900); max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.guru-keluar{
+  border:2px solid var(--purple-700); background:#fff; color:var(--purple-700);
+  border-radius:12px; padding:7px 12px; font-family:var(--font-body); font-weight:800; cursor:pointer;
+}
+.guru-keluar:hover{ background:var(--purple-700); color:#fff; }
+
+/* kepala: nama sekolah + tombol */
+.guru-kepala{
+  display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:14px;
+  background:rgba(255,255,255,0.97); border:3px solid var(--ink); border-radius:var(--radius-md);
+  box-shadow:5px 5px 0 var(--ink); padding:18px 20px;
+}
+.guru-label{ margin:0; font-weight:800; color:var(--purple-700); font-size:.9rem; }
+.guru-kepala h1{ margin:2px 0 4px; font-size:1.7rem; color:var(--purple-900); line-height:1.15; }
+.guru-info{ margin:0; font-size:.85rem; font-weight:700; color:var(--ink-soft); }
+.lencana-lihat{ display:inline-block; background:#E3F7EF; color:#0E7A5B; border-radius:99px; padding:2px 10px; font-weight:800; }
+.guru-aksi{ display:flex; flex-wrap:wrap; gap:8px; }
+.guru-btn{
+  border:3px solid var(--ink); border-radius:14px; padding:9px 14px; cursor:pointer;
+  background:#fff; color:var(--ink); font-family:var(--font-body); font-weight:800;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.guru-btn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink); }
+.guru-btn:disabled{ opacity:.7; cursor:wait; }
+.guru-btn-kuning{ background:var(--yellow); }
+
+.guru-pesan{ margin:0; padding:10px 14px; border-radius:12px; font-weight:700; font-size:.9rem; background:#fff; }
+.guru-pesan.is-peringatan{ background:#FFF4D6; color:#7A5200; border:2px solid var(--yellow-dark); }
+
+/* kartu angka ringkasan */
+.guru-ringkas{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+.kartu-angka{
+  display:flex; flex-direction:column; gap:2px;
+  background:rgba(255,255,255,0.97); border-radius:var(--radius-md); padding:14px 16px; box-shadow:var(--shadow-card);
+}
+.kartu-ikon{ font-size:1.3rem; }
+.kartu-angka b{ font-family:var(--font-display); font-size:1.8rem; color:var(--purple-700); line-height:1.1; }
+.kartu-angka span:last-child{ font-size:.82rem; font-weight:700; color:var(--ink-soft); }
+
+/* panel tabel */
+.guru-panel{ background:rgba(255,255,255,0.97); border-radius:var(--radius-md); box-shadow:var(--shadow-card); padding:16px; min-width:0; }
+.guru-tab{ display:flex; gap:8px; flex-wrap:wrap; }
+.guru-tab-btn{
+  border:2px solid var(--purple-700); background:#fff; color:var(--purple-700);
+  border-radius:12px; padding:8px 14px; font-family:var(--font-body); font-weight:800; cursor:pointer;
+}
+.guru-tab-btn.is-aktif{ background:var(--purple-700); color:#fff; }
+.guru-alat{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0; }
+.guru-cari{
+  flex:1 1 220px; display:flex; align-items:center; gap:8px; padding:0 12px;
+  background:#F6F2FF; border:2px solid var(--purple-500); border-radius:12px;
+}
+.guru-cari i{ color:var(--purple-700); }
+.guru-cari input{ flex:1; min-width:0; border:none; outline:none; background:transparent; padding:10px 0; font-family:var(--font-body); font-weight:700; font-size:.95rem; }
+#pilihTanggal[hidden]{ display:none; }
+#pilihTanggal{ border:2px solid var(--purple-500); border-radius:12px; padding:8px 10px; font-family:var(--font-body); font-weight:800; background:#fff; }
+
+/* tabel: geser ke samping di dalam kotaknya (bukan seluruh halaman) */
+.tabel-wrap{ overflow-x:auto; border:2px solid #E4DCFF; border-radius:12px; }
+.tabel{ width:100%; border-collapse:collapse; font-size:.9rem; white-space:nowrap; }
+.tabel th, .tabel td{ padding:8px 10px; text-align:center; border-bottom:1px solid #EEE8FF; }
+.tabel thead th{ background:#F1ECFF; color:var(--purple-900); font-weight:800; font-size:.8rem; border-bottom:2px solid #DCD2FF; }
+.tabel thead th small{ display:block; font-weight:700; color:var(--ink-soft); font-size:.7rem; }
+.tabel tbody tr:nth-child(even){ background:#FBF9FF; }
+.tabel .kol-nama{ text-align:left; font-weight:800; color:var(--ink); }
+.tabel .kol-utama{ font-weight:800; color:var(--purple-700); }
+.tabel .kol-waktu{ font-size:.8rem; color:var(--ink-soft); }
+.redup{ color:#B9B2D6; }
+.pin-tutup{ border:1px dashed var(--purple-500); background:#fff; border-radius:8px; padding:2px 8px; font-weight:800; cursor:pointer; color:var(--purple-700); min-width:52px; }
+.sub-judul{ font-size:1.1rem; margin:14px 0 8px; color:var(--purple-900); }
+.sub-judul:first-child{ margin-top:0; }
+.kosong{ text-align:center; color:var(--ink-soft); font-weight:700; padding:18px 8px; margin:0; }
+.catatan{ margin:10px 2px 0; font-size:.8rem; color:var(--ink-soft); font-weight:600; }
+
+@media (max-width:760px){
+  .guru-ringkas{ grid-template-columns:repeat(2, 1fr); }
+  .guru-nama{ display:none; }
+  .guru-kepala h1{ font-size:1.35rem; }
+}
+
+/* kotak kode sekolah: kode siswa + QR, kode guru disembunyikan di <details> */
+.kartu-kode{
+  display:flex; align-items:center; gap:18px;
+  background:#FFF8E1; border:3px dashed var(--yellow-dark); border-radius:var(--radius-md);
+  padding:16px 20px;
+}
+.kode-isi{ flex:1; min-width:0; display:flex; flex-direction:column; gap:8px; }
+.kode-baris{ display:flex; align-items:baseline; flex-wrap:wrap; gap:10px; }
+.kode-judul{ font-weight:800; color:var(--ink-soft); }
+.kode-besar{
+  font-family:var(--font-display); font-weight:800; font-size:2rem; letter-spacing:6px;
+  color:var(--purple-900); line-height:1.1; margin:0;
+}
+.kode-besar-kecil{ font-size:1.4rem; display:inline-block; margin-top:4px; }
+.kode-ket{ margin:0; font-size:.88rem; font-weight:700; color:var(--ink-soft); }
+.kode-guru{ font-size:.88rem; font-weight:700; color:var(--ink-soft); }
+.kode-guru summary{ cursor:pointer; color:var(--purple-700); font-weight:800; }
+.kode-guru p{ margin:6px 0 0; }
+.qr-kecil{ flex:none; width:140px; background:#fff; border-radius:12px; padding:4px; }
+.qr-kecil svg{ display:block; width:100%; height:auto; }
+
+/* QR layar penuh */
+.qr-penuh[hidden]{ display:none; }
+.qr-penuh{
+  position:fixed; inset:0; z-index:100;
+  display:flex; align-items:center; justify-content:center; padding:16px;
+  background:rgba(29,22,64,0.85); cursor:pointer;
+}
+.qr-penuh-kartu{
+  background:#fff; border-radius:var(--radius-lg); padding:20px 24px; text-align:center;
+  width:min(92vw, 78vh); display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.qr-penuh-sekolah{ margin:0; font-family:var(--font-display); font-weight:800; font-size:1.4rem; color:var(--purple-900); }
+.qr-penuh-gambar{ width:100%; }
+.qr-penuh-gambar svg{ display:block; width:100%; height:auto; }
+.qr-penuh-teks, .qr-penuh-tutup{ margin:0; font-weight:700; color:var(--ink-soft); }
+.qr-penuh-tutup{ font-size:.8rem; }
+
+@media (max-width:760px){
+  .kartu-kode{ flex-direction:column-reverse; align-items:stretch; }
+  .qr-kecil{ width:160px; align-self:center; }
+  .kode-besar{ font-size:1.7rem; }
+}

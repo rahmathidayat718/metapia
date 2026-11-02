@@ -67,23 +67,29 @@ async function sidikPin(nama, pin) {
 function bacaAkun() {
   try { return JSON.parse(localStorage.getItem(KUNCI_AKUN)) || {}; } catch (e) { return {}; }
 }
+/** kunci akun di perangkat: "sekolah|nama" (akun lama tanpa sekolah: "nama") */
+function kunciAkun(nama, sekolah) {
+  return (sekolah ? sekolah.toLowerCase() + "|" : "") + nama.toLowerCase();
+}
 /** simpan akun di perangkat ini (dipanggil tiap berhasil login online) */
-async function ingatAkun(nama, pin) {
+async function ingatAkun(nama, pin, sekolah = "") {
   const akun = bacaAkun();
-  akun[nama.toLowerCase()] = { nama, sidik: await sidikPin(nama, pin) };
+  akun[kunciAkun(nama, sekolah)] = { nama, sekolah, sidik: await sidikPin(nama, pin) };
   localStorage.setItem(KUNCI_AKUN, JSON.stringify(akun));
 }
-/** cek akun saat offline: { status: "cocok" | "pin_salah" | "belum_pernah", nama } */
-async function cekAkunOffline(nama, pin) {
-  const a = bacaAkun()[nama.toLowerCase()];
+/** cek akun saat offline: { status: "cocok" | "pin_salah" | "belum_pernah", nama, sekolah } */
+async function cekAkunOffline(nama, pin, sekolah = "") {
+  const semua = bacaAkun();
+  const a = semua[kunciAkun(nama, sekolah)] || semua[kunciAkun(nama, "")];
   if (!a) return { status: "belum_pernah" };
-  return a.sidik === (await sidikPin(a.nama, pin)) ? { status: "cocok", nama: a.nama } : { status: "pin_salah", nama: a.nama };
+  const hasil = { nama: a.nama, sekolah: a.sekolah || "" };
+  return a.sidik === (await sidikPin(a.nama, pin)) ? { status: "cocok", ...hasil } : { status: "pin_salah", ...hasil };
 }
 // siswa yang SUDAH login sebelum fitur ini ada -> akunnya ikut diingat
 (function () {
   try {
     const u = JSON.parse(localStorage.getItem("metapia_user"));
-    if (u && u.nama && /^\d{4}$/.test(u.pin || "") && !bacaAkun()[u.nama.toLowerCase()]) ingatAkun(u.nama, u.pin);
+    if (u && u.nama && /^\d{4}$/.test(u.pin || "") && !bacaAkun()[kunciAkun(u.nama, u.sekolah || "")]) ingatAkun(u.nama, u.pin, u.sekolah || "");
   } catch (e) {}
 })();
 

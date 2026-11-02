@@ -3,7 +3,14 @@
    Halaman Video isinya simpel: 1 video + 2 bocah yang lagi senyum +
    ajakan nonton. Tombolnya cuma tombol PLAY di tengah layar.
 
-   CARA PASANG VIDEO:
+   CARA PASANG VIDEO (pilih salah satu):
+   A) FILE MP4 SENDIRI (disarankan — BISA DITONTON OFFLINE):
+      Taruh file video di folder assets/video/, lalu isi VIDEO.file,
+      contoh: file: "assets/video/video-majas.mp4". Kecilkan dulu ke ±480p
+      biar ringan (cara lengkapnya di docs/video-offline.md).
+      Siswa tekan "Simpan untuk offline" sekali waktu ada internet/wifi ->
+      setelah itu video bisa diputar walau tanpa internet.
+   B) LINK YouTube / Google Drive (TIDAK bisa offline):
    Isi VIDEO.link di bawah dengan link YouTube atau Google Drive,
    langsung copy-paste dari browser aja, contoh:
      YouTube : "https://www.youtube.com/watch?v=XXXXXXXXXXX"
@@ -24,8 +31,10 @@
 const VIDEO = {
   judul: "Video Majas",                                  // tulisan di kotak kuning pojok
   ajakan: "Yuk, nonton video majas bareng kami! 🎬",     // balon kata bocah kiri (pendek aja)
-  link: "",                                              // link YouTube / Google Drive
+  file: "",                                              // file MP4 di assets/video/ (bisa offline)
+  link: "",                                              // link YouTube / Google Drive (dipakai kalau file kosong)
 };
+const CACHE_VIDEO = "video-metapia"; // sama dengan di sw.js
 
 /* 2 bocah yang nemenin (pose senyum) */
 const BOCAH_KIRI = { nama: "Dito", gambar: "assets/karakter/murid/dito-diam.webp" };
@@ -81,7 +90,8 @@ setInterval(() => {
    4) LAYAR VIDEO — cover + tombol play, diklik baru videonya dimuat
    ========================================================================== */
 const elLayar = document.getElementById("layarVideo");
-const info = bacaLink(VIDEO.link);
+const info = VIDEO.file ? { file: VIDEO.file, thumbnail: null } : bacaLink(VIDEO.link);
+const urlFile = VIDEO.file ? new URL(VIDEO.file, location.href).href : "";
 
 function tampilkanCover() {
   const cover = document.createElement("button");
@@ -93,7 +103,11 @@ function tampilkanCover() {
     <span class="label-play">${info ? "Putar Video" : "Video segera hadir!"}</span>`;
 
   cover.addEventListener("click", () => {
-    if (info) {
+    if (info && info.file) {
+      // file sendiri: diputar lewat <video> (offline pun jalan kalau sudah disimpan)
+      elLayar.innerHTML = `<video src="${info.file}" controls autoplay playsinline preload="auto"></video>`;
+      pasangTombolSimpan();
+    } else if (info) {
       elLayar.innerHTML = `<iframe src="${info.embed}" title="${VIDEO.judul}"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen></iframe>`;
@@ -107,27 +121,124 @@ function tampilkanCover() {
 
   elLayar.innerHTML = "";
   elLayar.appendChild(cover);
+  if (info && info.file) pasangTombolSimpan();
 }
 
 /* ==========================================================================
-   5) SAAT OFFLINE — video butuh internet (YouTube/Drive), jadi yang tampil
-      Kak Rara dengan pesan ramah + tombol ke Materi (Materi bisa offline)
+   4b) SIMPAN VIDEO UNTUK OFFLINE (khusus VIDEO.file)
+   Video diunduh utuh sekali, disimpan di penyimpanan browser (cache
+   "video-metapia"). sw.js lalu memutar video dari simpanan itu, termasuk
+   waktu offline. Simpanan ini gak ikut terhapus walau web di-update.
+   ========================================================================== */
+let sedangSimpan = false;
+let persenSimpan = 0;
+
+async function videoTersimpan() {
+  if (!urlFile || !("caches" in window)) return false;
+  try {
+    const c = await caches.open(CACHE_VIDEO);
+    return !!(await c.match(urlFile, { ignoreSearch: true }));
+  } catch (e) {
+    return false;
+  }
+}
+
+async function pasangTombolSimpan() {
+  if (!("caches" in window) || !navigator.serviceWorker) return;
+  let btn = elLayar.querySelector(".tombol-simpan");
+  if (!btn) {
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tombol-simpan";
+    btn.addEventListener("click", (e) => { e.stopPropagation(); klikSimpan(); });
+    elLayar.appendChild(btn);
+  }
+  if (sedangSimpan) {
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan ${persenSimpan}%`;
+    return;
+  }
+  const ada = await videoTersimpan();
+  btn.classList.toggle("is-tersimpan", ada);
+  btn.innerHTML = ada
+    ? '<i class="fa-solid fa-circle-check"></i> Tersimpan offline'
+    : '<i class="fa-solid fa-download"></i> Simpan untuk offline';
+  btn.title = ada ? "Video sudah tersimpan di perangkat ini. Klik untuk menghapusnya." : "Unduh video sekali, lalu bisa ditonton tanpa internet";
+}
+
+async function klikSimpan() {
+  if (sedangSimpan) return;
+  if (await videoTersimpan()) {
+    if (confirm("Video sudah tersimpan di perangkat ini.\nHapus simpanannya untuk mengosongkan memori?")) {
+      await (await caches.open(CACHE_VIDEO)).delete(urlFile, { ignoreSearch: true });
+      pasangTombolSimpan();
+    }
+    return;
+  }
+  if (navigator.onLine === false) {
+    alert("Menyimpan video butuh internet. Coba lagi saat ada internet/wifi, ya.");
+    return;
+  }
+  sedangSimpan = true;
+  persenSimpan = 0;
+  pasangTombolSimpan();
+  try {
+    // minta browser jangan menghapus simpanan ini kalau memori mulai penuh
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+    const res = await fetch(urlFile, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const total = Number(res.headers.get("Content-Length")) || 0;
+    const reader = res.body.getReader();
+    const potongan = [];
+    let dapat = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      potongan.push(value);
+      dapat += value.length;
+      if (total) {
+        const p = Math.floor((dapat / total) * 100);
+        if (p !== persenSimpan) { persenSimpan = p; pasangTombolSimpan(); }
+      }
+    }
+    const blob = new Blob(potongan, { type: res.headers.get("Content-Type") || "video/mp4" });
+    const c = await caches.open(CACHE_VIDEO);
+    await c.put(urlFile, new Response(blob, { headers: { "Content-Type": blob.type, "Content-Length": String(blob.size) } }));
+    sedangSimpan = false;
+    pasangTombolSimpan();
+    alert("Video tersimpan! 🎉 Sekarang video bisa ditonton walau tanpa internet.");
+  } catch (e) {
+    console.warn("[METAPIA] video gagal disimpan:", e);
+    sedangSimpan = false;
+    pasangTombolSimpan();
+    alert("Video gagal disimpan (internet putus atau memori HP penuh). Coba lagi, ya.");
+  }
+}
+
+/* ==========================================================================
+   5) SAAT OFFLINE — video yang SUDAH DISIMPAN tetap bisa diputar. Kalau
+      belum disimpan (atau pakai YouTube/Drive), yang tampil Ibu Rara dengan
+      pesan ramah + tombol ke Materi (Materi bisa offline)
    ========================================================================== */
 function tampilkanOffline() {
+  const pesan = info && info.file
+    ? '<b>Video belum disimpan di perangkat ini.</b> Nanti saat ada internet, tekan "Simpan untuk offline" di layar video. Sekarang, yuk baca Materi dulu! 📖'
+    : "<b>Video butuh internet.</b> Sambil menunggu, yuk baca Materi dulu! 📖";
   elLayar.innerHTML = `
     <div class="layar-offline">
       <img src="assets/karakter/guru/guru-senyum.webp" width="546" height="520" decoding="async" alt="Ibu Rara">
       <div class="layar-offline-teks">
-        <p><b>Video butuh internet.</b> Sambil menunggu, yuk baca Materi dulu! 📖</p>
+        <p>${pesan}</p>
         <a class="comic-btn comic-btn-primary" href="materi.html"><i class="fa-solid fa-book"></i> Buka Materi</a>
       </div>
     </div>`;
 }
-function aturLayar() {
-  if (navigator.onLine === false) tampilkanOffline();
+async function aturLayar() {
+  if (navigator.onLine === false && !(await videoTersimpan())) tampilkanOffline();
   else tampilkanCover();
 }
-window.addEventListener("offline", () => { if (!elLayar.querySelector("iframe")) tampilkanOffline(); });
+window.addEventListener("offline", async () => {
+  if (!elLayar.querySelector("iframe, video") && !(await videoTersimpan())) tampilkanOffline();
+});
 window.addEventListener("online", () => { if (elLayar.querySelector(".layar-offline")) tampilkanCover(); });
 
 /* ==========================================================================

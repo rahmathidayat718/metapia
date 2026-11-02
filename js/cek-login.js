@@ -1,7 +1,7 @@
 /* ==========================================================================
    METAPIA — cek-login.js
-   Dipasang di <head> SEMUA halaman selain index.html (dashboard, materi,
-   video, kuis, game). Kalau siswa belum masukin nama, langsung dilempar
+   Dipasang di <head> SEMUA halaman siswa selain index.html (dashboard,
+   materi, video, kuis, game). Kalau siswa belum masuk, langsung dilempar
    ke halaman login SEBELUM isi halaman sempat tampil.
    ========================================================================== */
 (function () {
@@ -13,7 +13,13 @@
       user && user.masukPakai === "nama" &&
       typeof user.nama === "string" && user.nama.trim() &&
       /^\d{4}$/.test(user.pin || "")
-    ) return;
+    ) {
+      // akun dari sebelum ada pilihan sekolah -> ke halaman masuk buat milih
+      // sekolah (namanya sudah terisi). Kalau lagi offline, boleh lanjut dulu.
+      if (user.sekolah || navigator.onLine === false) return;
+      window.location.replace("index.html");
+      return;
+    }
   } catch (e) {}
   localStorage.removeItem("metapia_user");
   window.location.replace("index.html");

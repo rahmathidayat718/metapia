@@ -17,12 +17,12 @@
 
 <div class="login-page">
   <div class="login-card">
-    <div class="login-logo">
+    <div class="login-kepala">
       <div class="brand-badge">📖</div>
+      <h1 class="login-title">
+        <span style="color:var(--yellow-dark)">META</span><span style="color:var(--purple-700)">PIA</span>
+      </h1>
     </div>
-    <h1 class="login-title">
-      <span style="color:var(--yellow-dark)">META</span><span style="color:var(--purple-700)">PIA</span>
-    </h1>
     <p class="login-tag">Menjelajahi Dunia Majas dengan Imajinasi Tanpa Batas</p>
 
     <svg class="login-illustration" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,8 +39,24 @@
       </g>
     </svg>
 
-    <!-- masuk pakai NAMA + PIN 4 angka (dicek ke Google Sheet, lihat js/auth.js) -->
+    <!-- pilih peran: Siswa / Guru -->
+    <div class="peran-tab" role="tablist" aria-label="Masuk sebagai">
+      <button type="button" role="tab" class="peran-btn is-aktif" id="tabSiswa" aria-selected="true">🎒 Siswa</button>
+      <button type="button" role="tab" class="peran-btn" id="tabGuru" aria-selected="false">👩‍🏫 Guru</button>
+    </div>
+
+    <!-- SISWA: KODE SEKOLAH + NAMA + PIN 4 angka (dicek ke Google Sheet, lihat js/auth.js).
+         Buka lewat link/QR guru (index.html?sekolah=KODE) -> kodenya sudah terisi -->
     <form class="login-form" id="formLogin" novalidate>
+      <div class="baris-sekolah" id="barisSekolahSiswa">
+        <label class="login-label" for="kodeSekolahSiswa">Kode sekolah <small>(dari gurumu)</small></label>
+        <div class="input-nama">
+          <i class="fa-solid fa-school"></i>
+          <input type="text" id="kodeSekolahSiswa" class="input-kode" maxlength="7" placeholder="mis. K7Q2MX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        </div>
+        <p class="info-sekolah" id="infoSekolahSiswa" hidden></p>
+      </div>
+
       <label class="login-label" for="namaSiswa">Siapa namamu?</label>
       <div class="input-nama">
         <i class="fa-solid fa-user-astronaut"></i>
@@ -53,7 +69,7 @@
         <input type="password" id="pinSiswa" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
         <button type="button" class="lihat-pin" id="lihatPin" aria-label="Lihat PIN"><i class="fa-solid fa-eye"></i></button>
       </div>
-      <p class="login-hint">Baru pertama kali? Buat PIN 4 angka &amp; ingat baik-baik, ya!</p>
+      <p class="login-hint login-hint-siswa">Baru pertama kali? Buat PIN 4 angka &amp; ingat baik-baik, ya!</p>
 
       <p id="loginError" class="login-error"></p>
       <button type="submit" class="btn btn-primary btn-block" id="btnMasuk">
@@ -71,10 +87,62 @@
       <a href="dashboard.html" class="btn btn-primary btn-block">Oke, aku ingat! <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
+    <!-- GURU: masuk / daftar (lihat js/auth-guru.js). Guru cuma bisa MELIHAT nilai -->
+    <form class="login-form" id="formGuru" novalidate hidden>
+      <div class="mode-guru">
+        <button type="button" class="mode-btn is-aktif" data-mode="masuk">Masuk</button>
+        <button type="button" class="mode-btn" data-mode="gabung">Gabung sekolah</button>
+        <button type="button" class="mode-btn" data-mode="baru">Sekolah baru</button>
+      </div>
+      <p class="login-hint" id="hintMode"></p>
+
+      <div class="baris-sekolah" id="barisKodeSekolahGuru">
+        <label class="login-label" for="kodeSekolahGuru">Kode sekolah</label>
+        <div class="input-nama">
+          <i class="fa-solid fa-school"></i>
+          <input type="text" id="kodeSekolahGuru" class="input-kode" maxlength="7" placeholder="mis. K7Q2MX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        </div>
+        <p class="info-sekolah" id="infoSekolahGuru" hidden></p>
+      </div>
+      <div class="baris-sekolah" id="barisSekolahBaru" hidden>
+        <label class="login-label" for="sekolahBaru">Nama sekolah</label>
+        <div class="input-nama">
+          <i class="fa-solid fa-plus"></i>
+          <input type="text" id="sekolahBaru" maxlength="60" placeholder="mis. SD Negeri 1 Ceria Makassar" autocomplete="organization">
+        </div>
+      </div>
+
+      <label class="login-label" for="namaGuru">Nama guru</label>
+      <div class="input-nama">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <input type="text" id="namaGuru" maxlength="40" placeholder="mis. Ibu Siti Aminah" autocomplete="name">
+      </div>
+
+      <label class="login-label" for="pinGuru">PIN guru <small>(6 angka)</small></label>
+      <div class="input-nama">
+        <i class="fa-solid fa-key"></i>
+        <input type="password" id="pinGuru" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="off">
+        <button type="button" class="lihat-pin" id="lihatPinGuru" aria-label="Lihat PIN"><i class="fa-solid fa-eye"></i></button>
+      </div>
+
+      <div id="barisKodeGuru" hidden>
+        <label class="login-label" for="kodeGuru">Kode pembuat sekolah</label>
+        <div class="input-nama">
+          <i class="fa-solid fa-shield-halved"></i>
+          <input type="text" id="kodeGuru" maxlength="40" placeholder="Minta ke pengelola METAPIA" autocomplete="off">
+        </div>
+      </div>
+      <p class="login-hint" id="hintGuru">Guru hanya dapat <b>melihat</b> nilai siswa di sekolahnya.</p>
+
+      <p id="guruError" class="login-error"></p>
+      <button type="submit" class="btn btn-primary btn-block" id="btnGuru">
+        Masuk sebagai Guru <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
     <p class="login-foot">
-      Khusus untuk siswa &amp; siswi. Nama &amp; PIN dipakai untuk mencatat nilai kuismu ✨
+      <a href="panduan.html"><i class="fa-solid fa-circle-question"></i> Baca panduan</a> · <a href="panduan.html#guru">Untuk guru</a>
     </p>
-    <p class="login-foot"><a href="panduan.html" style="color:var(--purple-700); text-decoration:underline; font-weight:800;"><i class="fa-solid fa-circle-question"></i> Baca panduan</a> · <a href="panduan.html#guru" style="color:var(--purple-700); text-decoration:underline; font-weight:800;">Untuk guru</a></p>
   </div>
 </div>
 
@@ -82,5 +150,6 @@
 <script src="js/kupu.js"></script>
 <script src="js/sheet.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/auth-guru.js"></script>
 </body>
 </html>

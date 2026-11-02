@@ -30,7 +30,19 @@
   box-shadow:6px 6px 0 rgba(44,36,80,0.55);
   overflow:hidden;
 }
-.layar-video iframe{ display:block; width:100%; height:100%; border:0; }
+.layar-video iframe, .layar-video video{ display:block; width:100%; height:100%; border:0; background:#000; }
+
+/* tombol "Simpan untuk offline" (video MP4 sendiri), pojok kanan atas layar */
+.tombol-simpan{
+  position:absolute; top:3%; right:2%; z-index:2;
+  display:flex; align-items:center; gap:6px;
+  border:2px solid var(--ink); border-radius:99px;
+  padding:5px 12px;
+  background:var(--yellow); color:var(--ink);
+  font-family:var(--font-body); font-weight:800; font-size:.8rem;
+  box-shadow:2px 2px 0 var(--ink); cursor:pointer;
+}
+.tombol-simpan.is-tersimpan{ background:#E3F7EF; color:#0E7A5B; }
 
 /* cover sebelum diputar: thumbnail (kalau YouTube) + tombol play besar */
 .layar-cover{

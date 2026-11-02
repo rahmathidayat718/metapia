@@ -119,9 +119,10 @@ const DAFTAR_MAJAS = [
   },
 ];
 
-/** langkah terakhir 1 bagian materi: dialog guru (+1 kalau ada pertanyaan "paham?" ke murid) */
+/** langkah terakhir 1 bagian materi: dialog guru (+2 kalau ada pertanyaan
+    "paham?": 1 langkah guru bertanya, 1 langkah murid menjawab) */
 function langkahTerakhir(majas) {
-  return majas.dialog.length - 1 + (majas.jawabanMurid ? 1 : 0);
+  return majas.dialog.length - 1 + (majas.jawabanMurid ? 2 : 0);
 }
 
 /* ==========================================================================
@@ -129,6 +130,9 @@ function langkahTerakhir(majas) {
    ========================================================================== */
 const TAHAP = { INTRO: "intro", KONTEN: "konten" };
 let tahap = TAHAP.INTRO;
+// intro: murid baru menjawab sapaan setelah tombol ditekan (kasih jeda buat
+// guru di kelas nanya ke siswa dulu)
+let introDijawab = false;
 let idxMajas = 0;
 let idxDialog = 0;
 let suaraNyala = true;
@@ -431,12 +435,12 @@ function renderIntro() {
   guru.el.classList.add("is-masuk");
   playMasuk();
 
-  // tunggu guru selesai jalan masuk, baru ngomong -> lalu Dito jawab
+  // tunggu guru selesai jalan masuk, baru ngomong. Dito jawab nanti,
+  // setelah tombol "Siap!" ditekan
+  introDijawab = false;
   setTimeout(() => {
     guru.el.classList.remove("is-masuk");
-    bicara("guru", SAPAAN_GURU, {
-      lalu: () => { pilihMurid(0); bicara("murid", SAPAAN_MURID); },
-    });
+    bicara("guru", SAPAAN_GURU);
   }, 1350);
 
   btnPrev.disabled = true;
@@ -445,7 +449,8 @@ function renderIntro() {
 
 function renderKonten() {
   const majas = DAFTAR_MAJAS[idxMajas];
-  const diPromptPaham = idxDialog >= majas.dialog.length;
+  const diPromptPaham = idxDialog === majas.dialog.length;
+  const diJawabMurid = idxDialog > majas.dialog.length;
   const diMajasTerakhir = idxMajas === DAFTAR_MAJAS.length - 1;
   const diLangkahTerakhir = diMajasTerakhir && idxDialog >= langkahTerakhir(majas);
 
@@ -453,10 +458,13 @@ function renderKonten() {
   elCaption.textContent = majas.nama;
 
   if (diPromptPaham) {
-    bicara("guru", `Gimana teman-teman, paham soal "${majas.nama}"? 😊`, {
-      lalu: () => { pilihMurid(penjawab(idxMajas)); bicara("murid", majas.jawabanMurid, { pose: "ide" }); },
-    });
+    // guru nanya, murid jawab di langkah berikutnya (setelah tombol ditekan)
+    bicara("guru", `Gimana teman-teman, paham soal "${majas.nama}"? 😊`);
     btnAction.innerHTML = 'Paham! <i class="fa-solid fa-thumbs-up"></i>';
+  } else if (diJawabMurid) {
+    pilihMurid(penjawab(idxMajas));
+    bicara("murid", majas.jawabanMurid, { pose: "ide" });
+    btnAction.innerHTML = 'Lanjut <i class="fa-solid fa-arrow-right"></i>';
   } else {
     const baris = majas.dialog[idxDialog];
     bicara("guru", baris, { pose: baris.includes("Contoh") ? "nunjuk" : "bicara" });
@@ -502,6 +510,13 @@ btnAction.addEventListener("click", () => {
 
   playPop();
 
+  if (tahap === TAHAP.INTRO && !introDijawab) {
+    introDijawab = true;
+    pilihMurid(0);
+    bicara("murid", SAPAAN_MURID);
+    btnAction.innerHTML = 'Mulai Belajar <i class="fa-solid fa-arrow-right"></i>';
+    return;
+  }
   if (tahap === TAHAP.INTRO) {
     tahap = TAHAP.KONTEN;
     idxMajas = 0;

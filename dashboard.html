@@ -152,7 +152,7 @@ tampilkanSkorGame();
 (async function sinkronDariSheet() {
   const user = getCurrentUser();
   if (!user) return;
-  const hasil = await ambilStatusSiswa(user.nama, user.pin);
+  const hasil = await ambilStatusSiswa(user.nama, user.pin, user.sekolah || "");
   if (!hasil || !hasil.ok) return;
   if (hasil.nilai) {
     simpanNilaiLokal(user.nama, hasil.nilai.nilai, hasil.nilai.tanggal);
