@@ -5,10 +5,24 @@
 
 /**
  * Ambil data user yang sedang login dari localStorage.
+ * Gak ada siswa tapi ada guru yang masuk -> MODE GURU: dikembalikan
+ * { nama, peran: "guru", pin: "" }. Nilai kuis/game guru gak dikirim ke
+ * Google Sheet (lihat kirimData di js/sheet.js).
  */
 function getCurrentUser() {
   const raw = localStorage.getItem("metapia_user");
-  return raw ? JSON.parse(raw) : null;
+  if (raw) return JSON.parse(raw);
+  const guru = bacaAkunGuru();
+  return guru ? { nama: guru.nama, sekolah: guru.sekolah, pin: "", masukPakai: "guru", peran: "guru" } : null;
+}
+
+function bacaAkunGuru() {
+  try {
+    const g = JSON.parse(localStorage.getItem("metapia_guru"));
+    return g && g.nama && g.sekolah ? g : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 /**
@@ -17,6 +31,7 @@ function getCurrentUser() {
  */
 function requireLogin() {
   const user = getCurrentUser();
+  if (user && user.peran === "guru") return user;
   if (!user || user.masukPakai !== "nama" || !/^\d{4}$/.test(user.pin || "")) {
     window.location.replace("index.html");
   }
@@ -39,7 +54,18 @@ function renderUserInNav() {
   const avatarEl = document.getElementById("navAvatar");
 
   if (nameEl) nameEl.textContent = user.nama.split(" ")[0];
-  if (avatarEl) {
+  if (avatarEl && user.peran === "guru") {
+    // MODE GURU: pil nama = tombol kembali ke Rekap Nilai
+    avatarEl.innerHTML = `<span class="avatar-ikon"><i class="fa-solid fa-chalkboard-user"></i></span><span class="avatar-nama"></span>`;
+    avatarEl.querySelector(".avatar-nama").textContent = `Guru · ${user.nama}`;
+    avatarEl.title = `Mode guru (${user.nama}) — klik untuk ke Rekap Nilai`;
+    avatarEl.classList.add("nama-panjang");
+    avatarEl.setAttribute("role", "button");
+    avatarEl.tabIndex = 0;
+    const keRekap = () => { window.location.href = "guru.html"; };
+    avatarEl.addEventListener("click", keRekap);
+    avatarEl.addEventListener("keydown", (e) => { if (e.key === "Enter") keRekap(); });
+  } else if (avatarEl) {
     // tampilkan nama lengkap; kalau kepanjangan CSS motong jadi "..."
     avatarEl.innerHTML = `<span class="avatar-ikon"><i class="fa-solid fa-user"></i></span><span class="avatar-nama"></span>`;
     avatarEl.querySelector(".avatar-nama").textContent = user.nama;
@@ -109,8 +135,25 @@ function initMenuBawah() {
   document.body.classList.add("ada-menu-bawah");
 }
 
+/**
+ * MODE GURU: tambah menu "Rekap" (ke guru.html) di navbar halaman siswa.
+ * (Keterangan "nilai tidak disimpan" muncul di pil nama & layar hasil.)
+ */
+function initModeGuru() {
+  const user = getCurrentUser();
+  if (!user || user.peran !== "guru") return;
+  document.body.classList.add("mode-guru");
+  const navLinks = document.getElementById("navLinks");
+  if (navLinks && !navLinks.querySelector('a[href="guru.html"]')) {
+    const li = document.createElement("li");
+    li.innerHTML = '<a href="guru.html"><i class="fa-solid fa-chalkboard-user"></i> Rekap</a>';
+    navLinks.appendChild(li);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initNavToggle();
+  initModeGuru();
   initMenuBawah();
   renderUserInNav();
 });

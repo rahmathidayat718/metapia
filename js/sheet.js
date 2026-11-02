@@ -57,6 +57,13 @@ function tulisAntrean(daftar) {
  *  "error"      -> error di Apps Script, diantre
  */
 async function kirimData(data, { antreKalauGagal = true } = {}) {
+  // MODE GURU (guru mencoba kuis/game di kelas): gak dikirim & gak diantre,
+  // biar rekap nilai siswa gak kecampur nilai guru
+  if (!data.pin && !bacaUserLokal()) {
+    let guru = null;
+    try { guru = JSON.parse(localStorage.getItem("metapia_guru")); } catch (e) {}
+    if (guru && guru.nama === data.nama) return { status: "guru" };
+  }
   // sekolah ikut dikirim (data lama di antrean yang belum punya sekolah
   // dilengkapi dari akun yang sedang masuk)
   if (!data.sekolah) {
@@ -90,6 +97,7 @@ async function kirimData(data, { antreKalauGagal = true } = {}) {
 function pesanKirim(hasil, apa = "Nilai") {
   switch (hasil.status) {
     case "ok": return { teks: `✓ ${apa} sudah tersimpan!`, kelas: "is-ok" };
+    case "guru": return { teks: `Mode guru: ${apa.toLowerCase()} tidak disimpan (hanya untuk mencoba & mengajar).`, kelas: "is-ok" };
     case "pin_salah": return { teks: `${apa} ditolak server: PIN tidak cocok. Coba keluar lalu masuk lagi.`, kelas: "is-gagal" };
     case "versi_lama": return { teks: `${apa} belum terkirim: server Google Sheet perlu diperbarui guru. ${apa} disimpan & dikirim otomatis nanti.`, kelas: "is-gagal" };
     case "offline": return { teks: `${apa} belum terkirim (internet lambat/putus). Akan dikirim otomatis nanti.`, kelas: "is-gagal" };
@@ -181,7 +189,7 @@ async function infoServer() {
 
 /** Ambil nilai kuis terakhir siswa dari sheet (buat Dashboard). Gagal -> null. */
 async function ambilStatusSiswa(nama, pin, sekolah = "") {
-  if (!GOOGLE_SHEET_URL) return null;
+  if (!GOOGLE_SHEET_URL || !pin) return null; // mode guru: gak ada data di sheet
   try {
     const url = `${GOOGLE_SHEET_URL}?aksi=status&nama=${encodeURIComponent(nama)}&pin=${encodeURIComponent(pin)}&sekolah=${encodeURIComponent(sekolah)}`;
     const res = await fetch(url);

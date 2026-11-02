@@ -26,7 +26,18 @@
     <div class="brand-badge">📖</div>
     <div class="brand-name"><span>META</span><span>PIA</span></div>
   </a>
+
+  <!-- guru juga bisa membuka semua halaman siswa untuk mengajar (MODE GURU) -->
+  <ul class="nav-links" id="navLinks">
+    <li><a href="guru.html" class="active"><i class="fa-solid fa-chalkboard-user"></i> Rekap</a></li>
+    <li><a href="materi.html"><i class="fa-solid fa-book"></i> Materi</a></li>
+    <li><a href="video.html"><i class="fa-solid fa-clapperboard"></i> Video</a></li>
+    <li><a href="kuis.html"><i class="fa-solid fa-pen-to-square"></i> Kuis</a></li>
+    <li><a href="game.html"><i class="fa-solid fa-gamepad"></i> Game</a></li>
+  </ul>
+
   <div class="nav-right">
+    <button class="nav-toggle" id="navToggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
     <a class="btn-panduan" href="panduan.html#guru" title="Panduan guru" aria-label="Panduan guru"><i class="fa-solid fa-circle-question"></i></a>
     <span class="guru-nama" id="namaGuru"></span>
     <button class="guru-keluar" id="btnKeluar"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
@@ -47,6 +58,18 @@
   </section>
 
   <!-- kode sekolah: KODE SISWA (link + QR, dibagikan ke siswa) & KODE GURU (buat guru lain) -->
+  <!-- mengajar di kelas -->
+  <section class="kartu-ajar">
+    <p class="guru-label"><i class="fa-solid fa-person-chalkboard"></i> Mengajar di kelas</p>
+    <p class="kode-ket">Buka materi, video, kuis, dan game seperti yang dilihat siswa, misalnya untuk ditayangkan di proyektor. Kuis &amp; game di akun guru boleh dicoba bebas; <b>nilainya tidak disimpan</b> dan tidak masuk rekap.</p>
+    <div class="ajar-tombol">
+      <a class="ajar-btn" href="materi.html"><span>📚</span> Materi</a>
+      <a class="ajar-btn" href="video.html"><span>🎬</span> Video</a>
+      <a class="ajar-btn" href="kuis.html"><span>📝</span> Kuis</a>
+      <a class="ajar-btn" href="game.html"><span>🎮</span> Game</a>
+    </div>
+  </section>
+
   <section class="kartu-kode" id="kartuKode">
     <div class="kode-isi">
       <p class="guru-label"><i class="fa-solid fa-qrcode"></i> Bagikan ke siswa</p>
@@ -97,6 +120,7 @@
 </div>
 
 <script src="js/pwa.js"></script>
+<script src="js/app.js"></script>
 <script src="js/sheet.js"></script>
 <script src="js/vendor/qrcode.js"></script>
 <script src="js/guru.js"></script>

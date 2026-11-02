@@ -129,3 +129,22 @@
   .qr-kecil{ width:160px; align-self:center; }
   .kode-besar{ font-size:1.7rem; }
 }
+
+/* mengajar di kelas: pintasan ke halaman siswa */
+.kartu-ajar{
+  background:rgba(255,255,255,0.97); border-radius:var(--radius-md); box-shadow:var(--shadow-card);
+  padding:16px 20px; display:flex; flex-direction:column; gap:8px;
+}
+.ajar-tombol{ display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; }
+.ajar-btn{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:12px 8px; border:3px solid var(--ink); border-radius:14px; box-shadow:3px 3px 0 var(--ink);
+  background:#F1ECFF; color:var(--purple-900); font-family:var(--font-display); font-weight:800; font-size:1.05rem;
+  text-decoration:none;
+}
+.ajar-btn span{ font-size:1.3rem; }
+.ajar-btn:hover{ background:var(--yellow); }
+.ajar-btn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink); }
+@media (max-width:760px){
+  .ajar-tombol{ grid-template-columns:repeat(2, 1fr); }
+}
