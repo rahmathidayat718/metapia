@@ -8,7 +8,7 @@
       Taruh file video di folder assets/video/, lalu isi VIDEO.file,
       contoh: file: "assets/video/video-majas.mp4". Kecilkan dulu ke ±480p
       biar ringan (cara lengkapnya di docs/video-offline.md).
-      Siswa tekan "Simpan untuk offline" sekali waktu ada internet/wifi ->
+      Siswa tekan "Simpan ke perangkat" sekali waktu ada internet ->
       setelah itu video bisa diputar walau tanpa internet.
    B) LINK YouTube / Google Drive (TIDAK bisa offline):
    Isi VIDEO.link di bawah dengan link YouTube atau Google Drive,
@@ -30,7 +30,7 @@
    ========================================================================== */
 const VIDEO = {
   judul: "Video Majas",                                  // tulisan di kotak kuning pojok
-  ajakan: "Yuk, nonton video majas bareng kami! 🎬",     // balon kata bocah kiri (pendek aja)
+  ajakan: "Ayo, kita tonton video majas bersama! 🎬",     // balon kata bocah kiri (pendek aja)
   file: "",                                              // file MP4 di assets/video/ (bisa offline)
   link: "",                                              // link YouTube / Google Drive (dipakai kalau file kosong)
 };
@@ -160,8 +160,8 @@ async function pasangTombolSimpan() {
   const ada = await videoTersimpan();
   btn.classList.toggle("is-tersimpan", ada);
   btn.innerHTML = ada
-    ? '<i class="fa-solid fa-circle-check"></i> Tersimpan offline'
-    : '<i class="fa-solid fa-download"></i> Simpan untuk offline';
+    ? '<i class="fa-solid fa-circle-check"></i> Sudah tersimpan'
+    : '<i class="fa-solid fa-download"></i> Simpan ke perangkat';
   btn.title = ada ? "Video sudah tersimpan di perangkat ini. Klik untuk menghapusnya." : "Unduh video sekali, lalu bisa ditonton tanpa internet";
 }
 
@@ -175,7 +175,7 @@ async function klikSimpan() {
     return;
   }
   if (navigator.onLine === false) {
-    alert("Menyimpan video butuh internet. Coba lagi saat ada internet/wifi, ya.");
+    alert("Menyimpan video memerlukan internet. Coba lagi saat ada internet, ya.");
     return;
   }
   sedangSimpan = true;
@@ -205,12 +205,12 @@ async function klikSimpan() {
     await c.put(urlFile, new Response(blob, { headers: { "Content-Type": blob.type, "Content-Length": String(blob.size) } }));
     sedangSimpan = false;
     pasangTombolSimpan();
-    alert("Video tersimpan! 🎉 Sekarang video bisa ditonton walau tanpa internet.");
+    alert("Video tersimpan! 🎉 Sekarang, video bisa ditonton walaupun tanpa internet.");
   } catch (e) {
     console.warn("[METAPIA] video gagal disimpan:", e);
     sedangSimpan = false;
     pasangTombolSimpan();
-    alert("Video gagal disimpan (internet putus atau memori HP penuh). Coba lagi, ya.");
+    alert("Video gagal disimpan (internet putus atau memori perangkat penuh). Coba lagi, ya.");
   }
 }
 
@@ -221,8 +221,8 @@ async function klikSimpan() {
    ========================================================================== */
 function tampilkanOffline() {
   const pesan = info && info.file
-    ? '<b>Video belum disimpan di perangkat ini.</b> Nanti saat ada internet, tekan "Simpan untuk offline" di layar video. Sekarang, yuk baca Materi dulu! 📖'
-    : "<b>Video butuh internet.</b> Sambil menunggu, yuk baca Materi dulu! 📖";
+    ? '<b>Video belum disimpan di perangkat ini.</b> Nanti saat ada internet, tekan "Simpan ke perangkat" di layar video. Sekarang, ayo baca Materi dulu! 📖'
+    : "<b>Video butuh internet.</b> Sambil menunggu, ayo baca Materi dulu! 📖";
   elLayar.innerHTML = `
     <div class="layar-offline">
       <img src="assets/karakter/guru/guru-senyum.webp" width="546" height="520" decoding="async" alt="Ibu Rara">

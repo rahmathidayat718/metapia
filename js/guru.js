@@ -117,7 +117,7 @@ function gambarQR(ukuranSel) {
   const qr = qrcode(0, "M");
   qr.addData(linkSiswa());
   qr.make();
-  return qr.createSvgTag({ cellSize: ukuranSel, margin: ukuranSel * 2, scalable: true, alt: "QR masuk siswa" });
+  return qr.createSvgTag({ cellSize: ukuranSel, margin: ukuranSel * 2, scalable: true, alt: "Kode QR masuk siswa" });
 }
 function tampilkanKode() {
   $("kodeSiswa").textContent = guru.kodeSekolah || "––––––";
@@ -143,7 +143,7 @@ function tampilkan() {
     kartu("🎒", siswa.length, "Siswa terdaftar") +
     kartu("📝", sudahKuis.length, "Sudah mengerjakan kuis") +
     kartu("⭐", rata(sudahKuis.map((s) => s.kuis.terbaik)), "Rata-rata nilai kuis terbaik") +
-    kartu("🎮", siswa.filter((s) => Object.keys(s.game).length).length, "Sudah main game");
+    kartu("🎮", siswa.filter((s) => Object.keys(s.game).length).length, "Sudah mencoba permainan");
 
   $("pilihTanggal").hidden = tab !== "tanggal";
   if (tab === "siswa") tabelSiswa(siswa);
@@ -204,12 +204,12 @@ function tabelTanggal() {
     ${kuis.length ? `<div class="tabel-wrap"><table class="tabel">
       <thead><tr><th>No</th><th>Nama</th><th>Nilai pertama</th><th>Terbaik</th><th>Terakhir</th><th>Dicoba</th><th>Jam terakhir</th></tr></thead>
       <tbody>${kuis.map((k, i) => `<tr><td>${i + 1}</td><td class="kol-nama">${esc(k.nama)}</td><td>${k.pertama}</td><td class="kol-utama">${k.terbaik}</td><td>${k.terakhir}</td><td>${k.mencoba}x</td><td>${esc(k.jam)}</td></tr>`).join("")}</tbody>
-    </table></div>` : '<p class="kosong">Tidak ada kuis di tanggal ini.</p>'}
+    </table></div>` : '<p class="kosong">Tidak ada kuis pada tanggal ini.</p>'}
     <h2 class="sub-judul">🎮 Game (${game.length} catatan)</h2>
     ${game.length ? `<div class="tabel-wrap"><table class="tabel">
       <thead><tr><th>No</th><th>Nama</th><th>Game</th><th>Skor pertama</th><th>Terbaik</th><th>Terakhir</th><th>Dimainkan</th><th>Benar</th><th>Jam terakhir</th></tr></thead>
       <tbody>${game.map((g, i) => `<tr><td>${i + 1}</td><td class="kol-nama">${esc(g.nama)}</td><td>${esc(g.game)}</td><td>${g.pertama}</td><td class="kol-utama">${g.terbaik}</td><td>${g.terakhir}</td><td>${g.main}x</td><td>${esc(g.benar)}</td><td>${esc(g.jam)}</td></tr>`).join("")}</tbody>
-    </table></div>` : '<p class="kosong">Tidak ada game di tanggal ini.</p>'}`;
+    </table></div>` : '<p class="kosong">Tidak ada permainan pada tanggal ini.</p>'}`;
 }
 
 /* ==========================================================================
@@ -256,11 +256,11 @@ $("btnSalin").addEventListener("click", async () => {
   const link = linkSiswa();
   try {
     await navigator.clipboard.writeText(link);
-    $("btnSalin").innerHTML = '<i class="fa-solid fa-circle-check"></i> Link tersalin!';
+    $("btnSalin").innerHTML = '<i class="fa-solid fa-circle-check"></i> Tautan tersalin!';
   } catch (e) {
-    prompt("Salin link ini lalu bagikan ke siswa:", link);
+    prompt("Salin tautan ini, lalu bagikan kepada siswa:", link);
   }
-  setTimeout(() => { $("btnSalin").innerHTML = '<i class="fa-solid fa-link"></i> Salin link siswa'; }, 2500);
+  setTimeout(() => { $("btnSalin").innerHTML = '<i class="fa-solid fa-link"></i> Salin tautan siswa'; }, 2500);
 });
 $("btnQrBesar").addEventListener("click", () => {
   $("qrPenuhSekolah").textContent = guru.sekolah;

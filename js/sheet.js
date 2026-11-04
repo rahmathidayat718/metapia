@@ -97,11 +97,11 @@ async function kirimData(data, { antreKalauGagal = true } = {}) {
 function pesanKirim(hasil, apa = "Nilai") {
   switch (hasil.status) {
     case "ok": return { teks: `✓ ${apa} sudah tersimpan!`, kelas: "is-ok" };
-    case "guru": return { teks: `Mode guru: ${apa.toLowerCase()} tidak disimpan (hanya untuk mencoba & mengajar).`, kelas: "is-ok" };
-    case "pin_salah": return { teks: `${apa} ditolak server: PIN tidak cocok. Coba keluar lalu masuk lagi.`, kelas: "is-gagal" };
-    case "versi_lama": return { teks: `${apa} belum terkirim: server Google Sheet perlu diperbarui guru. ${apa} disimpan & dikirim otomatis nanti.`, kelas: "is-gagal" };
+    case "guru": return { teks: `Mode guru: ${apa.toLowerCase()} tidak disimpan (hanya untuk mencoba dan mengajar).`, kelas: "is-ok" };
+    case "pin_salah": return { teks: `${apa} ditolak server: PIN tidak cocok. Coba keluar, lalu masuk lagi.`, kelas: "is-gagal" };
+    case "versi_lama": return { teks: `${apa} belum terkirim: server Google Sheet perlu diperbarui oleh guru. ${apa} disimpan dan dikirim otomatis nanti.`, kelas: "is-gagal" };
     case "offline": return { teks: `${apa} belum terkirim (internet lambat/putus). Akan dikirim otomatis nanti.`, kelas: "is-gagal" };
-    default: return { teks: `${apa} belum terkirim (server error). Akan dikirim otomatis nanti.`, kelas: "is-gagal" };
+    default: return { teks: `${apa} belum terkirim (server bermasalah). Akan dikirim otomatis nanti.`, kelas: "is-gagal" };
   }
 }
 

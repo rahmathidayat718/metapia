@@ -320,7 +320,7 @@ const Game = (() => {
     gantiPose("senyum");
     guru(
       sudah === 0 ? `Halo, ${namaPanggilan}! Ayo mulai petualangan dari Level 1, ya! 🗺️` :
-      sudah < daftar.length ? `Keren, ${namaPanggilan}! Sudah ${sudah} level. Lanjut ke level berikutnya, yuk!` :
+      sudah < daftar.length ? `Hebat, ${namaPanggilan}! Sudah ${sudah} level. Ayo, lanjut ke level berikutnya!` :
       `Wah, semua level sudah kamu mainkan! Coba kejar 3 bintang semua! ⭐`,
       { poseAkhir: "nunjuk" }
     );
@@ -347,15 +347,15 @@ const Game = (() => {
             ${teks(g, "caraMain").map((c, i) => `<li><span>${i + 1}</span>${esc(c)}</li>`).join("")}
           </ol>
           ${!DUKUNG_WEBGL ? `<p class="info-3d">ℹ️ Perangkatmu belum mendukung game 3D, jadi kita main versi 2D, ya.</p>` : `
-          ${otomatisLambat ? `<p class="info-3d">📶 Internet lambat / hemat data terdeteksi, jadi otomatis pakai Versi 2D yang lebih ringan. Kamu tetap bisa pilih 3D.</p>` : ""}
+          ${otomatisLambat ? `<p class="info-3d">📶 Internet lambat atau mode hemat data terdeteksi, jadi otomatis memakai Versi 2D yang lebih ringan. Kamu tetap bisa memilih 3D.</p>` : ""}
           <div class="pilih-mode">
             <button class="chip-mode ${tiga ? "is-aktif" : ""}" data-mode="3d"><i class="fa-solid fa-cube"></i> Versi 3D</button>
             <button class="chip-mode ${!tiga ? "is-aktif" : ""}" data-mode="2d"><i class="fa-regular fa-square"></i> Versi 2D</button>
-            ${tiga ? `<button class="chip-mode chip-grafis" title="Grafis ringan untuk HP yang lambat"><i class="fa-solid fa-gauge-simple${ringan ? "" : "-high"}"></i> Grafis: ${ringan ? "Ringan" : "Normal"}</button>` : ""}
+            ${tiga ? `<button class="chip-mode chip-grafis" title="Grafis ringan untuk ponsel yang lambat"><i class="fa-solid fa-gauge-simple${ringan ? "" : "-high"}"></i> Grafis: ${ringan ? "Ringan" : "Normal"}</button>` : ""}
           </div>`}
           <div class="info-kuis">
             <span><i class="fa-solid fa-list-ol"></i> ${g.soal.length} soal</span>
-            <span><i class="fa-solid fa-trophy"></i> Skor maks 100</span>
+            <span><i class="fa-solid fa-trophy"></i> Skor maks. 100</span>
             ${g.detikPerSoal ? `<span><i class="fa-solid fa-stopwatch"></i> ${g.detikPerSoal} detik/soal</span>` : ""}
             ${s ? `<span><i class="fa-solid fa-star"></i> Terbaikmu: ${s.terbaik}</span>` : ""}
           </div>
@@ -381,7 +381,7 @@ const Game = (() => {
       suara.klik();
       renderPembuka(id);
     });
-    guru(`Siap main ${teks(g, "judul")}, ${namaPanggilan}? Baca cara mainnya dulu, ya!`);
+    guru(`Siap bermain ${teks(g, "judul")}, ${namaPanggilan}? Baca cara bermainnya dulu, ya!`);
   }
 
   /** animasi tutorial kecil di layar pembuka versi 3D */
@@ -423,7 +423,7 @@ const Game = (() => {
         <div class="kuis-head hud">
           <span class="hud-level warna-${g.warna}">${g.ikon} Lv ${g.id}</span>
           ${versi3d ? `<span class="hud-nyawa" title="Nyawa">${"<i class='fa-solid fa-heart'></i>".repeat(3)}</span>
-          <span class="hud-bonus" title="Poin Bonus (combo)"><i class="fa-solid fa-bolt"></i> <b>0</b></span>` : ""}
+          <span class="hud-bonus" title="Poin bonus (jawaban benar beruntun)"><i class="fa-solid fa-bolt"></i> <b>0</b></span>` : ""}
           <span class="kuis-nomor">Soal <b class="hud-no">1</b><small>/${g.soal.length}</small></span>
           <div class="hud-titik">${g.soal.map(() => "<span></span>").join("")}</div>
           <span class="hud-waktu" hidden><i class="fa-solid fa-stopwatch"></i> <b>0</b><i class="hud-waktu-bar"></i></span>
@@ -433,7 +433,7 @@ const Game = (() => {
             <i class="fa-solid ${suaraNyala ? "fa-volume-high" : "fa-volume-xmark"}"></i>
           </button>
           ${versi3d ? `<button class="btn-suara btn-jeda" title="Jeda"><i class="fa-solid fa-pause"></i></button>` : ""}
-          <button class="btn-suara btn-keluar" title="Keluar ke menu game"><i class="fa-solid fa-xmark"></i></button>
+          <button class="btn-suara btn-keluar" title="Keluar ke menu permainan"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="game-body"></div>
       </div>`;
@@ -441,7 +441,7 @@ const Game = (() => {
     const hud = elCard.querySelector(".hud");
     hud.querySelector(".btn-suara").addEventListener("click", (e) => gantiSuara(e.currentTarget));
     hud.querySelector(".btn-keluar").addEventListener("click", () => {
-      if (confirm("Keluar dari game? Skor permainan ini tidak akan disimpan.")) keluar();
+      if (confirm("Keluar dari permainan? Skornya tidak akan disimpan.")) keluar();
     });
 
     let skor = 0;
@@ -661,8 +661,8 @@ const Game = (() => {
     if (hasil.skor >= 70) tebarKonfeti();
     guru(
       hasil.skor >= 80 ? `Luar biasa, ${namaPanggilan}! Skormu ${hasil.skor}! 🎉` :
-      hasil.skor >= 60 ? `Bagus, ${namaPanggilan}! Skormu ${hasil.skor}. Main lagi biar dapat 3 bintang!` :
-      `Skormu ${hasil.skor}. Gak apa-apa, coba lagi ya! Kamu pasti bisa! 💪`
+      hasil.skor >= 60 ? `Bagus, ${namaPanggilan}! Skormu ${hasil.skor}. Main lagi supaya dapat 3 bintang!` :
+      `Skormu ${hasil.skor}. Tidak apa-apa, coba lagi, ya! Kamu pasti bisa! 💪`
     );
 
     simpanSkor(g, hasil);

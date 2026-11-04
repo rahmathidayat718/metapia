@@ -69,14 +69,14 @@ function pasangKotakKode(input, info, jenis = () => "siswa") {
     const ke = ++urutan;
     if (!kode) {
       hasil = null;
-      tulis(input.value.trim() ? "Kode sekolah terdiri dari 6 huruf/angka." : "", "");
+      tulis(input.value.trim() ? "Kode sekolah terdiri atas 6 huruf/angka." : "", "");
       return hasil;
     }
     tulis("Mengecek kode...", "");
     const h = await cekKodeSekolah(kode, jenis());
     if (ke !== urutan) return hasil; // sudah diketik ulang
     hasil = h;
-    if (!h) tulis("Kode belum bisa dicek (sedang offline).", "is-salah");
+    if (!h) tulis("Kode belum bisa dicek (tidak ada internet).", "is-salah");
     else if (h.ok) tulis(`🏫 ${h.sekolah}`, "is-ok");
     else tulis(jenis() === "guru" ? "Kode guru tidak ditemukan. Pastikan ini KODE GURU, bukan kode siswa." : "Kode sekolah tidak ditemukan. Cek lagi, ya.", "is-salah");
     return hasil;
@@ -188,12 +188,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     if (nama.length < 2) {
-      showLoginError("Tulis namamu dulu ya, minimal 2 huruf 😊");
+      showLoginError("Tulis namamu dulu, ya. Minimal 2 huruf 😊");
       inputNama.focus();
       return;
     }
     if (!/^[\p{L} .'-]+$/u.test(nama)) {
-      showLoginError("Nama cukup pakai huruf saja ya, tanpa angka atau simbol.");
+      showLoginError("Nama cukup berisi huruf saja, tanpa angka atau simbol, ya.");
       inputNama.focus();
       return;
     }
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // gak bisa nyambung ke server -> coba login offline (akun yang pernah masuk di HP ini)
       const k = kotakKode.hasil() || (await kotakKode.cek());
       if (!k || !k.ok) {
-        showLoginError("Sedang offline. Kode sekolah ini belum pernah dipakai di HP/komputer ini, jadi butuh internet dulu, ya.");
+        showLoginError("Tidak ada internet. Kode sekolah ini belum pernah dipakai di ponsel/komputer ini, jadi perlu internet dulu, ya.");
         return;
       }
       const off = await cekAkunOffline(nama, pin, k.sekolah);
@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
         inputPin.value = "";
         inputPin.focus();
       } else {
-        showLoginError("Sedang offline. Untuk masuk pertama kali di HP/komputer ini, butuh internet dulu, ya.");
+        showLoginError("Tidak ada internet. Untuk masuk pertama kali di ponsel/komputer ini, perlu internet dulu, ya.");
       }
       return;
     }
@@ -249,17 +249,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (hasil.kode === "pin_salah") {
         showLoginError(
           `Nama "${hasil.nama || nama}" sudah dipakai temanmu di sekolah ini. ` +
-          "Kalau itu kamu, cek lagi PIN-nya. Kalau bukan, pakai nama lain ya."
+          "Kalau itu kamu, cek lagi PIN-nya. Kalau bukan, pakai nama lain, ya."
         );
         inputPin.value = "";
         inputPin.focus();
       } else if (hasil.kode === "kode_salah" || hasil.kode === "perlu_sekolah") {
-        showLoginError("Kode sekolah tidak ditemukan. Cek lagi ke gurumu, ya.");
+        showLoginError("Kode sekolah tidak ditemukan. Tanyakan lagi kepada gurumu, ya.");
         inputKode.focus();
       } else if (hasil.kode === "aksi_salah") {
         showLoginError("Server Google Sheet belum diperbarui. Beri tahu gurumu, ya.");
       } else {
-        showLoginError("Ada yang salah, coba lagi ya.");
+        showLoginError("Ada yang salah, coba lagi, ya.");
       }
       return;
     }

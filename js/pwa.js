@@ -26,7 +26,7 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
       el = document.createElement("div");
       el.className = "penanda-offline";
       el.setAttribute("role", "status");
-      el.innerHTML = '<span aria-hidden="true">📴</span> <span class="penanda-teks">Sedang offline – nilaimu disimpan dulu dan dikirim nanti</span><span class="penanda-singkat">Offline</span>';
+      el.innerHTML = '<span aria-hidden="true">📴</span> <span class="penanda-teks">Tidak ada internet – nilaimu disimpan dulu dan dikirim nanti</span><span class="penanda-singkat">Luring</span>';
       // ketuk = tampilkan lagi pesan lengkapnya
       el.addEventListener("click", () => { el.classList.remove("is-kecil"); kecilkanNanti(); });
       document.body.appendChild(el);

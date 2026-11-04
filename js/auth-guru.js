@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const TEKS = {
     masuk: { tombol: 'Masuk sebagai Guru <i class="fa-solid fa-arrow-right"></i>', hint: "Sudah punya akun guru? Isi kode sekolah, nama, dan PIN Anda." },
-    gabung: { tombol: 'Gabung ke Sekolah <i class="fa-solid fa-user-plus"></i>', hint: "Sekolah Anda sudah terdaftar? Minta <b>kode guru</b> (bukan kode siswa) ke guru yang mendaftarkannya." },
+    gabung: { tombol: 'Gabung ke Sekolah <i class="fa-solid fa-user-plus"></i>', hint: "Sekolah Anda sudah terdaftar? Minta <b>kode guru</b> (bukan kode siswa) kepada guru yang mendaftarkannya." },
     baru: { tombol: 'Daftarkan Sekolah <i class="fa-solid fa-school"></i>', hint: "Sekolah Anda belum terdaftar? Anda akan mendapat <b>kode siswa</b> (untuk siswa) dan <b>kode guru</b> (untuk guru lain)." },
   };
   function aturMode(m) {
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (k && k.ok && !confirm(`Gabung ke sekolah "${k.sekolah}"?`)) return;
     }
 
-    if (navigator.onLine === false) { err("Sedang offline. Masuk sebagai guru butuh internet."); return; }
+    if (navigator.onLine === false) { err("Tidak ada internet. Masuk sebagai guru memerlukan internet."); return; }
     const isiTombol = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengecek...';
@@ -107,16 +107,16 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.disabled = false;
     btn.innerHTML = isiTombol;
 
-    if (!hasil) { err("Gagal tersambung ke server. Cek internet lalu coba lagi."); return; }
+    if (!hasil) { err("Gagal tersambung ke server. Periksa internet, lalu coba lagi."); return; }
     if (!hasil.ok) {
       const pesan = {
         pin_salah: "Nama atau PIN guru belum cocok.",
         guru_tidak_ada: "Nama ini belum terdaftar sebagai guru di sekolah tersebut. Pilih \"Gabung sekolah\" dulu, ya.",
         sudah_ada: `Guru "${hasil.nama || nama}" sudah terdaftar di sekolah ini. Pilih "Masuk" saja.`,
-        kode_salah: mode === "gabung" ? "Kode guru tidak ditemukan. Minta kode guru ke guru yang mendaftarkan sekolah." : "Kode sekolah tidak ditemukan.",
-        kode_siswa: "Itu KODE SISWA. Untuk bergabung sebagai guru, minta KODE GURU ke guru yang mendaftarkan sekolah.",
+        kode_salah: mode === "gabung" ? "Kode guru tidak ditemukan. Minta kode guru kepada guru yang mendaftarkan sekolah." : "Kode sekolah tidak ditemukan.",
+        kode_siswa: "Itu KODE SISWA. Untuk bergabung sebagai guru, minta KODE GURU kepada guru yang mendaftarkan sekolah.",
         kode_daftar_salah: "Kode pembuat sekolah salah.",
-        sekolah_sudah_ada: "Sekolah dengan nama ini sudah terdaftar. Minta kode sekolahnya ke guru yang mendaftarkan, lalu pilih \"Gabung sekolah\". Kalau ini sekolah lain dengan nama sama, tambahkan nama kota/kecamatan.",
+        sekolah_sudah_ada: "Sekolah dengan nama ini sudah terdaftar. Minta kode guru kepada guru yang mendaftarkannya, lalu pilih \"Gabung sekolah\". Kalau ini sekolah lain dengan nama yang sama, tambahkan nama kota/kecamatan.",
         nonaktif: "Akun guru ini dinonaktifkan oleh pengelola METAPIA.",
         aksi_salah: "Server Google Sheet belum diperbarui ke versi 5 (lihat google-sheet/Code.gs).",
       }[hasil.kode] || "Ada yang salah, coba lagi.";
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("metapia_guru", JSON.stringify({ nama: hasil.nama, pin, sekolah: hasil.sekolah, kodeSekolah: hasil.kodeSekolah, kodeGuru: hasil.kodeGuru }));
     localStorage.removeItem("metapia_rekap"); // rekap guru lain (kalau ada) dibuang
     if (mode !== "masuk") localStorage.setItem("metapia_guru_baru", "1"); // guru.html: tampilkan kode sekolah besar-besar
-    if (mode !== "masuk") alert(`Pendaftaran berhasil! 🎉\n\nSekolah: ${hasil.sekolah}\nKode siswa: ${hasil.kodeSekolah}\nKode guru: ${hasil.kodeGuru}\nNama: ${hasil.nama}\nPIN: ${pin}\n\nCatat kode & PIN ini. Kode siswa dan kode guru juga tampil di halaman Rekap.`);
+    if (mode !== "masuk") alert(`Pendaftaran berhasil! 🎉\n\nSekolah: ${hasil.sekolah}\nKode siswa: ${hasil.kodeSekolah}\nKode guru: ${hasil.kodeGuru}\nNama: ${hasil.nama}\nPIN: ${pin}\n\nCatat kode dan PIN ini. Kode siswa dan kode guru juga tampil di halaman Rekap.`);
     window.location.href = "guru.html";
   });
 });

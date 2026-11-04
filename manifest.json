@@ -1,7 +1,7 @@
 {
   "name": "METAPIA — Media Pembelajaran Majas",
   "short_name": "METAPIA",
-  "description": "Belajar majas metafora, personifikasi, dan hiperbola lewat materi, video, kuis, dan game seru.",
+  "description": "Belajar majas metafora, personifikasi, dan hiperbola lewat materi, video, kuis, dan permainan yang seru.",
   "lang": "id",
   "start_url": "./index.html",
   "scope": "./",

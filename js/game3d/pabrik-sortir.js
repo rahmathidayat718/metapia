@@ -318,7 +318,7 @@ export default {
         g.benar();
         api.suara.benar();
         api.guruLompat();
-        api.guru(percobaan === 1 ? api.acak([`Masuk! Hebat, ${api.namaPanggilan}! 🎉`, "Tepat sasaran! 🎯", "Yes! Tongnya pas! 🧺"]) : "Nah, itu dia! Sekarang benar! 👏");
+        api.guru(percobaan === 1 ? api.acak([`Masuk! Hebat, ${api.namaPanggilan}! 🎉`, "Tepat sasaran! 🎯", "Hore! Tongnya pas! 🧺"]) : "Nah, itu dia! Sekarang benar! 👏");
         selesaiSoal(percobaan === 1 ? "penuh" : "sebagian", poin, true);
         return;
       }
@@ -330,7 +330,7 @@ export default {
       kotak.position.set(t.grup.position.x, TONG_TINGGI + 0.3, TONG_Z);
       v.set((Math.random() < 0.5 ? -1 : 1) * 3, 9, 7);
       if (percobaan === 1) {
-        api.guru("Ups, bukan tong itu! Baca petunjuknya, lalu coba lagi! 💡", { poseAkhir: "bicara" });
+        api.guru("Oh, bukan tong itu! Baca petunjuknya, lalu coba lagi! 💡", { poseAkhir: "bicara" });
         api.petunjuk(s.petunjuk);
       } else {
         tunjukkanJawaban("Belum tepat lagi. Lihat, ini tong yang benar! 💡");

@@ -26,7 +26,7 @@ const SOAL = [
     tanya: "Gaya bahasa yang memakai kata-kata kiasan supaya tulisan lebih menarik disebut ...",
     pilihan: ["majas", "kalimat", "paragraf", "puisi"],
     jawaban: 0,
-    penjelasan: "Majas adalah gaya bahasa yang memakai kata kiasan biar tulisan lebih hidup dan menarik.",
+    penjelasan: "Majas adalah gaya bahasa yang memakai kata kiasan agar tulisan lebih hidup dan menarik.",
   },
   {
     kutipan: "Adik adalah buah hati Ayah dan Ibu.",
@@ -40,14 +40,14 @@ const SOAL = [
     tanya: "Kalimat di atas memakai majas ...",
     pilihan: ["metafora", "hiperbola", "personifikasi", "bukan majas"],
     jawaban: 2,
-    penjelasan: "Bulan dibuat seolah bisa mengintip seperti manusia, itu personifikasi.",
+    penjelasan: "Bulan dibuat seolah-olah bisa mengintip seperti manusia, jadi ini personifikasi.",
   },
   {
     kutipan: "Teriakan penonton membelah langit.",
     tanya: "Kalimat di atas memakai majas ...",
     pilihan: ["personifikasi", "metafora", "bukan majas", "hiperbola"],
     jawaban: 3,
-    penjelasan: "Teriakan tidak mungkin membelah langit. Ini melebih-lebihkan, jadi hiperbola.",
+    penjelasan: "Teriakan tidak mungkin membelah langit. Kalimat ini melebih-lebihkan, jadi ini hiperbola.",
   },
   {
     tanya: "Majas yang membuat benda seolah-olah bisa berbuat seperti manusia disebut ...",
@@ -64,7 +64,7 @@ const SOAL = [
       "Tangisannya membanjiri seluruh kamar.",
     ],
     jawaban: 2,
-    penjelasan: "Kakak langsung dibandingkan dengan \"bintang kelas\" tanpa kata seperti, itu metafora.",
+    penjelasan: "Kakak langsung dibandingkan dengan \"bintang kelas\" tanpa kata \"seperti\", jadi ini metafora.",
   },
   {
     kutipan: "Ayah adalah tulang punggung keluarga.",
@@ -87,7 +87,7 @@ const SOAL = [
       "Lonceng sekolah memanggil kami masuk kelas.",
     ],
     jawaban: 0,
-    penjelasan: "PR tidak mungkin setinggi gunung. Itu melebih-lebihkan, jadi hiperbola.",
+    penjelasan: "PR tidak mungkin setinggi gunung. Kalimat itu melebih-lebihkan, jadi ini hiperbola.",
   },
   {
     tanya: "Majas yang memakai kata-kata berlebihan untuk menekankan maksud disebut ...",
@@ -101,7 +101,7 @@ const SOAL = [
     tanya: "Majas yang ada dalam paragraf tersebut adalah ...",
     pilihan: ["personifikasi dan hiperbola", "metafora dan hiperbola", "personifikasi dan metafora", "hanya hiperbola"],
     jawaban: 0,
-    penjelasan: "\"Angin berbisik\" = personifikasi, \"secepat kilat\" = hiperbola.",
+    penjelasan: "\"Angin berbisik\" adalah personifikasi, sedangkan \"secepat kilat\" adalah hiperbola.",
   },
 ];
 
@@ -254,11 +254,11 @@ function renderMulai() {
       <div class="layar-tengah">
         <div class="lencana">📝</div>
         <h1>Kuis Majas</h1>
-        <p class="sapa">Halo, <b>${esc(user.nama)}</b>! Yuk uji seberapa jago kamu mengenali majas.</p>
+        <p class="sapa">Halo, <b>${esc(user.nama)}</b>! Ayo, uji seberapa pandai kamu mengenali majas!</p>
         <div class="info-kuis">
           <span><i class="fa-solid fa-list-ol"></i> ${SOAL.length} soal</span>
           <span><i class="fa-solid fa-circle-check"></i> Pilihan ganda</span>
-          <span><i class="fa-solid fa-star"></i> Nilai maks 100</span>
+          <span><i class="fa-solid fa-star"></i> Nilai maks. 100</span>
         </div>
         <button class="comic-btn comic-btn-primary btn-besar" id="btnMulai">
           Mulai Kuis! <i class="fa-solid fa-play"></i>
@@ -319,8 +319,8 @@ function renderSoal() {
   guruBilang(
     acak([
       `Soal nomor ${idxSoal + 1}! Baca baik-baik, ya.`,
-      `Ayo ${namaPanggilan}, kamu pasti bisa!`,
-      `Soal ${idxSoal + 1}. Pelan-pelan saja, gak usah buru-buru.`,
+      `Ayo, ${namaPanggilan}, kamu pasti bisa!`,
+      `Soal ${idxSoal + 1}. Pelan-pelan saja, tidak usah terburu-buru.`,
       `Coba perhatikan soal ini baik-baik!`,
     ]),
     { poseAkhir: "nunjuk" }
@@ -373,16 +373,16 @@ function pilihJawaban(i) {
     suaraBenar();
     guruBilang(acak([
       `Hebat, ${namaPanggilan}! Jawabanmu benar! 🎉`,
-      "Tepat sekali! Kamu jago majas! ⭐",
-      "Keren! Benar banget! 👏",
-      "Mantap! Lanjut ke soal berikutnya, yuk!",
+      "Tepat sekali! Kamu pandai mengenali majas! ⭐",
+      "Bagus! Benar sekali! 👏",
+      "Mantap! Ayo, lanjut ke soal berikutnya!",
     ]));
   } else {
     suaraSalah();
     guruBilang(acak([
-      "Hmm, belum tepat. Gak apa-apa, baca penjelasannya ya! 💡",
+      "Hmm, belum tepat. Tidak apa-apa, baca penjelasannya, ya! 💡",
       "Yah, sedikit lagi! Coba lihat penjelasannya.",
-      "Belum benar, tapi kamu sudah berani mencoba! 💪",
+      "Belum benar, tetapi kamu sudah berani mencoba! 💪",
     ]), { poseAkhir: "bicara" });
   }
 }
@@ -416,7 +416,7 @@ function renderHasil() {
     nilai === 100 ? "Sempurna! Kamu juara majas! 🏆" :
     nilai >= 80 ? "Hebat sekali! Kamu sudah paham majas! 🌟" :
     nilai >= 60 ? "Bagus! Sedikit lagi jadi ahli majas! 👍" :
-    "Ayo semangat! Baca materinya lagi, lalu coba lagi ya! 💪";
+    "Ayo, semangat! Baca materinya lagi, lalu coba lagi, ya! 💪";
 
   elCard.innerHTML = `
     <div class="layar">
@@ -441,7 +441,7 @@ function renderHasil() {
 
   suaraSelesai();
   if (nilai >= 70) tebarKonfeti();
-  guruBilang(nilai >= 70 ? `Selamat, ${namaPanggilan}! Nilaimu ${nilai}! 🎉` : `Nilaimu ${nilai}. Ayo belajar lagi, kamu pasti bisa!`);
+  guruBilang(nilai >= 70 ? `Selamat, ${namaPanggilan}! Nilaimu ${nilai}! 🎉` : `Nilaimu ${nilai}. Ayo, belajar lagi! Kamu pasti bisa!`);
 
   simpanNilai(nilai, salah);
 }
@@ -474,7 +474,7 @@ async function simpanNilai(nilai, salah) {
     elStatus.textContent = "Nilai tersimpan di perangkat ini.";
     return;
   }
-  elStatus.textContent = "Mengirim nilai ke guru...";
+  elStatus.textContent = "Mengirim nilai kepada guru...";
   // gagal -> otomatis masuk antrean & dikirim ulang nanti (lihat js/sheet.js)
   const kirim = await kirimData({
     aksi: "nilai",

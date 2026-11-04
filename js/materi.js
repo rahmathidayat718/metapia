@@ -59,7 +59,7 @@ const MURID = [
    - jawabanMurid  : jawaban Dito waktu ditanya "paham?" (usahakan pendek,
                      maksimal ~70 huruf biar muat di balon kata)
    ========================================================================== */
-const SAPAAN_GURU = "Halo teman-teman! 👋 Hari ini kita mau belajar MAJAS. Teman-teman siap?";
+const SAPAAN_GURU = "Halo, teman-teman! 👋 Hari ini kita akan belajar MAJAS. Teman-teman siap?";
 const SAPAAN_MURID = "Siap, Ibu Rara! Aku sudah tidak sabar! 🙌";
 
 const DAFTAR_MAJAS = [
@@ -68,7 +68,7 @@ const DAFTAR_MAJAS = [
     kategori: "Pengantar",
     dialog: [
       "Majas adalah gaya bahasa yang memakai KATA-KATA KIASAN\nsupaya kalimat kita lebih hidup dan menarik, teman-teman!",
-      "Contoh: daripada bilang 'dia pintar banget',\nkita bisa bilang 'dia itu bintang kelas'.\nLebih seru kan dengernya?",
+      "Contoh: daripada berkata “dia pintar sekali”,\nkita bisa berkata “dia adalah bintang kelas”.\nLebih menarik didengar, bukan?",
     ],
     jawabanMurid: "Paham, Bu! Majas itu gaya bahasa yang memakai kata-kata kiasan!",
   },
@@ -94,27 +94,27 @@ const DAFTAR_MAJAS = [
     nama: "Personifikasi",
     kategori: "Jenis 2",
     dialog: [
-      "Yang kedua: PERSONIFIKASI!\nIni waktu benda mati dikasih sifat kayak manusia,\nseolah-olah bisa bergerak atau punya perasaan.",
-      "Contoh: \"Angin berbisik lembut di telinga Rani.\"\n(Padahal angin kan gak bisa ngomong beneran, hehe)",
+      "Yang kedua: PERSONIFIKASI!\nIni majas yang memberi benda mati sifat seperti manusia,\nseolah-olah bisa bergerak atau memiliki perasaan.",
+      "Contoh: \"Angin berbisik lembut di telinga Rani.\"\n(Padahal, angin tidak bisa berbicara sungguhan, ya!)",
     ],
-    jawabanMurid: "Aku paham! Personifikasi bikin benda mati seolah hidup kayak manusia!",
+    jawabanMurid: "Aku paham! Personifikasi membuat benda mati seperti manusia!",
   },
   {
     nama: "Hiperbola",
     kategori: "Jenis 3",
     dialog: [
-      "Yang ketiga, terakhir: HIPERBOLA!\nMajas yang MELEBIH-LEBIHKAN sesuatu,\nbiar kesannya lebih dramatis.",
-      "Contoh: \"Aku udah bilang beribu-ribu kali,\ntapi kamu tetep aja lupa!\"",
+      "Yang ketiga, terakhir: HIPERBOLA!\nMajas yang MELEBIH-LEBIHKAN sesuatu,\nagar kesannya lebih dramatis.",
+      "Contoh: \"Aku sudah mengatakannya beribu-ribu kali,\ntetapi kamu tetap saja lupa!\"",
     ],
-    jawabanMurid: "Paham banget! Hiperbola itu melebih-lebihkan, kayak 'PR-ku segunung'!",
+    jawabanMurid: "Paham sekali! Hiperbola itu melebih-lebihkan, seperti “PR-ku segunung”!",
   },
   {
     // penutup: ngarahin siswa ke halaman Video (alur Materi -> Video -> Kuis -> Game)
-    nama: "Yuk Nonton Video!",
+    nama: "Ayo Menonton Video!",
     kategori: "Penutup",
     dialog: [
       "Hebat, teman-teman! Kita sudah belajar 3 jenis majas: METAFORA, PERSONIFIKASI, dan HIPERBOLA. 🎉",
-      "Supaya makin paham, yuk kita tonton VIDEO majas!\nTekan tombol \"Lanjut ke Video\" di bawah, ya. 🎬",
+      "Supaya makin paham, ayo kita tonton VIDEO majas!\nTekan tombol \"Lanjut ke Video\" di bawah, ya. 🎬",
     ],
   },
 ];
@@ -459,7 +459,7 @@ function renderKonten() {
 
   if (diPromptPaham) {
     // guru nanya, murid jawab di langkah berikutnya (setelah tombol ditekan)
-    bicara("guru", `Gimana teman-teman, paham soal "${majas.nama}"? 😊`);
+    bicara("guru", `Bagaimana, teman-teman? Sudah paham tentang “${majas.nama}”? 😊`);
     btnAction.innerHTML = 'Paham! <i class="fa-solid fa-thumbs-up"></i>';
   } else if (diJawabMurid) {
     pilihMurid(penjawab(idxMajas));

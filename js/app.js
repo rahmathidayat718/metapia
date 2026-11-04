@@ -58,7 +58,7 @@ function renderUserInNav() {
     // MODE GURU: pil nama = tombol kembali ke Rekap Nilai
     avatarEl.innerHTML = `<span class="avatar-ikon"><i class="fa-solid fa-chalkboard-user"></i></span><span class="avatar-nama"></span>`;
     avatarEl.querySelector(".avatar-nama").textContent = `Guru · ${user.nama}`;
-    avatarEl.title = `Mode guru (${user.nama}) — klik untuk ke Rekap Nilai`;
+    avatarEl.title = `Mode guru (${user.nama}) — klik untuk membuka Rekap Nilai`;
     avatarEl.classList.add("nama-panjang");
     avatarEl.setAttribute("role", "button");
     avatarEl.tabIndex = 0;

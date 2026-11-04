@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Flowchart METAPIA</title>
+<style>
+  body{ margin:0; padding:30px; background:#fff; font-family:Arial, Helvetica, sans-serif; }
+  .diagram{ display:table; padding:24px; background:#fff; margin-bottom:60px; }
+  h2{ font:bold 18px Arial; margin:0 0 12px; }
+</style>
+</head>
+<body>
+
+<div class="diagram" id="d1"><pre class="mermaid">
+flowchart TD
+  A([Mulai]) --> B[/Membuka METAPIA/]
+  B --> C{Sudah masuk di<br>perangkat ini?}
+  C -- "Ya, sebagai siswa" --> S9
+  C -- "Ya, sebagai guru" --> G9
+  C -- Belum --> D[Menampilkan halaman masuk]
+  D --> E{Masuk sebagai?}
+
+  E -- Siswa --> S1[/Mengisi kode sekolah,<br>nama, dan PIN 4 angka/]
+  S1 --> S2{Kode sekolah<br>valid?}
+  S2 -- Tidak --> S1
+  S2 -- Ya --> S3{Nama sudah terdaftar<br>di sekolah tersebut?}
+  S3 -- Belum --> S4[Mendaftarkan siswa baru<br>dan menampilkan PIN]
+  S3 -- Sudah --> S5{PIN cocok?}
+  S5 -- Tidak --> S1
+  S5 -- Ya --> S9[Menampilkan Beranda Siswa]
+  S4 --> S9
+
+  E -- Guru --> G1{Pilihan guru}
+  G1 -- "Sekolah baru" --> G2[/Mengisi nama sekolah,<br>nama guru, dan PIN 6 angka/]
+  G2 --> G3[Membuat sekolah beserta<br>kode siswa dan kode guru]
+  G1 -- "Gabung sekolah" --> G4[/Mengisi kode guru,<br>nama guru, dan PIN 6 angka/]
+  G4 --> G5{Kode guru<br>valid?}
+  G5 -- Tidak --> G4
+  G5 -- Ya --> G6[Mendaftarkan guru<br>ke sekolah tersebut]
+  G1 -- Masuk --> G7[/Mengisi kode sekolah,<br>nama guru, dan PIN/]
+  G7 --> G8{Data cocok?}
+  G8 -- Tidak --> G7
+  G8 -- Ya --> G9[Menampilkan halaman<br>Rekap Nilai Guru]
+  G3 --> G9
+  G6 --> G9
+
+  S9 --> X([Selesai])
+  G9 --> X
+</pre></div>
+
+<div class="diagram" id="d2"><pre class="mermaid">
+flowchart TD
+  A([Mulai]) --> B[Beranda Siswa]
+  B --> C{Memilih menu}
+
+  C -- Materi --> M1[Ibu Rara menyapa siswa]
+  M1 --> M2[Menjelaskan pengertian<br>dan jenis-jenis majas]
+  M2 --> M3[Menjelaskan metafora, personifikasi,<br>dan hiperbola beserta contohnya]
+  M3 --> M4{Mengulang<br>penjelasan?}
+  M4 -- Ya --> M3
+  M4 -- Tidak --> M5[Mengajak siswa<br>menonton video]
+  M5 --> V1
+
+  C -- Video --> V1[Halaman Video]
+  V1 --> V2{Ada internet atau<br>video sudah disimpan?}
+  V2 -- Ya --> V3[Memutar video majas]
+  V2 -- Tidak --> V4[Menampilkan pesan dan<br>mengarahkan ke Materi]
+  V3 --> K0
+  V4 --> M1
+
+  C -- Kuis --> K0[Halaman Kuis]
+  K0 --> K1[/Menjawab soal<br>pilihan ganda/]
+  K1 --> K2{Jawaban benar?}
+  K2 -- Ya --> K3[Menampilkan pujian<br>dan pembahasan]
+  K2 -- Tidak --> K4[Menampilkan jawaban benar<br>dan pembahasan]
+  K3 --> K5{Masih ada soal?}
+  K4 --> K5
+  K5 -- Ya --> K1
+  K5 -- Tidak --> K6[Menghitung dan<br>menampilkan nilai]
+  K6 --> N1
+
+  C -- Game --> P1{Memilih game}
+  P1 -- "Game 1" --> P2[Pecah Balon Majas]
+  P1 -- "Game 2" --> P3[Pabrik Sortir Majas]
+  P1 -- "Game 3" --> P4[Pesawat Perakit Kalimat]
+  P2 --> P5[Memainkan game dan<br>mengumpulkan skor]
+  P3 --> P5
+  P4 --> P5
+  P5 --> P6[Menampilkan skor akhir]
+  P6 --> N1
+
+  N1{Ada internet?}
+  N1 -- Ya --> N2[Mengirim nilai/skor<br>ke Google Sheet]
+  N1 -- Tidak --> N3[Menyimpan nilai/skor di perangkat,<br>dikirim otomatis saat online]
+  N2 --> X{Lanjut belajar?}
+  N3 --> X
+  X -- Ya --> B
+  X -- Tidak --> Z([Selesai])
+</pre></div>
+
+<div class="diagram" id="d3"><pre class="mermaid">
+flowchart TD
+  A([Mulai]) --> B[Halaman Rekap Nilai Guru]
+  B --> C[Mengambil data nilai siswa<br>sekolah tersebut dari Google Sheet]
+  C --> D{Memilih kegiatan}
+
+  D -- "Melihat nilai" --> R1{Tampilan}
+  R1 -- "Per siswa" --> R2[Menampilkan nilai kuis dan<br>skor game setiap siswa]
+  R1 -- "Per tanggal" --> R3[Menampilkan nilai kuis dan<br>skor game pada tanggal terpilih]
+  R2 --> R4{Mengunduh rekap?}
+  R3 --> R4
+  R4 -- Ya --> R5[/Mengunduh file Excel/]
+  R4 -- Tidak --> Y
+  R5 --> Y
+
+  D -- "Membagikan kode" --> K1{Cara membagikan}
+  K1 -- Tautan --> K2[/Menyalin tautan siswa/]
+  K1 -- "Kode QR" --> K3[/Menampilkan kode QR/]
+  K1 -- "Undang guru" --> K4[/Memberikan kode guru/]
+  K2 --> Y
+  K3 --> Y
+  K4 --> Y
+
+  D -- "Mengajar di kelas" --> J1[Membuka Materi, Video,<br>Kuis, atau Game]
+  J1 --> J2[Menayangkan atau mencoba<br>bersama siswa]
+  J2 --> J3[Nilai di akun guru<br>tidak disimpan]
+  J3 --> Y
+
+  Y{Selesai menggunakan?}
+  Y -- Tidak --> D
+  Y -- Ya --> Z[Keluar dari akun guru]
+  Z --> X([Selesai])
+</pre></div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: "base",
+    flowchart: { htmlLabels: true, useMaxWidth: false, curve: "linear", nodeSpacing: 45, rankSpacing: 50, padding: 14 },
+    themeCSS: ".edgeLabel{background:#fff;padding:1px 3px;} .edgeLabel p{background:#fff;} .label{color:#000;}",
+    themeVariables: {
+      fontFamily: "Arial, Helvetica, sans-serif", fontSize: "15px",
+      primaryColor: "#ffffff", primaryTextColor: "#000000", primaryBorderColor: "#000000",
+      lineColor: "#000000", secondaryColor: "#ffffff", tertiaryColor: "#ffffff",
+      edgeLabelBackground: "#ffffff", clusterBkg: "#ffffff",
+    },
+  });
+  mermaid.run().then(() => { window.selesai = true; });
+</script>
+</body>
+</html>

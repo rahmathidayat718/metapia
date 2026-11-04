@@ -220,8 +220,8 @@ export default {
       tampilkanRakit();
       if (idx > 0) g.sorak(`Level ${idx + 1}! Asteroid makin lincah! ⚡`, "level");
       api.guru(idx === 0
-        ? `Tembak kata-kata sesuai urutan biar jadi kalimat ${s.target}! Ketuk katanya! 🚀`
-        : api.acak([`Sekarang rakit kalimat ${s.target}! ✨`, "Kata pertamanya yang mana, ya? 🔍", "Ayo pilot, tembak kata yang tepat! 🚀"]),
+        ? `Tembak kata-kata sesuai urutan supaya menjadi kalimat ${s.target}! Ketuk katanya! 🚀`
+        : api.acak([`Sekarang rakit kalimat ${s.target}! ✨`, "Kata pertamanya yang mana, ya? 🔍", "Ayo, pilot, tembak kata yang tepat! 🚀"]),
         { poseAkhir: "nunjuk" });
     }
 
@@ -334,12 +334,12 @@ export default {
         pesawat.userData.guncang = 0.6;
         const pengecoh = !target.includes(a.kata);
         if (salahSoal === 1) {
-          api.guru(pengecoh ? "Ups, itu kata pengecoh! 💡 Baca petunjuknya, ya." : "Hampir! Tapi urutannya belum pas. 💡", { poseAkhir: "bicara" });
+          api.guru(pengecoh ? "Oh, itu kata pengecoh! 💡 Baca petunjuknya, ya." : "Hampir! Namun, urutannya belum pas. 💡", { poseAkhir: "bicara" });
           api.petunjuk(s.petunjuk);
         } else {
           api.guru(pengecoh ? "Itu kata pengecoh! Coba kata lain. 🔍" : `Bukan itu urutannya. Kata ke-${terkumpul + 1} yang mana, ya?`, { poseAkhir: "bicara" });
         }
-        if (salahSoal >= 4) api.guru("Psst, lihat kata yang bersinar! Itu kata berikutnya. ✨");
+        if (salahSoal >= 4) api.guru("Sst, lihat kata yang bersinar! Itu kata berikutnya. ✨");
       }
     }
 
@@ -360,7 +360,7 @@ export default {
       g.papan(`
         <div class="papan-judul">✨ Kalimat ${esc(s.target)}:</div>
         <p class="papan-kutipan papan-sihir">“${esc(s.pilihan[s.jawaban])}”</p>`);
-      api.guru(salahSoal === 0 ? api.acak([`Sihirnya berhasil, ${api.namaPanggilan}! ✨`, "Wuih, tanpa salah! 3 bintang! 🌟"]) : "Kalimatnya berhasil dirakit! ✨");
+      api.guru(salahSoal === 0 ? api.acak([`Sihirnya berhasil, ${api.namaPanggilan}! ✨`, "Wah, tanpa salah! 3 bintang! 🌟"]) : "Kalimatnya berhasil dirakit! ✨");
       const status = salahSoal === 0 ? "penuh" : "sebagian";
       rekap.push(status);
       api.tandaiSoal(idx, status);

@@ -61,7 +61,7 @@ Game.daftar(3, {
 
       api.guru(
         idx === 0 ? `Ayo pakai tongkat ajaibmu! Ubah kalimatnya jadi ${s.target}! 🪄` :
-        api.acak([`Kali ini ubah jadi ${s.target}, ya!`, `Kalimat ${s.target} yang mana, nih? ✨`, "Ayo, sihir kalimatnya! 🪄"]),
+        api.acak([`Kali ini ubah jadi ${s.target}, ya!`, `Kalimat ${s.target} yang mana, ya? ✨`, "Ayo, sihir kalimatnya! 🪄"]),
         { poseAkhir: "nunjuk" }
       );
 
@@ -83,7 +83,7 @@ Game.daftar(3, {
           api.suara.benar();
           api.guruLompat();
           ubahKartu(s.pilihan[s.jawaban]);
-          api.guru(salah === 0 ? api.acak([`Sihirnya berhasil, ${api.namaPanggilan}! ✨`, "Wuih, langsung benar! 3 bintang! 🌟", "Hebat! Kalimatnya jadi bermajas! 🪄"]) : "Nah, berhasil! Kalimatnya sudah berubah! ✨");
+          api.guru(salah === 0 ? api.acak([`Sihirnya berhasil, ${api.namaPanggilan}! ✨`, "Wah, langsung benar! 3 bintang! 🌟", "Hebat! Kalimatnya jadi bermajas! 🪄"]) : "Nah, berhasil! Kalimatnya sudah berubah! ✨");
           selesai(salah === 0 ? "penuh" : "sebagian", bintang, poin, true);
           return;
         }
@@ -105,7 +105,7 @@ Game.daftar(3, {
           tombol.forEach((b) => (b.disabled = true));
           tombol[s.jawaban].classList.add("is-benar", "is-ditunjukkan");
           ubahKartu(s.pilihan[s.jawaban]);
-          api.guru("Gak apa-apa! Ini jawaban yang benar. 💡", { poseAkhir: "nunjuk" });
+          api.guru("Tidak apa-apa! Ini jawaban yang benar. 💡", { poseAkhir: "nunjuk" });
           selesai("nol", 0, 0, false);
         }
       }

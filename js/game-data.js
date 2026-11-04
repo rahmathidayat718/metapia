@@ -43,9 +43,9 @@ const DATA_GAME = {
     judul3d: "Pecah Balon Majas",
     deskripsi3d: "Lihat gambarnya, lalu pecahkan balon kalimat yang cocok dan balon jenis majasnya!",
     caraMain3d: [
-      "Lihat gambar di atas baik-baik. Santai, gak ada waktu!",
+      "Lihat gambar di atas baik-baik. Santai, tidak ada batas waktu!",
       "Ketuk balon berisi kalimat yang cocok dengan gambar. Dor! 🎈",
-      "Lalu ketuk balon jenis majasnya. Benar terus = combo! 🔥",
+      "Lalu ketuk balon jenis majasnya. Benar terus = poin bonus! 🔥",
     ],
     caraMain: [
       "Perhatikan gambar baik-baik.",
@@ -103,7 +103,7 @@ const DATA_GAME = {
         jawaban: 1,
         majas: "Metafora",
         petunjuk: "Rina memegang piala dan ada bintang di atas kepalanya. Artinya dia murid yang bagaimana?",
-        pembahasan: "Rina langsung disebut \"bintang kelas\" tanpa kata seperti. Artinya murid yang berprestasi, jadi ini metafora.",
+        pembahasan: "Rina langsung disebut \"bintang kelas\" tanpa kata \"seperti\". Artinya murid yang berprestasi, jadi ini metafora.",
       },
       {
         gambar: "assets/game/g1-soal5.webp",
@@ -139,20 +139,20 @@ const DATA_GAME = {
     caraMain3d: [
       "Baca kalimat di kotak yang datang lewat ban berjalan.",
       "Tarik kotaknya lalu lempar ke atas ke tong yang tepat (atau ketuk tongnya).",
-      "Cepat! Tiap kotak cuma 30 detik, ban makin cepat tiap soal.",
+      "Cepat! Tiap kotak hanya 30 detik, ban makin cepat tiap soal.",
     ],
     // kecepatan ban berjalan tiap soal (makin besar makin cepat). Soal 1..5
     kecepatan3d: [2.2, 2.8, 3.4, 4.0, 4.6],
     caraMain: [
       "Seret kartu kalimat ke keranjang yang tepat.",
       "Bisa juga: ketuk kartunya, lalu ketuk keranjangnya.",
-      "Cepat! Tiap soal cuma 30 detik.",
+      "Cepat! Tiap soal hanya 30 detik.",
     ],
     soal: [
       {
         kalimat: "Tumpukan PR-ku setinggi gunung.",
         majas: "Hiperbola",
-        petunjuk: "Apakah PR bisa benar-benar setinggi gunung? Ada yang dilebih-lebihkan, lho!",
+        petunjuk: "Apakah PR bisa benar-benar setinggi gunung? Pasti ada yang dilebih-lebihkan!",
         pembahasan: "Tidak ada PR yang benar-benar setinggi gunung. Kalimat ini melebih-lebihkan banyaknya PR.",
       },
       {
@@ -198,8 +198,8 @@ const DATA_GAME = {
     judul3d: "Pesawat Perakit Kalimat",
     deskripsi3d: "Terbang di luar angkasa! Tembak kata-kata sesuai urutan untuk merakit kalimat bermajas.",
     caraMain3d: [
-      "Baca kalimat biasa & jenis majas yang diminta.",
-      "Ketuk kata (atau tembak pakai Spasi) SESUAI URUTAN kalimat bermajasnya.",
+      "Baca kalimat biasa dan jenis majas yang diminta.",
+      "Ketuk kata (atau tembak dengan tombol Spasi) SESUAI URUTAN kalimat bermajasnya.",
       "Hati-hati kata pengecoh! Makin sedikit salah, makin banyak bintang.",
     ],
     // kecepatan kata melayang tiap soal (makin besar makin cepat). Soal 1..5

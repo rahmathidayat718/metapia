@@ -103,7 +103,7 @@ Game.daftar(1, {
           // salah 2x -> tunjukkan jawaban benar, 0 poin untuk langkah ini
           tombolOpsi.forEach((b) => (b.disabled = true));
           tombolOpsi[s.jawaban].classList.add("is-benar", "is-ditunjukkan");
-          api.guru("Gak apa-apa! Ini kalimat yang cocok. Lanjut ke langkah 2, ya!", { poseAkhir: "nunjuk" });
+          api.guru("Tidak apa-apa! Ini kalimat yang cocok. Lanjut ke langkah 2, ya!", { poseAkhir: "nunjuk" });
           setTimeout(bukaLangkah2, 1400);
         }
       }

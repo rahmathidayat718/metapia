@@ -253,12 +253,12 @@ export default {
       if (langkah === 1) {
         salahKalimat++;
         if (salahKalimat === 1) {
-          api.guru("Ups, balonnya kempis! Baca petunjuknya, lalu coba lagi! 💡", { poseAkhir: "bicara" });
+          api.guru("Aduh, balonnya kempis! Baca petunjuknya, lalu coba lagi! 💡", { poseAkhir: "bicara" });
           api.petunjuk(s.petunjuk);
         } else {
           terkunci = true;
           tunjukkanBenar(balon[s.jawaban]);
-          api.guru("Gak apa-apa! Ini balon yang benar. Lanjut ke langkah 2, ya!", { poseAkhir: "nunjuk" });
+          api.guru("Tidak apa-apa! Ini balon yang benar. Lanjut ke langkah 2, ya!", { poseAkhir: "nunjuk" });
           setTimeout(mulaiLangkah2, 2400);
         }
       } else {

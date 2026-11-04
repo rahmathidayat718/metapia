@@ -211,7 +211,7 @@ Game.daftar(2, {
           setTimeout(() => api.tambahSkor(poin, k), 400);
           api.suara.benar();
           api.guruLompat();
-          api.guru(percobaan === 1 ? api.acak([`Masuk! Hebat, ${api.namaPanggilan}! 🎉`, "Tepat sasaran! 🎯", "Yes! Keranjangnya pas! 🧺"]) : "Nah, itu dia! Sekarang benar! 👏");
+          api.guru(percobaan === 1 ? api.acak([`Masuk! Hebat, ${api.namaPanggilan}! 🎉`, "Tepat sasaran! 🎯", "Hore! Keranjangnya pas! 🧺"]) : "Nah, itu dia! Sekarang benar! 👏");
           selesaiSoal(percobaan === 1 ? "penuh" : "sebagian", poin, true);
           return;
         }
@@ -224,7 +224,7 @@ Game.daftar(2, {
         kembalikanKartu();
 
         if (percobaan === 1) {
-          api.guru("Ups, bukan di situ! Baca petunjuknya, lalu coba lagi! 💡", { poseAkhir: "bicara" });
+          api.guru("Oh, bukan di situ! Baca petunjuknya, lalu coba lagi! 💡", { poseAkhir: "bicara" });
           api.petunjuk(s.petunjuk);
         } else {
           tunjukkanJawaban("Belum tepat lagi. Lihat, ini keranjang yang benar! 💡");

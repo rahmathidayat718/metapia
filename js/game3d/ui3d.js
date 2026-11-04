@@ -66,7 +66,7 @@ export function siapkanGame(api, opsiDunia = {}, opsiMusik = {}) {
       g.combo++;
       if (g.nyawa > 0) {
         api.tambahBonus(5 * g.combo);
-        if (g.combo >= 2) g.sorak(`COMBO x${g.combo}! 🔥`);
+        if (g.combo >= 2) g.sorak(`BERUNTUN x${g.combo}! 🔥`);
       }
     },
     /** jawaban salah: combo putus, nyawa berkurang, kamera goyang */
@@ -81,7 +81,7 @@ export function siapkanGame(api, opsiDunia = {}, opsiMusik = {}) {
           g.nyawaHabisDiumumkan = true;
           setTimeout(() => {
             g.sorak("Nyawa habis! 💔", "salah");
-            api.guru("Nyawamu habis, tapi gak apa-apa! Ayo selesaikan petualangannya. Bonus combo berhenti dulu, ya. 💪");
+            api.guru("Nyawamu habis, tetapi tidak apa-apa! Ayo, selesaikan petualangannya. Poin bonus berhenti dulu, ya. 💪");
           }, 1400);
         }
       }
