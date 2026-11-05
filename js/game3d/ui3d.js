@@ -114,33 +114,6 @@ export function siapkanGame(api, opsiDunia = {}, opsiMusik = {}) {
   return g;
 }
 
-/**
- * Kontrol geser (swipe jari / seret mouse) di wadah.
- * kiri()/kanan() dipanggil sekali tiap geseran ~35px.
- */
-export function kontrolGeser(g, { kiri, kanan }) {
-  let x0 = null, id = null;
-  g.dengar(g.wadah, "pointerdown", (e) => {
-    if (e.target.closest("button, .kuis-umpan, .petunjuk, .lapis-jeda")) return;
-    x0 = e.clientX; id = e.pointerId;
-  });
-  g.dengar(window, "pointermove", (e) => {
-    if (x0 === null || e.pointerId !== id) return;
-    const dx = e.clientX - x0;
-    if (dx < -35) { kiri(); x0 = e.clientX; }
-    else if (dx > 35) { kanan(); x0 = e.clientX; }
-  });
-  const lepas = () => { x0 = null; };
-  g.dengar(window, "pointerup", lepas);
-  g.dengar(window, "pointercancel", lepas);
-  g.dengar(document, "keydown", (e) => {
-    if (e.target.closest && e.target.closest("input, textarea")) return;
-    const k = e.key.toLowerCase();
-    if (k === "arrowleft" || k === "a") { e.preventDefault(); kiri(); }
-    if (k === "arrowright" || k === "d") { e.preventDefault(); kanan(); }
-  });
-}
-
 /** escape teks buat dimasukin ke HTML */
 export function esc(teks) {
   const d = document.createElement("div");

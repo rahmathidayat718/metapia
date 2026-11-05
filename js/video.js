@@ -36,9 +36,12 @@ const VIDEO = {
 };
 const CACHE_VIDEO = "video-metapia"; // sama dengan di sw.js
 
-/* 2 bocah yang nemenin (pose senyum) */
-const BOCAH_KIRI = { nama: "Dito", gambar: "assets/karakter/murid/dito-diam.webp" };
-const BOCAH_KANAN = { nama: "Sari", gambar: "assets/karakter/murid/sari.webp" };
+/* 2 bocah yang nemenin. Pose pertama = pose diam; pose lain dipakai
+   sesekali sebentar (ekspresi tipis). Gambar sudah DISERAGAMKAN (kanvas &
+   posisi kaki sama) -> gak getar waktu ganti pose (docs/seragamkan-pose.py) */
+const DIR_POSE = "assets/karakter/materi/";
+const BOCAH_KIRI = { nama: "Dito", pose: { diam: DIR_POSE + "dito-diam.webp", senang: DIR_POSE + "dito-senang.webp" } };
+const BOCAH_KANAN = { nama: "Sari", pose: { diam: DIR_POSE + "sari-diam.webp", bangga: DIR_POSE + "sari-bangga.webp" } };
 
 /* ==========================================================================
    2) UBAH LINK BIASA -> LINK EMBED (biar bisa diputar di dalam halaman)
@@ -64,27 +67,34 @@ function bacaLink(link) {
 }
 
 /* ==========================================================================
-   3) BOCAH — sama strukturnya kayak tokoh di materi.js (1 pose aja)
+   3) BOCAH — strukturnya sama kayak tokoh di materi.js. Semua pose ditumpuk,
+   cuma 1 yang tampil. Diamnya "bernapas" pelan (CSS komik.css), sesekali
+   ganti ekspresi sebentar (bukan lompat-lompat).
    ========================================================================== */
 function pasangBocah(el, data) {
   el.innerHTML = `
     <div class="tokoh-figure">
       <div class="tokoh-shadow"></div>
-      <div class="tokoh-body"><img class="pose is-active" src="${data.gambar}" decoding="async" alt="${data.nama}" draggable="false"></div>
+      <div class="tokoh-body">${Object.entries(data.pose).map(([n, src], i) =>
+        `<img class="pose${i === 0 ? " is-active" : ""}" data-pose="${n}" src="${src}" decoding="async" alt="${data.nama}" draggable="false">`).join("")}</div>
     </div>`;
   aturRasioTokoh(el, el.querySelector("img"));
+}
+function poseBocah(el, nama) {
+  el.querySelectorAll(".pose").forEach((img) => img.classList.toggle("is-active", img.dataset.pose === nama));
 }
 const elKiri = document.getElementById("bocahKiri");
 const elKanan = document.getElementById("bocahKanan");
 pasangBocah(elKiri, BOCAH_KIRI);
 pasangBocah(elKanan, BOCAH_KANAN);
 
-/* sesekali salah satu bocah lompat kecil biar hidup */
+/* sesekali (tiap ±6 detik) salah satu bocah pasang ekspresi tipis sebentar */
 setInterval(() => {
-  const el = Math.random() < 0.5 ? elKiri : elKanan;
-  el.classList.add("is-bounce");
-  setTimeout(() => el.classList.remove("is-bounce"), 600);
-}, 2600);
+  const [el, data] = Math.random() < 0.5 ? [elKiri, BOCAH_KIRI] : [elKanan, BOCAH_KANAN];
+  const [diam, ekspresi] = Object.keys(data.pose);
+  poseBocah(el, ekspresi);
+  setTimeout(() => poseBocah(el, diam), 2200);
+}, 6000);
 
 /* ==========================================================================
    4) LAYAR VIDEO — cover + tombol play, diklik baru videonya dimuat
@@ -225,7 +235,7 @@ function tampilkanOffline() {
     : "<b>Video butuh internet.</b> Sambil menunggu, ayo baca Materi dulu! 📖";
   elLayar.innerHTML = `
     <div class="layar-offline">
-      <img src="assets/karakter/guru/guru-senyum.webp" width="546" height="520" decoding="async" alt="Ibu Rara">
+      <img src="assets/karakter/materi/guru-senyum.webp" width="586" height="520" decoding="async" alt="Ibu Rara">
       <div class="layar-offline-teks">
         <p>${pesan}</p>
         <a class="comic-btn comic-btn-primary" href="materi.html"><i class="fa-solid fa-book"></i> Buka Materi</a>

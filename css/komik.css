@@ -93,8 +93,9 @@ body.panggung{
   filter:drop-shadow(0 4px 4px rgba(15,8,45,0.25));
   user-select:none;
 }
-.pose.is-active{ opacity:1; animation:gantiPose .22s ease-out; }
-@keyframes gantiPose{ from{ transform:scale(.97); } to{ transform:scale(1); } }
+/* ganti pose LANGSUNG tanpa efek "membesar": gerak bibir gonta-ganti gambar
+   tiap ±0,1 detik, efek itu dulu bikin tokoh kelihatan getar */
+.pose.is-active{ opacity:1; }
 
 /* bayangan lonjong di bawah kaki biar keliatan napak di rumput */
 .tokoh-shadow{
@@ -114,11 +115,18 @@ body.panggung{
   75%{ transform:translateY(-2.5%) rotate(1.5deg); }
 }
 
-/* lagi ngomong: badan goyang halus naik-turun */
-.tokoh.is-talking .tokoh-body{ animation:ngomong .45s ease-in-out infinite alternate; }
+/* lagi ngomong: badan goyang halus & pelan naik-turun */
+.tokoh.is-talking .tokoh-body{ animation:ngomong .7s ease-in-out infinite alternate; }
 @keyframes ngomong{
-  from{ transform:translateY(0) scaleY(1); }
-  to{ transform:translateY(-1%) scaleY(1.012); }
+  from{ transform:translateY(0); }
+  to{ transform:translateY(-.6%); }
+}
+
+/* diam: "bernapas" pelan (bukan lompat-lompat) */
+.tokoh:not(.is-talking):not(.is-masuk):not(.is-bounce) .tokoh-body{ animation:napasTokoh 3.4s ease-in-out infinite alternate; }
+@keyframes napasTokoh{
+  from{ transform:scaleY(1); }
+  to{ transform:scaleY(1.012); }
 }
 
 /* gerakan sesekali waktu diam (dipicu JS, bukan terus-terusan) */
@@ -217,7 +225,7 @@ body.panggung{
    Background digeser ke bagian kiri gambar (buku & bunga). Posisi tokoh
    & balon versi HP diatur di CSS halaman. Ekor balon pakai versi "mobile".
    ========================================================================== */
-@media (max-width:820px){
+@media (max-width:820px), (orientation:portrait) and (max-width:1100px){ /* HP + tablet berdiri */
   /* HP: panggung tegak 3:4, background digeser ke kiri (buku & bunga) */
   /* HP: sisa = baris tombol + menu bawah ala aplikasi (lihat common.css) */
   body.panggung{ background-position:18% bottom; --sisa-bawah:calc(132px + var(--tinggi-menu-bawah, 0px)); }

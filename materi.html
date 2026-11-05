@@ -16,7 +16,7 @@
 <link rel="apple-touch-icon" href="assets/ikon/apple-touch-icon.png">
 <link rel="stylesheet" href="css/ikon.css">
 </head>
-<body class="layar-penuh panggung">
+<body class="layar-penuh panggung kamera">
 
 <nav class="navbar">
   <a href="dashboard.html" class="brand">
@@ -43,14 +43,28 @@
   <section class="comic-stage">
 
     <div class="comic-panel" id="scene">
-      <!-- kotak keterangan ala komik (judul majas yang lagi dibahas) -->
-      <div class="comic-caption" id="comicCaption">Ayo Belajar!</div>
 
-      <!-- murid (Dito, Sari, Bima, Keke) -> diisi JS -->
-      <div class="kelompok-murid" id="audienceRow"></div>
+      <!-- "DUNIA" = lapisan panggung: papan tulis, murid & guru. Di layar
+           lebar di-zoom KAMERA (js/materi.js). Balon kata di luar lapisan ini
+           -> gak ikut zoom (tetap terbaca) -->
+      <div class="dunia" id="dunia">
+        <!-- PAPAN TULIS di samping Ibu Rara (selalu ada). Atas: judul materi
+             (kapur). Bawah: contoh/adegan (dibikin JS, lihat ADEGAN di js/materi.js) -->
+        <div class="papan" id="papan" aria-live="polite">
+          <span class="papan-kaki kiri"></span><span class="papan-kaki kanan"></span>
+          <div class="papan-bidang">
+            <p class="papan-judul" id="papanJudul"><small class="papan-kategori"></small><span class="papan-nama">Ayo Belajar!</span></p>
+            <div class="papan-isi" id="papanIsi"></div>
+            <span class="papan-baki" aria-hidden="true"><i class="kapur"></i><i class="kapur k2"></i><i class="penghapus"></i></span>
+          </div>
+        </div>
 
-      <!-- guru -> diisi JS, jalan masuk dari kiri -->
-      <div class="tokoh guru" id="teacherSlot"></div>
+        <!-- murid (Dito, Sari, Bima, Keke) -> diisi JS -->
+        <div class="kelompok-murid" id="audienceRow"></div>
+
+        <!-- guru -> diisi JS, jalan masuk dari kiri -->
+        <div class="tokoh guru" id="teacherSlot"></div>
+      </div>
 
       <!-- balon kata GURU: bentuk lonjong + ekor digambar pakai SVG -->
       <div class="speech-bubble bubble-guru" id="bubbleGuru">
@@ -87,6 +101,7 @@
         </svg>
         <p class="speech-text"><span><span class="speech-isi"></span><span class="speech-cursor">|</span></span></p>
       </div>
+
     </div>
 
     <!-- tombol kontrol + titik progres di tengah -->

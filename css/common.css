@@ -110,6 +110,9 @@ body{
   min-height:100svh;
   display:flex; flex-direction:column;
 
+  /* warna dasar senada langit bgMateri.webp: tampil duluan selagi gambarnya
+     dimuat -> gak ada "kilatan" putih waktu buka/pindah halaman */
+  background-color:#B9A6EE;
   background-image:url('../assets/bgMateri.webp');
   background-size:cover;            /* foto nutupin seluruh layar */
   background-position:center bottom; /* rumputnya selalu di bawah -> tokoh "napak" */
@@ -321,7 +324,8 @@ button{ font-family:var(--font-body); cursor:pointer; }
   .menu-bawah{
     position:fixed; z-index:60;
     left:10px; right:10px; bottom:calc(8px + env(safe-area-inset-bottom, 0px));
-    display:grid; grid-template-columns:repeat(5, 1fr);
+    /* jumlah tombol bisa 5 (siswa) atau 6 (guru: + Rekap) -> 1 baris, lebar rata */
+    display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0, 1fr);
     height:62px; padding:6px;
     background:#fff;
     border:3px solid var(--ink); border-radius:22px;
@@ -335,6 +339,9 @@ button{ font-family:var(--font-body); cursor:pointer; }
     transition:background .15s, color .15s, transform .15s;
   }
   .menu-bawah-ikon{ font-size:1.25rem; line-height:1; }
+  .menu-bawah-teks{ max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* 6 tombol di HP kecil: tulisan sedikit dikecilkan biar muat */
+  @media (max-width:420px){ .menu-bawah a:nth-last-child(6) ~ a, .menu-bawah a:first-child:nth-last-child(6){ font-size:.64rem; } }
   .menu-bawah a:active{ transform:scale(.92); }
   .menu-bawah a.is-aktif{
     background:var(--yellow); color:var(--ink);

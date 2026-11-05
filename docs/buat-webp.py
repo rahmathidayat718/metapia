@@ -22,7 +22,6 @@ ATURAN = [
     ("bocah", 1000, 78),          # tampil ± 500 px di Beranda
     ("game/g1-soal", 880, 76),    # tampil ± 200-440 px di game
     ("bgMateri", None, 72),       # background layar penuh
-    ("karakter/", None, 80),      # sudah seukuran tampil
     ("kupu", None, 85),           # kecil sekali
 ]
 
@@ -34,6 +33,11 @@ def aturan(rel):
     return None, 80
 
 
+# gambar tokoh TIDAK diubah di sini: diseragamkan & dijadikan WebP oleh
+# docs/seragamkan-pose.py (hasilnya assets/karakter/materi/)
+LEWATI = ("karakter/", "karakter-pose/")
+
+
 def main():
     total_lama = total_baru = 0
     for folder, _, files in os.walk(SUMBER):
@@ -42,6 +46,8 @@ def main():
                 continue
             src = os.path.join(folder, nama)
             rel = os.path.relpath(src, SUMBER).replace("\\", "/")
+            if rel.startswith(LEWATI):
+                continue
             dst = os.path.join(TUJUAN, os.path.splitext(rel)[0] + ".webp")
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             lebar, q = aturan(rel)

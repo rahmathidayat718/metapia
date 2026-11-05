@@ -2,10 +2,14 @@
    METAPIA — kuis.js
    Alurnya:
    1) Layar MULAI  : sapa siswa pakai nama login -> tombol "Mulai Kuis"
-   2) Layar SOAL   : 10 soal pilihan ganda, langsung ketahuan benar/salah
-                     + penjelasan singkat, Kak Rara ikut komentar
-   3) Layar HASIL  : nilai (benar x 10), bintang, rekap jawaban,
+   2) Layar LEVEL  : pembuka tiap tingkat (Level 1 Mudah, 2 Sedang, 3 HOTS)
+   3) Layar SOAL   : 15 soal pilihan ganda (5 per level), langsung ketahuan
+                     benar/salah + penjelasan singkat, Kak Rara ikut komentar
+   4) Layar HASIL  : nilai 0-100 (benar / 15), bintang, rekap per level,
                      nilai dikirim ke Google Sheet (kalau URL-nya sudah diisi)
+
+   Soal diambil dari "Kisi-Kisi dan Soal Kuis Majas" (Kelas V SD). Nomor
+   aslinya di kisi-kisi ditulis di komentar tiap soal (No. x, Cy).
 
    Bisa juga pakai keyboard: tombol 1-4 / A-D buat jawab, Enter buat lanjut.
    ========================================================================== */
@@ -18,92 +22,179 @@
    - pilihan    : 4 pilihan jawaban (urutan A, B, C, D)
    - jawaban    : index jawaban benar -> 0 = A, 1 = B, 2 = C, 3 = D
    - penjelasan : muncul setelah siswa menjawab
+   Soal dikelompokkan per TINGKAT (urutan level di kuis = urutan di sini).
    ========================================================================== */
 const PERINTAH = "Pilihlah jawaban yang paling tepat!";
 
-const SOAL = [
+const TINGKAT = [
   {
-    tanya: "Gaya bahasa yang memakai kata-kata kiasan supaya tulisan lebih menarik disebut ...",
-    pilihan: ["majas", "kalimat", "paragraf", "puisi"],
-    jawaban: 0,
-    penjelasan: "Majas adalah gaya bahasa yang memakai kata kiasan agar tulisan lebih hidup dan menarik.",
-  },
-  {
-    kutipan: "Adik adalah buah hati Ayah dan Ibu.",
-    tanya: "Arti kata buah hati adalah ...",
-    pilihan: ["buah kesukaan Ayah dan Ibu", "anak yang sangat disayangi", "bagian dari hati", "makanan kesukaan Adik"],
-    jawaban: 1,
-    penjelasan: "\"Buah hati\" adalah kiasan untuk anak yang sangat disayangi.",
-  },
-  {
-    kutipan: "Bulan mengintip dari balik awan.",
-    tanya: "Kalimat di atas memakai majas ...",
-    pilihan: ["metafora", "hiperbola", "personifikasi", "bukan majas"],
-    jawaban: 2,
-    penjelasan: "Bulan dibuat seolah-olah bisa mengintip seperti manusia, jadi ini personifikasi.",
-  },
-  {
-    kutipan: "Teriakan penonton membelah langit.",
-    tanya: "Kalimat di atas memakai majas ...",
-    pilihan: ["personifikasi", "metafora", "bukan majas", "hiperbola"],
-    jawaban: 3,
-    penjelasan: "Teriakan tidak mungkin membelah langit. Kalimat ini melebih-lebihkan, jadi ini hiperbola.",
-  },
-  {
-    tanya: "Majas yang membuat benda seolah-olah bisa berbuat seperti manusia disebut ...",
-    pilihan: ["hiperbola", "personifikasi", "metafora", "bukan majas"],
-    jawaban: 1,
-    penjelasan: "Personifikasi memberi sifat manusia pada benda mati.",
-  },
-  {
-    tanya: "Kalimat yang memakai majas metafora adalah ...",
-    pilihan: [
-      "Kucingku berlari secepat kilat.",
-      "Pohon itu menari ditiup angin.",
-      "Kakak adalah bintang kelas di sekolahnya.",
-      "Tangisannya membanjiri seluruh kamar.",
+    id: "mudah", nama: "Mudah", ikon: "🌱",
+    ket: "Mengingat & memahami pengertian majas.",
+    soal: [
+      { // No. 1 — TP 1, C1
+        tanya: "Majas adalah …",
+        pilihan: [
+          "kalimat yang berisi pertanyaan",
+          "gaya bahasa yang menggunakan kata-kata kiasan agar kalimat lebih menarik",
+          "kata-kata yang harus ditulis dengan huruf kapital",
+          "kalimat yang hanya berisi fakta",
+        ],
+        jawaban: 1,
+        penjelasan: "Majas adalah gaya bahasa yang memakai kata-kata kiasan supaya kalimat lebih hidup dan menarik.",
+      },
+      { // No. 4 — TP 1, C1
+        tanya: "Ciri majas metafora adalah …",
+        pilihan: [
+          "membandingkan dua hal secara langsung tanpa kata seperti atau bagaikan",
+          "memberi sifat manusia pada benda mati",
+          "melebih-lebihkan keadaan",
+          "mengulang kata yang sama",
+        ],
+        jawaban: 0,
+        penjelasan: "Metafora membandingkan dua hal secara langsung, tanpa kata \"seperti\" atau \"bagaikan\". Contoh: \"Sari adalah bintang kelas.\"",
+      },
+      { // No. 7 — TP 1, C2
+        tanya: "Tujuan penulis menggunakan majas dalam sebuah tulisan adalah …",
+        pilihan: [
+          "agar tulisan lebih pendek",
+          "agar tulisan tidak bisa dipahami",
+          "agar tulisan lebih hidup, indah, dan menarik",
+          "agar tulisan berisi angka",
+        ],
+        jawaban: 2,
+        penjelasan: "Majas dipakai supaya tulisan terasa lebih hidup, indah, dan menarik dibaca.",
+      },
+      { // No. 10 — TP 1, C1
+        tanya: "Majas yang membuat benda, hewan, atau tumbuhan seolah-olah bisa berbuat dan merasa seperti manusia disebut …",
+        pilihan: ["hiperbola", "metafora", "pantun", "personifikasi"],
+        jawaban: 3,
+        penjelasan: "Personifikasi memberi sifat manusia (bisa berbuat dan merasa) pada benda, hewan, atau tumbuhan.",
+      },
+      { // No. 13 — TP 1, C2
+        tanya: "Majas hiperbola memiliki ciri …",
+        pilihan: [
+          "membandingkan dua hal secara langsung",
+          "mengungkapkan sesuatu secara berlebihan dari keadaan sebenarnya",
+          "memberi sifat manusia pada benda mati",
+          "menggunakan kata tanya",
+        ],
+        jawaban: 1,
+        penjelasan: "Hiperbola melebih-lebihkan keadaan yang sebenarnya, misalnya \"PR-ku segunung\".",
+      },
     ],
-    jawaban: 2,
-    penjelasan: "Kakak langsung dibandingkan dengan \"bintang kelas\" tanpa kata \"seperti\", jadi ini metafora.",
   },
   {
-    kutipan: "Ayah adalah tulang punggung keluarga.",
-    tanya: "Arti kata tulang punggung adalah ...",
-    pilihan: [
-      "tulang belakang Ayah",
-      "orang yang bekerja untuk memenuhi kebutuhan keluarga",
-      "orang yang suka menggendong anaknya",
-      "orang yang badannya paling kuat",
+    id: "sedang", nama: "Sedang", ikon: "🔥",
+    ket: "Menerapkan: mengenali jenis majas dalam kalimat.",
+    soal: [
+      { // No. 2 — TP 2, C3
+        kutipan: "Jam dinding berdetak memanggil Rina untuk segera bangun.",
+        tanya: "Kalimat tersebut mengandung majas …",
+        pilihan: ["metafora", "hiperbola", "personifikasi", "bukan majas"],
+        jawaban: 2,
+        penjelasan: "Jam dinding tidak bisa memanggil seperti manusia. Benda diberi sifat manusia, jadi ini personifikasi.",
+      },
+      { // No. 5 — TP 2, C3
+        kutipan: "Suara adik keras sekali sampai terdengar ke bulan.",
+        tanya: "Kalimat tersebut mengandung majas …",
+        pilihan: ["hiperbola", "metafora", "personifikasi", "bukan majas"],
+        jawaban: 0,
+        penjelasan: "Suara tidak mungkin terdengar sampai ke bulan. Kalimat ini melebih-lebihkan, jadi hiperbola.",
+      },
+      { // No. 9 — TP 2, C3
+        kutipan: "Kakek adalah perpustakaan berjalan bagi cucu-cucunya.",
+        tanya: "Kalimat tersebut mengandung majas …",
+        pilihan: ["personifikasi", "hiperbola", "bukan majas", "metafora"],
+        jawaban: 3,
+        penjelasan: "Kakek langsung disebut \"perpustakaan berjalan\", simbol orang yang tahu banyak hal. Ini metafora.",
+      },
+      { // No. 12 — TP 2, C3
+        tanya: "Kalimat yang bukan majas adalah …",
+        pilihan: [
+          "Sepeda itu lelah menunggu pemiliknya.",
+          "Ayah adalah pahlawan keluarga.",
+          "Keringatnya bercucuran sebanyak air laut.",
+          "Kucing itu tidur di atas kursi.",
+        ],
+        jawaban: 3,
+        penjelasan: "\"Kucing itu tidur di atas kursi\" menceritakan keadaan sebenarnya, tanpa kiasan. Pilihan lain: personifikasi (A), metafora (B), hiperbola (C).",
+      },
+      { // No. 15 — TP 3, C3
+        tanya: "Kata yang tepat untuk melengkapi kalimat bermajas personifikasi berikut adalah …",
+        kutipan: "Hujan … jendela kamarku sepanjang malam.",
+        pilihan: ["turun deras di", "mengetuk-ngetuk", "setinggi gunung di", "adalah air di"],
+        jawaban: 1,
+        penjelasan: "Mengetuk-ngetuk adalah perbuatan manusia. Hujan dibuat seolah-olah bisa mengetuk, jadi kalimatnya personifikasi.",
+      },
     ],
-    jawaban: 1,
-    penjelasan: "\"Tulang punggung\" adalah kiasan untuk orang yang bekerja mencukupi kebutuhan keluarga.",
   },
   {
-    tanya: "Kalimat yang memakai majas hiperbola adalah ...",
-    pilihan: [
-      "Tumpukan PR-ku setinggi gunung.",
-      "Ombak memeluk kaki kami di pantai.",
-      "Rani adalah anak emas di kelasnya.",
-      "Lonceng sekolah memanggil kami masuk kelas.",
+    id: "hots", nama: "HOTS", ikon: "🚀",
+    ket: "Tantangan: menganalisis & menilai kalimat bermajas.",
+    soal: [
+      { // No. 3 — TP 3, C5
+        tanya: "Kalimat “Sepatuku sudah sangat tua.” diubah menjadi majas personifikasi. Kalimat yang tepat adalah …",
+        pilihan: [
+          "Sepatuku berumur seribu tahun.",
+          "Sepatuku adalah sahabat setia.",
+          "Sepatuku dibeli tahun lalu.",
+          "Sepatuku sudah lelah menemani langkahku.",
+        ],
+        jawaban: 3,
+        penjelasan: "\"Sudah lelah menemani langkahku\" memberi sepatu sifat manusia (bisa lelah). A hiperbola, B metafora, C bukan majas.",
+      },
+      { // No. 6 — TP 2, C5
+        tanya: "Beni menulis kalimat “Gelas itu marah lalu jatuh dari meja.” Beni berpendapat kalimat itu majas metafora. Penilaian yang tepat terhadap pendapat Beni adalah …",
+        pilihan: [
+          "Tepat, karena gelas dibandingkan dengan meja.",
+          "Tepat, karena gelas itu benar-benar jatuh.",
+          "Kurang tepat, karena kalimat itu personifikasi, yaitu gelas diberi sifat marah seperti manusia.",
+          "Kurang tepat, karena kalimat itu hiperbola.",
+        ],
+        jawaban: 2,
+        penjelasan: "Gelas diberi sifat \"marah\" seperti manusia, jadi kalimat itu personifikasi, bukan metafora.",
+      },
+      { // No. 8 — TP 2, C4
+        perintah: "Perhatikan kalimat berikut!",
+        kutipan: "(1) Payung itu setia melindungiku dari hujan.\n(2) Antrean kantin itu sepanjang jalan tol.\n(3) Sahabatku adalah obat di kala aku sedih.",
+        tanya: "Jenis majas kalimat (1), (2), dan (3) secara berurutan adalah …",
+        pilihan: [
+          "metafora, hiperbola, personifikasi",
+          "personifikasi, hiperbola, metafora",
+          "hiperbola, personifikasi, metafora",
+          "personifikasi, metafora, hiperbola",
+        ],
+        jawaban: 1,
+        penjelasan: "(1) Payung \"setia\" = personifikasi. (2) Antrean \"sepanjang jalan tol\" = hiperbola. (3) Sahabat \"adalah obat\" = metafora.",
+      },
+      { // No. 11 — TP 3, C5
+        tanya: "Kalimat “Rino sangat pemberani.” diubah menjadi majas metafora. Kalimat yang tepat adalah …",
+        pilihan: [
+          "Rino berani melawan seribu musuh sendirian.",
+          "Rino berani sekali.",
+          "Rino adalah singa di lapangan.",
+          "Keberanian Rino berteriak memanggil.",
+        ],
+        jawaban: 2,
+        penjelasan: "Rino langsung disebut \"singa\", simbol pemberani. Ini metafora. A hiperbola, B bukan majas, D personifikasi.",
+      },
+      { // No. 14 — TP 3, C5
+        tanya: "Saat lomba lari, Tono berlari sangat cepat sehingga lawannya tertinggal jauh. Kalimat bermajas hiperbola yang paling tepat untuk menggambarkan kejadian itu adalah …",
+        pilihan: [
+          "Langkah Tono membuat lawannya tertinggal satu benua.",
+          "Tono adalah kijang di lintasan lari.",
+          "Lintasan lari itu menyambut Tono dengan gembira.",
+          "Tono berlari dengan cepat.",
+        ],
+        jawaban: 0,
+        penjelasan: "\"Tertinggal satu benua\" sangat melebih-lebihkan jarak, jadi hiperbola. B metafora, C personifikasi, D bukan majas.",
+      },
     ],
-    jawaban: 0,
-    penjelasan: "PR tidak mungkin setinggi gunung. Kalimat itu melebih-lebihkan, jadi ini hiperbola.",
-  },
-  {
-    tanya: "Majas yang memakai kata-kata berlebihan untuk menekankan maksud disebut ...",
-    pilihan: ["metafora", "personifikasi", "bukan majas", "hiperbola"],
-    jawaban: 3,
-    penjelasan: "Hiperbola memakai kata-kata berlebihan untuk menekankan maksud.",
-  },
-  {
-    perintah: "Bacalah paragraf berikut!",
-    kutipan: "Pagi itu angin berbisik pelan di telingaku. Aku berlari secepat kilat ke sekolah karena takut terlambat.",
-    tanya: "Majas yang ada dalam paragraf tersebut adalah ...",
-    pilihan: ["personifikasi dan hiperbola", "metafora dan hiperbola", "personifikasi dan metafora", "hanya hiperbola"],
-    jawaban: 0,
-    penjelasan: "\"Angin berbisik\" adalah personifikasi, sedangkan \"secepat kilat\" adalah hiperbola.",
   },
 ];
+
+/* semua soal berurutan (Level 1 -> 3); tiap soal tahu tingkatnya (index) */
+const SOAL = TINGKAT.flatMap((t, it) => t.soal.map((s) => ({ ...s, tingkat: it })));
 
 const HURUF = ["A", "B", "C", "D"];
 const POIN_PER_SOAL = 100 / SOAL.length;
@@ -126,12 +217,14 @@ const elCard = document.getElementById("kuisCard");
    3) KAK RARA — pose + balon kata (cara kerjanya sama kayak materi.js)
    ========================================================================== */
 const GURU_POSE = {
-  senyum: "assets/karakter/guru/guru-senyum.webp",
-  bicara: "assets/karakter/guru/guru-bicara.webp",
-  nunjuk: "assets/karakter/guru/guru-nunjuk.webp",
+  // pose yang sudah DISERAGAMKAN (kanvas, tinggi & posisi kaki sama) -> gak
+  // getar waktu ganti pose / gerak bibir. Lihat docs/seragamkan-pose.py
+  senyum: "assets/karakter/materi/guru-senyum.webp",
+  bicara: "assets/karakter/materi/guru-bicara.webp",
+  nunjuk: "assets/karakter/materi/guru-nunjuk.webp",
   // versi mulut tertutup -> gantian sama yang terbuka waktu ngomong (lip-sync)
-  bicara_tutup: "assets/karakter/guru/guru-bicara-tutup.webp",
-  nunjuk_tutup: "assets/karakter/guru/guru-nunjuk-tutup.webp",
+  bicara_tutup: "assets/karakter/materi/guru-bicara-tutup.webp",
+  nunjuk_tutup: "assets/karakter/materi/guru-nunjuk-tutup.webp",
 };
 const elGuru = document.getElementById("teacherSlot");
 const elBubble = document.getElementById("bubbleGuru");
@@ -161,7 +254,7 @@ function gantiPose(nama) {
 }
 
 /** di HP Kak Rara ada di atas kartu, jadi pose nunjuk-nya gak dipakai */
-const layarHP = window.matchMedia("(max-width:820px)");
+const layarHP = window.matchMedia("(max-width:820px), (orientation:portrait) and (max-width:1100px)");
 
 /**
  * Kak Rara ngomong: teks diketik huruf per huruf.
@@ -238,6 +331,7 @@ function suaraBenar() { nada(523, 0, 0.15); nada(659, 0.1, 0.15); nada(784, 0.2,
 function suaraSalah() { nada(220, 0, 0.2, 0.07, "triangle"); nada(175, 0.15, 0.35, 0.07, "triangle"); }
 function suaraKlik() { nada(600, 0, 0.08, 0.05); }
 function suaraSelesai() { [523, 659, 784, 1047].forEach((f, i) => nada(f, i * 0.12, 0.3)); }
+function suaraNaikLevel() { [392, 523, 659].forEach((f, i) => nada(f, i * 0.09, 0.22, 0.06)); }
 
 /* ==========================================================================
    5) LAYAR MULAI
@@ -257,8 +351,12 @@ function renderMulai() {
         <p class="sapa">Halo, <b>${esc(user.nama)}</b>! Ayo, uji seberapa pandai kamu mengenali majas!</p>
         <div class="info-kuis">
           <span><i class="fa-solid fa-list-ol"></i> ${SOAL.length} soal</span>
-          <span><i class="fa-solid fa-circle-check"></i> Pilihan ganda</span>
+          <span><i class="fa-solid fa-gauge-simple"></i> ${TINGKAT.length} level</span>
           <span><i class="fa-solid fa-star"></i> Nilai maks. 100</span>
+        </div>
+        <div class="daftar-level">
+          ${TINGKAT.map((t, i) => `
+            <span class="level-chip level-${t.id}"><b>${t.ikon} Level ${i + 1}</b> ${esc(t.nama)} · ${t.soal.length} soal</span>`).join("")}
         </div>
         <button class="comic-btn comic-btn-primary btn-besar" id="btnMulai">
           Mulai Kuis! <i class="fa-solid fa-play"></i>
@@ -273,7 +371,39 @@ function mulaiKuis() {
   idxSoal = 0;
   jumlahBenar = 0;
   jawabanSiswa = [];
-  renderSoal();
+  renderLevel(0);
+}
+
+/* ==========================================================================
+   5b) LAYAR LEVEL — pembuka tiap tingkat (Mudah -> Sedang -> HOTS)
+   ========================================================================== */
+const benarDiLevel = (it) => SOAL.reduce((n, s, i) => n + (s.tingkat === it && jawabanSiswa[i] === s.jawaban ? 1 : 0), 0);
+
+function renderLevel(it) {
+  const t = TINGKAT[it];
+  const sebelum = it > 0 ? TINGKAT[it - 1] : null;
+  elCard.innerHTML = `
+    <div class="layar">
+      <div class="layar-tengah layar-level level-${t.id}">
+        ${sebelum ? `<p class="level-selesai"><i class="fa-solid fa-circle-check"></i> Level ${it} (${esc(sebelum.nama)}) selesai: benar <b>${benarDiLevel(it - 1)}</b> dari ${sebelum.soal.length}</p>` : ""}
+        <div class="lencana lencana-level">${t.ikon}</div>
+        <p class="level-nomor">LEVEL ${it + 1} DARI ${TINGKAT.length}</p>
+        <h1>${esc(t.nama)}</h1>
+        <p class="sapa">${esc(t.ket)}<br>Ada <b>${t.soal.length} soal</b> di level ini.</p>
+        <button class="comic-btn comic-btn-primary btn-besar" id="btnLevel">
+          ${it === 0 ? "Ayo Mulai!" : "Lanjut ke Level " + (it + 1)} <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>`;
+  const btn = document.getElementById("btnLevel");
+  btn.addEventListener("click", () => { suaraKlik(); renderSoal(); });
+  btn.focus({ preventScroll: true });
+  suaraNaikLevel();
+  guruBilang([
+    `Level 1: ${t.nama}! Kita mulai dari yang mudah dulu, ya, ${namaPanggilan}.`,
+    `Hebat! Sekarang Level 2: ${t.nama}. Kamu pasti bisa!`,
+    `Level terakhir: ${t.nama}! Ini tantangan, baca pelan-pelan, ya. 🚀`,
+  ][it] || `Level ${it + 1}: ${t.nama}!`);
 }
 
 /* ==========================================================================
@@ -281,11 +411,15 @@ function mulaiKuis() {
    ========================================================================== */
 function renderSoal() {
   const s = SOAL[idxSoal];
+  const t = TINGKAT[s.tingkat];
   sudahJawab = false;
+  // kutipan 1 baris diberi tanda petik; daftar kalimat (1)(2)(3) tidak
+  const kutipan = s.kutipan ? (s.kutipan.includes("\n") ? esc(s.kutipan) : `“${esc(s.kutipan)}”`) : "";
 
   elCard.innerHTML = `
     <div class="layar">
       <div class="kuis-head">
+        <span class="level-lencana level-${t.id}" title="Level ${s.tingkat + 1}: ${esc(t.nama)}">${t.ikon} ${esc(t.nama)}</span>
         <span class="kuis-nomor">Soal ${idxSoal + 1}<small>/${SOAL.length}</small></span>
         <div class="kuis-bar"><span style="width:${(idxSoal / SOAL.length) * 100}%"></span></div>
         <span class="kuis-skor" id="skor"><i class="fa-solid fa-star"></i> ${Math.round(jumlahBenar * POIN_PER_SOAL)}</span>
@@ -296,7 +430,7 @@ function renderSoal() {
 
       <div class="kuis-body">
         <span class="kuis-perintah">${esc(s.perintah || PERINTAH)}</span>
-        ${s.kutipan ? `<blockquote class="kuis-kutipan">“${esc(s.kutipan)}”</blockquote>` : ""}
+        ${kutipan ? `<blockquote class="kuis-kutipan">${kutipan}</blockquote>` : ""}
         <h2 class="kuis-tanya">${esc(s.tanya)}</h2>
 
         <div class="kuis-pilihan">
@@ -392,7 +526,9 @@ function lanjut() {
   suaraKlik();
   if (idxSoal < SOAL.length - 1) {
     idxSoal++;
-    renderSoal();
+    // ganti tingkat -> layar pembuka level dulu
+    if (SOAL[idxSoal].tingkat !== SOAL[idxSoal - 1].tingkat) renderLevel(SOAL[idxSoal].tingkat);
+    else renderSoal();
   } else {
     renderHasil();
   }
@@ -427,8 +563,14 @@ function renderHasil() {
         <h1>Kuis Selesai!</h1>
         <div class="nilai-bulat"><b>${nilai}</b><small>NILAI</small></div>
         <p class="sapa"><b>${esc(user.nama)}</b> menjawab benar <b>${jumlahBenar}</b> dari ${SOAL.length} soal.<br>${pesan}</p>
-        <div class="rekap" aria-label="Rekap jawaban">
-          ${SOAL.map((s, i) => `<span class="${jawabanSiswa[i] === s.jawaban ? "is-benar" : "is-salah"}" title="Soal ${i + 1}">${i + 1}</span>`).join("")}
+        <div class="rekap-level" aria-label="Rekap jawaban per level">
+          ${TINGKAT.map((t, it) => `
+            <div class="rekap-baris level-${t.id}">
+              <span class="rekap-judul">${t.ikon} ${esc(t.nama)} <b>${benarDiLevel(it)}/${t.soal.length}</b></span>
+              <div class="rekap">
+                ${SOAL.map((s, i) => s.tingkat !== it ? "" : `<span class="${jawabanSiswa[i] === s.jawaban ? "is-benar" : "is-salah"}" title="Soal ${i + 1}">${i + 1}</span>`).join("")}
+              </div>
+            </div>`).join("")}
         </div>
         <p class="status-kirim" id="statusKirim"></p>
         <div class="tombol-baris">

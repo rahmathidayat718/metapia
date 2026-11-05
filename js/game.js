@@ -54,12 +54,14 @@ const Game = (() => {
      1) KAK RARA — pose + balon kata (sama kayak di kuis.js)
      ======================================================================== */
   const GURU_POSE = {
-    senyum: "assets/karakter/guru/guru-senyum.webp",
-    bicara: "assets/karakter/guru/guru-bicara.webp",
-    nunjuk: "assets/karakter/guru/guru-nunjuk.webp",
+    // pose yang sudah DISERAGAMKAN (kanvas, tinggi & posisi kaki sama) -> gak
+    // getar waktu ganti pose / gerak bibir. Lihat docs/seragamkan-pose.py
+    senyum: "assets/karakter/materi/guru-senyum.webp",
+    bicara: "assets/karakter/materi/guru-bicara.webp",
+    nunjuk: "assets/karakter/materi/guru-nunjuk.webp",
     // versi mulut tertutup -> gantian sama yang terbuka waktu ngomong (lip-sync)
-    bicara_tutup: "assets/karakter/guru/guru-bicara-tutup.webp",
-    nunjuk_tutup: "assets/karakter/guru/guru-nunjuk-tutup.webp",
+    bicara_tutup: "assets/karakter/materi/guru-bicara-tutup.webp",
+    nunjuk_tutup: "assets/karakter/materi/guru-nunjuk-tutup.webp",
   };
   const elGuru = document.getElementById("teacherSlot");
   const elBubble = document.getElementById("bubbleGuru");
@@ -67,7 +69,7 @@ const Game = (() => {
   const poseEls = {};
   let timerKetik = null;
   let timerPose = null;
-  const layarHP = window.matchMedia("(max-width:820px)");
+  const layarHP = window.matchMedia("(max-width:820px), (orientation:portrait) and (max-width:1100px)");
 
   elGuru.innerHTML = `<div class="tokoh-figure"><div class="tokoh-shadow"></div><div class="tokoh-body"></div></div>`;
   Object.entries(GURU_POSE).forEach(([nama, src]) => {

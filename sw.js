@@ -5,15 +5,16 @@
    Cara kerja:
    - Saat pertama dibuka (install): semua file di DAFTAR_FILE diunduh &
      disimpan di cache perangkat (precache).
-   - Selanjutnya:
-       * HTML/CSS/JS  : coba ambil versi terbaru dari internet dulu
-                        (network-first). Kalau offline / internet lambat
-                        (> BATAS_TUNGGU), pakai simpanan di cache. Jadi kode
-                        lama gak nyangkut setelah update (dulu bikin guru
-                        mental balik ke Rekap karena cek-login.js lama).
-       * gambar/font/three.js : dari cache saja (cache-first), unduh kalau
-                        belum ada. three.js baru disimpan waktu halaman Game
-                        pertama kali dibuka (biar kunjungan pertama ringan).
+   - Selanjutnya SEMUA file diambil dari cache dulu (cache-first) -> halaman
+     langsung tampil, gak layar putih nunggu internet. File yang belum ada
+     di cache diunduh lalu disimpan (mis. three.js, baru disimpan waktu
+     halaman Game pertama kali dibuka biar kunjungan pertama ringan).
+   - Kenapa aman (gak nyangkut kode lama): tiap versi web punya cache
+     sendiri (CACHE_VERSI) yang diisi LANGSUNG dari server waktu install
+     (cache: "reload", bukan dari HTTP cache browser). Jadi isi 1 cache selalu
+     versi yang sama semua. Web di-update -> sw.js berubah -> browser pasang
+     versi baru di belakang layar -> dipakai mulai halaman berikutnya.
+     (Dulu cache bisa keisi cek-login.js lama -> guru mental balik ke Rekap.)
    - Video MP4 (assets/video/) TIDAK ikut disimpan otomatis (ukurannya
      besar). Siswa menyimpannya sendiri lewat tombol "Simpan untuk offline"
      di halaman Video -> masuk cache "video-metapia" (gak ikut terhapus
@@ -27,7 +28,7 @@
    berubah bikin cache lama di HP siswa dihapus & diganti yang baru.
    ========================================================================== */
 
-const CACHE_VERSI = "metapia-0ebf76a4c5"; // diatur docs/perbarui-sw.py
+const CACHE_VERSI = "metapia-3d235bfcc3"; // diatur docs/perbarui-sw.py
 const CACHE_VIDEO = "video-metapia"; // sama dengan di js/video.js
 const DAFTAR_FILE = [
   // diatur docs/perbarui-sw.py
@@ -43,24 +44,40 @@ const DAFTAR_FILE = [
   "assets/game/g1-soal4.webp",
   "assets/game/g1-soal5.webp",
   "assets/ikon/apple-touch-icon.png",
-  "assets/ikon/favicon-48.png",
   "assets/ikon/ikon-192.png",
   "assets/ikon/ikon-512.png",
   "assets/ikon/ikon-maskable-512.png",
-  "assets/karakter/guru/guru-bicara-tutup.webp",
-  "assets/karakter/guru/guru-bicara.webp",
-  "assets/karakter/guru/guru-nunjuk-tutup.webp",
-  "assets/karakter/guru/guru-nunjuk.webp",
-  "assets/karakter/guru/guru-senyum.webp",
-  "assets/karakter/murid/bima.webp",
-  "assets/karakter/murid/dito-bicara-tutup.webp",
-  "assets/karakter/murid/dito-bicara.webp",
-  "assets/karakter/murid/dito-diam.webp",
-  "assets/karakter/murid/dito-ide-tutup.webp",
-  "assets/karakter/murid/dito-ide.webp",
-  "assets/karakter/murid/dito-senang.webp",
-  "assets/karakter/murid/keke.webp",
-  "assets/karakter/murid/sari.webp",
+  "assets/karakter/materi/bima-bicara-tutup.webp",
+  "assets/karakter/materi/bima-bicara.webp",
+  "assets/karakter/materi/bima-bingung.webp",
+  "assets/karakter/materi/bima-diam.webp",
+  "assets/karakter/materi/bima-tepuk.webp",
+  "assets/karakter/materi/bima-tertawa.webp",
+  "assets/karakter/materi/dito-bicara-tutup.webp",
+  "assets/karakter/materi/dito-bicara.webp",
+  "assets/karakter/materi/dito-diam.webp",
+  "assets/karakter/materi/dito-ide-tutup.webp",
+  "assets/karakter/materi/dito-ide.webp",
+  "assets/karakter/materi/dito-senang.webp",
+  "assets/karakter/materi/guru-bangga.webp",
+  "assets/karakter/materi/guru-bicara-tutup.webp",
+  "assets/karakter/materi/guru-bicara.webp",
+  "assets/karakter/materi/guru-kaget.webp",
+  "assets/karakter/materi/guru-nunjuk-tutup.webp",
+  "assets/karakter/materi/guru-nunjuk.webp",
+  "assets/karakter/materi/guru-senyum.webp",
+  "assets/karakter/materi/guru-tertawa.webp",
+  "assets/karakter/materi/keke-angkat.webp",
+  "assets/karakter/materi/keke-bicara-tutup.webp",
+  "assets/karakter/materi/keke-bicara.webp",
+  "assets/karakter/materi/keke-diam.webp",
+  "assets/karakter/materi/keke-tepuk.webp",
+  "assets/karakter/materi/sari-bangga.webp",
+  "assets/karakter/materi/sari-bicara-tutup.webp",
+  "assets/karakter/materi/sari-bicara.webp",
+  "assets/karakter/materi/sari-diam.webp",
+  "assets/karakter/materi/sari-malu.webp",
+  "assets/karakter/materi/sari-tepuk.webp",
   "assets/kupu-pink.webp",
   "assets/kupu-ungu.webp",
   "css/common.css",
@@ -137,36 +154,11 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return; // Apps Script, YouTube, Drive: langsung ke internet
   if (url.pathname.includes("/assets/video/")) { event.respondWith(putarVideo(req)); return; }
 
-  const teks = req.mode === "navigate" || /\.(html|css|js|json)$/.test(url.pathname) || url.pathname.endsWith("/");
-  const bukanVendor = !url.pathname.includes("/js/vendor/");
-  event.respondWith(teks && bukanVendor ? networkFirst(req) : cacheFirst(req));
+  // semua file web: dari simpanan versi ini dulu (instan, gak layar putih)
+  event.respondWith(cacheFirst(req));
 });
 
-const BATAS_TUNGGU = 4000; // ms; lebih lama dari ini -> pakai cache dulu
-
-/**
- * Ambil versi terbaru dari internet (lewati HTTP cache browser) & simpan.
- * Offline / gagal / lebih dari BATAS_TUNGGU -> tampilkan dari cache
- * (download tetap jalan di belakang & menyimpan hasilnya buat nanti).
- */
-async function networkFirst(req) {
-  const cache = await caches.open(CACHE_VERSI);
-  const baru = fetch(req.url, { cache: "no-cache", credentials: "same-origin" }).then(async (res) => {
-    // respons hasil redirect gak boleh dipakai buat navigasi -> bungkus ulang
-    if (res.redirected) res = new Response(await res.blob(), { status: res.status, statusText: res.statusText, headers: res.headers });
-    if (res.ok) cache.put(stripQuery(req), res.clone());
-    return res.ok ? res : null;
-  }).catch(() => null);
-  const telat = new Promise((r) => setTimeout(() => r("telat"), BATAS_TUNGGU));
-  const hasil = await Promise.race([baru, telat]);
-  if (hasil && hasil !== "telat") return hasil;
-  // ignoreSearch: game.html?main=2 tetap ketemu walau yang disimpan game.html
-  const lama = await cache.match(req, { ignoreSearch: true });
-  if (lama) return lama;
-  return (await baru) || halamanOffline(req);
-}
-
-/** dari cache; kalau belum ada, unduh lalu simpan */
+/** dari cache (ignoreSearch: game.html?main=2 = game.html); kalau belum ada, unduh lalu simpan */
 async function cacheFirst(req) {
   const cache = await caches.open(CACHE_VERSI);
   const lama = await cache.match(req, { ignoreSearch: true });

@@ -158,6 +158,9 @@
 .kuis-umpan{
   display:flex; align-items:center; gap:14px;
   margin-top:auto;
+  /* HP: waktu digulir ke sini (scrollIntoView), sisakan ruang buat menu bawah
+     -> tombol Lanjut gak ketutup menu (dulu ke-tap malah pindah ke Video) */
+  scroll-margin-bottom:calc(var(--tinggi-menu-bawah, 0px) + 14px);
   padding:12px 14px 12px 16px;
   border:3px solid var(--ink); border-radius:16px;
   animation:layarMasuk .3s ease-out;
@@ -253,8 +256,56 @@
 /* ==========================================================================
    RESPONSIVE — HP / tablet kecil: Kak Rara jadi strip lebar di atas kartu
    ========================================================================== */
-@media (max-width:820px){
+/* ==========================================================================
+   LEVEL (Mudah / Sedang / HOTS)
+   ========================================================================== */
+.kuis-kutipan{ white-space:pre-line; } /* daftar kalimat (1) (2) (3) turun baris */
+.level-mudah { --level:#3FBF7F; --level-muda:#E3F8EC; }
+.level-sedang{ --level:#F39C34; --level-muda:#FFF0DC; }
+.level-hots  { --level:#8A5CF6; --level-muda:#EFE7FF; }
+
+/* lencana kecil di kepala soal */
+.level-lencana{
+  padding:4px 12px; border-radius:100px; white-space:nowrap;
+  background:var(--level-muda); color:var(--ink);
+  border:2px solid var(--level);
+  font-family:var(--font-display); font-weight:800; font-size:.9rem;
+}
+/* daftar level di layar mulai */
+.daftar-level{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+.level-chip{
+  padding:6px 12px; border-radius:12px;
+  background:var(--level-muda); border:2px solid var(--level);
+  font-size:.88rem; color:var(--ink);
+}
+/* layar pembuka level */
+.layar-level h1{ color:var(--level); font-size:2.4rem; }
+.lencana-level{ background:var(--level-muda); border-color:var(--level); animation:lencanaMasuk .5s cubic-bezier(.34,1.56,.64,1); }
+@keyframes lencanaMasuk{ from{ transform:scale(.3) rotate(-20deg); opacity:0; } }
+.level-nomor{
+  margin:0; font-family:var(--font-display); font-weight:800;
+  letter-spacing:2px; font-size:.85rem; color:var(--purple-700);
+}
+.level-selesai{
+  margin:0; padding:6px 14px; border-radius:100px;
+  background:#E3F8EC; color:#1E7A4C; font-weight:700; font-size:.92rem;
+}
+/* rekap hasil per level */
+.rekap-level{ display:flex; flex-direction:column; gap:8px; width:100%; max-width:420px; }
+.rekap-baris{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:6px 10px; border-radius:12px;
+  background:var(--level-muda); border:2px solid var(--level);
+}
+.rekap-judul{ font-family:var(--font-display); font-weight:700; white-space:nowrap; }
+.rekap-baris .rekap{ justify-content:flex-end; }
+
+@media (max-width:820px), (orientation:portrait) and (max-width:1100px){ /* HP + tablet berdiri */
   .kuis-stage{ grid-template-columns:1fr; gap:14px; min-height:0; margin-top:12px; }
+  .level-lencana{ font-size:.78rem; padding:3px 9px; }
+  .layar-level h1{ font-size:2rem; }
+  .rekap-baris{ flex-direction:column; align-items:stretch; }
+  .rekap-baris .rekap{ justify-content:center; }
   /* HP: Kak Rara jadi strip pendek di atas kartu, balon katanya lebar */
   .kuis-guru{ height:150px; border-width:4px; border-radius:20px; }
   .kuis-guru .guru{ left:17%; bottom:2%; height:96%; }

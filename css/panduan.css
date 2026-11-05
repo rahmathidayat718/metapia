@@ -15,7 +15,7 @@
   border:4px solid var(--ink); border-radius:22px;
   box-shadow:6px 6px 0 rgba(44,36,80,.55);
 }
-.panduan-kepala img{ width:120px; height:auto; flex:none; }
+.panduan-kepala img{ width:129px; height:auto; flex:none; } /* kanvas 586x520 */
 .panduan-kepala h1{ font-size:2rem; line-height:1.1; }
 .panduan-kepala p{ margin-top:6px; font-weight:700; color:var(--ink-soft); }
 
@@ -74,7 +74,7 @@
 @media (max-width:600px){
   .panduan{ margin-top:14px; gap:12px; }
   .panduan-kepala{ padding:12px 14px; gap:12px; }
-  .panduan-kepala img{ width:76px; }
+  .panduan-kepala img{ width:82px; }
   .panduan-kepala h1{ font-size:1.5rem; }
   .panduan-kepala p{ font-size:.9rem; }
   .panduan-tab .tab{ font-size:.92rem; padding:10px 6px; }
