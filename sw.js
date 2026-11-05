@@ -5,10 +5,12 @@
    Cara kerja:
    - Saat pertama dibuka (install): semua file di DAFTAR_FILE diunduh &
      disimpan di cache perangkat (precache).
-   - Selanjutnya file diambil dari cache dulu (cepat & tetap jalan offline):
-       * HTML/CSS/JS  : tampil dari cache, lalu diam-diam dicek versi baru di
-                        internet (stale-while-revalidate) -> update ikut
-                        kepakai di kunjungan berikutnya.
+   - Selanjutnya:
+       * HTML/CSS/JS  : coba ambil versi terbaru dari internet dulu
+                        (network-first). Kalau offline / internet lambat
+                        (> BATAS_TUNGGU), pakai simpanan di cache. Jadi kode
+                        lama gak nyangkut setelah update (dulu bikin guru
+                        mental balik ke Rekap karena cek-login.js lama).
        * gambar/font/three.js : dari cache saja (cache-first), unduh kalau
                         belum ada. three.js baru disimpan waktu halaman Game
                         pertama kali dibuka (biar kunjungan pertama ringan).
@@ -111,7 +113,9 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_VERSI)
       // satu per satu: kalau 1 file gagal, yang lain tetap tersimpan
-      .then((cache) => Promise.all(DAFTAR_FILE.map((f) => cache.add(f).catch((e) => console.warn("[sw] gagal simpan", f, e)))))
+      // cache: "reload" -> ambil langsung dari server, bukan dari HTTP cache
+      // browser (GitHub Pages max-age 10 menit bisa ngasih file versi lama)
+      .then((cache) => Promise.all(DAFTAR_FILE.map((f) => cache.add(new Request(f, { cache: "reload" })).catch((e) => console.warn("[sw] gagal simpan", f, e)))))
       .then(() => self.skipWaiting())
   );
 });
@@ -135,18 +139,29 @@ self.addEventListener("fetch", (event) => {
 
   const teks = req.mode === "navigate" || /\.(html|css|js|json)$/.test(url.pathname) || url.pathname.endsWith("/");
   const bukanVendor = !url.pathname.includes("/js/vendor/");
-  event.respondWith(teks && bukanVendor ? staleWhileRevalidate(req) : cacheFirst(req));
+  event.respondWith(teks && bukanVendor ? networkFirst(req) : cacheFirst(req));
 });
 
-/** tampilkan dari cache, sambil ambil versi baru di belakang layar */
-async function staleWhileRevalidate(req) {
+const BATAS_TUNGGU = 4000; // ms; lebih lama dari ini -> pakai cache dulu
+
+/**
+ * Ambil versi terbaru dari internet (lewati HTTP cache browser) & simpan.
+ * Offline / gagal / lebih dari BATAS_TUNGGU -> tampilkan dari cache
+ * (download tetap jalan di belakang & menyimpan hasilnya buat nanti).
+ */
+async function networkFirst(req) {
   const cache = await caches.open(CACHE_VERSI);
+  const baru = fetch(req.url, { cache: "no-cache", credentials: "same-origin" }).then(async (res) => {
+    // respons hasil redirect gak boleh dipakai buat navigasi -> bungkus ulang
+    if (res.redirected) res = new Response(await res.blob(), { status: res.status, statusText: res.statusText, headers: res.headers });
+    if (res.ok) cache.put(stripQuery(req), res.clone());
+    return res.ok ? res : null;
+  }).catch(() => null);
+  const telat = new Promise((r) => setTimeout(() => r("telat"), BATAS_TUNGGU));
+  const hasil = await Promise.race([baru, telat]);
+  if (hasil && hasil !== "telat") return hasil;
   // ignoreSearch: game.html?main=2 tetap ketemu walau yang disimpan game.html
   const lama = await cache.match(req, { ignoreSearch: true });
-  const baru = fetch(req).then((res) => {
-    if (res.ok) cache.put(stripQuery(req), res.clone());
-    return res;
-  }).catch(() => null);
   if (lama) return lama;
   return (await baru) || halamanOffline(req);
 }
