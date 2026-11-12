@@ -77,7 +77,7 @@ function pasangKotakKode(input, info, jenis = () => "siswa") {
     if (ke !== urutan) return hasil; // sudah diketik ulang
     hasil = h;
     if (!h) tulis("Kode belum bisa dicek (tidak ada internet).", "is-salah");
-    else if (h.ok) tulis(`🏫 ${h.sekolah}`, "is-ok");
+    else if (h.ok) tulis(`🏫 ${h.sekolah}${h.guru ? ` · Guru: ${h.guru}` : ""}`, "is-ok");
     else tulis(jenis() === "guru" ? "Kode guru tidak ditemukan. Pastikan ini KODE GURU, bukan kode siswa." : "Kode sekolah tidak ditemukan. Cek lagi, ya.", "is-salah");
     return hasil;
   }

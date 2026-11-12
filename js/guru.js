@@ -64,7 +64,7 @@ async function muat() {
   } else {
     try { rekap = JSON.parse(localStorage.getItem("metapia_rekap")); } catch (e) { rekap = null; }
     const alasan = !hasil ? "Tidak tersambung ke internet." : hasil.kode === "aksi_salah"
-      ? "Server Google Sheet belum diperbarui ke versi 5 (lihat google-sheet/Code.gs)." : "Server sedang bermasalah.";
+      ? "Server Google Sheet belum diperbarui ke versi terbaru (lihat google-sheet/Code.gs)." : "Server sedang bermasalah.";
     pesan(rekap
       ? `<i class="fa-solid fa-triangle-exclamation"></i> ${alasan} Yang tampil adalah data terakhir yang tersimpan (${esc(rekap.diambil)}).`
       : `<i class="fa-solid fa-triangle-exclamation"></i> ${alasan} Coba lagi nanti.`, "is-peringatan");

@@ -133,9 +133,10 @@ function bacaUserLokal() {
 }
 
 /* ==========================================================================
-   KODE SEKOLAH (6 huruf/angka, dibuat otomatis waktu guru mendaftarkan
-   sekolah). Tiap sekolah punya KODE SISWA (dibagikan lewat link/QR) dan
-   KODE GURU (khusus untuk guru lain yang mau bergabung).
+   KODE SEKOLAH (6 huruf/angka, dibuat otomatis). Tiap GURU punya KODE
+   SISWA sendiri (dibagikan ke siswanya lewat link/QR) -> siswa tercatat
+   sebagai siswa guru itu. Tiap sekolah punya KODE GURU (khusus untuk guru
+   lain yang mau bergabung ke sekolah itu).
    Kode yang pernah cocok disimpan di perangkat ("metapia_kode") biar nama
    sekolahnya tetap bisa ditampilkan waktu offline.
    ========================================================================== */
@@ -161,7 +162,7 @@ async function ambilSheet(param) {
 
 /**
  * Cek kode sekolah. jenis: "siswa" | "guru" | "semua". Hasil:
- *  { ok: true, sekolah, kode }  -> kode benar
+ *  { ok: true, sekolah, guru, kode }  -> kode benar (guru: pemilik kode siswa)
  *  { ok: false, kode: "kode_salah" }
  *  null                         -> gak bisa dicek (offline & belum pernah dipakai di perangkat ini)
  */

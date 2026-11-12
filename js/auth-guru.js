@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("metapia_guru", JSON.stringify({ nama: hasil.nama, pin, sekolah: hasil.sekolah, kodeSekolah: hasil.kodeSekolah, kodeGuru: hasil.kodeGuru }));
     localStorage.removeItem("metapia_rekap"); // rekap guru lain (kalau ada) dibuang
     if (mode !== "masuk") localStorage.setItem("metapia_guru_baru", "1"); // guru.html: tampilkan kode sekolah besar-besar
-    if (mode !== "masuk") alert(`Pendaftaran berhasil! 🎉\n\nSekolah: ${hasil.sekolah}\nKode siswa: ${hasil.kodeSekolah}\nKode guru: ${hasil.kodeGuru}\nNama: ${hasil.nama}\nPIN: ${pin}\n\nCatat kode dan PIN ini. Kode siswa dan kode guru juga tampil di halaman Rekap.`);
+    if (mode !== "masuk") alert(`Pendaftaran berhasil! 🎉\n\nSekolah: ${hasil.sekolah}\nKode siswa (khusus kelas Anda): ${hasil.kodeSekolah}\nKode guru (untuk guru lain di sekolah ini): ${hasil.kodeGuru}\nNama: ${hasil.nama}\nPIN: ${pin}\n\nCatat kode dan PIN ini. Kode siswa dan kode guru juga tampil di halaman Rekap.`);
     window.location.href = "guru.html";
   });
 });

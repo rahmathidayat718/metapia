@@ -80,6 +80,8 @@ const POSE_PENGGANTI = {
                                      (lama kosong = ditahan). Tanpa ini:
                                      murid ngomong -> kamera dekati murid itu.
                      Tulis *kata* -> kata itu disorot stabilo + bunyi "ting".
+   - papanJawaban  : (opsional) adegan papan waktu murid menjawab "paham?"
+                     Kosong = contoh terakhir tetap di papan.
    - jawabanMurid  : jawaban murid waktu ditanya "paham?" (usahakan pendek,
                      maksimal ~70 huruf biar muat di balon kata)
    ========================================================================== */
@@ -97,6 +99,7 @@ const DAFTAR_MAJAS = [
       },
       {
         teks: "Contoh: daripada berkata “dia pintar sekali”,\nkita bisa berkata “dia adalah bintang kelas”.\nLebih menarik didengar, bukan?",
+        papan: "biasa-vs-majas",
         reaksi: [[1, "malu", 2300], [2, "tepuk", 2900], [0, "senang", 3200]],
       },
     ],
@@ -160,8 +163,11 @@ const DAFTAR_MAJAS = [
         reaksi: [[2, "bingung", 2400]],
       },
       {
-        teks: "Contoh: \"Angin berbisik lembut di telinga Rani.\"\n(Padahal, angin tidak bisa berbicara sungguhan, ya!)",
-        reaksi: [[0, "ide", 1800], [2, "tertawa", 3000], [3, "tepuk", 3300]],
+        teks: "Contoh: \"Angin berbisik lembut di telinga Keke.\"\n(Padahal, angin tidak bisa berbicara sungguhan, ya!)",
+        papan: "angin-berbisik",
+        // Keke disebut -> kamera nyorot Keke (seperti Sari di contoh bintang kelas)
+        kamera: { ke: 3, skala: 1.22, jeda: 900, lama: 2200 },
+        reaksi: [[3, "tepuk", 1000, 2600], [0, "ide", 1800], [2, "tertawa", 3000]],
       },
     ],
     jawabanMurid: "Aku paham! Personifikasi membuat benda mati seperti manusia!",
@@ -176,11 +182,13 @@ const DAFTAR_MAJAS = [
       },
       {
         teks: "Contoh: \"Aku sudah mengatakannya beribu-ribu kali,\ntetapi kamu tetap saja lupa!\"",
+        papan: "beribu-kali",
         kamera: { ke: "guru", skala: 1.12, jeda: 300 }, // kalimat dramatis -> kamera mendekat ke guru
         reaksi: [[2, "tertawa", 2200], [1, "tepuk", 2600], [0, "senang", 2900]],
       },
     ],
     jawabanMurid: "Paham sekali! Hiperbola itu melebih-lebihkan, seperti “PR-ku segunung”!",
+    papanJawaban: "pr-segunung",
   },
   {
     // penutup: ngarahin siswa ke halaman Video (alur Materi -> Video -> Kuis -> Game)
@@ -239,7 +247,109 @@ const ADEGAN = {
       <span class="kerlip" style="right:12%;top:8%;animation-delay:.6s">✨</span>
     </div>
     <div class="adegan-label is-benar">Bintang kelas = murid paling pintar ✅</div>`,
+
+  // PENGANTAR: kalimat biasa (datar) -> kalimat bermajas (hidup)
+  "biasa-vs-majas": `
+    <div class="adegan adegan-banding">
+      <div class="kartu-kalimat is-biasa">
+        <small>Kalimat biasa 😐</small>
+        <b>“Dia pintar sekali.”</b>
+      </div>
+      <div class="panah-ubah">⬇️ <span>pakai majas</span></div>
+      <div class="kartu-kalimat is-majas">
+        <small>Kalimat bermajas 🤩</small>
+        <b>“Dia adalah bintang kelas!”</b>
+        <span class="kerlip" style="right:4%;top:-14%">⭐</span>
+        <span class="kerlip" style="left:3%;bottom:-12%;animation-delay:.5s">✨</span>
+      </div>
+    </div>
+    <div class="adegan-label is-benar">Majas = kalimat lebih hidup & menarik ✅</div>`,
+
+  // PERSONIFIKASI: tiupan angin ala kartun (kepala bulat berpipi kembung +
+  // ekor pusaran angin) "berbisik" ke telinga Keke (karakter asli)
+  "angin-berbisik": `
+    <div class="adegan">
+      <div class="angin-wajah">
+        <svg viewBox="0 0 150 100" aria-hidden="true">
+          <g fill="none" stroke-linecap="round">
+            <!-- ekor pusaran angin (garis tepi gelap + isi terang) -->
+            <g stroke="#2C2450" stroke-width="10">
+              <path d="M6 30 C26 22 44 30 70 34 M18 30 C10 20 18 10 28 14 C34 17 32 24 26 23"/>
+              <path d="M2 58 C24 52 44 60 68 56"/>
+              <path d="M10 84 C30 76 50 86 74 74 M22 82 C14 92 24 100 32 94 C37 90 33 85 29 87"/>
+            </g>
+            <g stroke="#EAF6FF" stroke-width="5">
+              <path d="M6 30 C26 22 44 30 70 34 M18 30 C10 20 18 10 28 14 C34 17 32 24 26 23"/>
+              <path d="M2 58 C24 52 44 60 68 56"/>
+              <path d="M10 84 C30 76 50 86 74 74 M22 82 C14 92 24 100 32 94 C37 90 33 85 29 87"/>
+            </g>
+          </g>
+          <!-- kepala angin -->
+          <path d="M96 22 C112 14 136 24 138 46 C140 70 118 84 98 78 C78 74 68 58 74 42 C70 34 78 22 92 26 C90 18 98 12 104 16"
+                fill="#EAF6FF" stroke="#2C2450" stroke-width="3.5" stroke-linejoin="round"/>
+          <path d="M100 18 C106 10 116 14 112 22 C110 26 104 24 106 20" fill="none" stroke="#2C2450" stroke-width="3" stroke-linecap="round"/>
+          <!-- mata tertutup (lagi berbisik pelan) -->
+          <path d="M92 44 Q97 39 102 44" fill="none" stroke="#2C2450" stroke-width="3" stroke-linecap="round"/>
+          <path d="M110 42 Q115 37 120 42" fill="none" stroke="#2C2450" stroke-width="3" stroke-linecap="round"/>
+          <!-- pipi kembung + mulut monyong ke kanan -->
+          <ellipse cx="96" cy="56" rx="7" ry="5" fill="#FF8FA3" opacity=".55"/>
+          <ellipse cx="124" cy="54" rx="7" ry="5" fill="#FF8FA3" opacity=".55"/>
+          <ellipse cx="134" cy="60" rx="5" ry="4" fill="#2C2450"/>
+        </svg>
+      </div>
+      <div class="hembus"><i></i><i></i><i></i></div>
+      <span class="daun d1">🍃</span><span class="daun d2">🍃</span>
+      <div class="bisikan">psst… 🤫</div>
+      <div class="keke-dengar"><img src="${MURID[3].pose.diam}" alt="Keke"></div>
+    </div>
+    <div class="adegan-label is-benar">Angin “berbisik” seperti manusia = personifikasi ✅</div>`,
+
+  // HIPERBOLA: hitungan "sudah bilang" melesat sampai 1.000 kali
+  "beribu-kali": `
+    <div class="adegan">
+      <div class="hitungan"><b data-hitung="1000">1</b><small>kali bilang!</small></div>
+      <span class="balon-mini m1">Jangan lupa!</span>
+      <span class="balon-mini m2">Jangan lupa!</span>
+      <span class="balon-mini m3">Jangan lupa!</span>
+      <span class="balon-mini m4">Jangan lupa!</span>
+      <div class="dito-lupa"><img src="${MURID[0].pose.diam}" alt="Dito"><span>❓</span></div>
+    </div>
+    <div class="adegan-label is-benar">Beribu-ribu kali? Sebenarnya cuma beberapa kali = hiperbola ✅</div>`,
+
+  // HIPERBOLA (jawaban murid): tumpukan buku PR menjulang sampai puncak gunung
+  "pr-segunung": `
+    <div class="adegan">
+      <svg class="gunung" viewBox="0 0 200 120" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 120 L70 22 L96 50 L122 8 L200 120 Z" fill="#7FB77E" stroke="#2C2450" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M110 26 L122 8 L134 26 L127 22 L122 28 L116 22 Z" fill="#FDFBF2" stroke="#2C2450" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+      <div class="tumpukan-pr">
+        <i style="--w:72%;--c:#FF8FA3"></i><i style="--w:66%;--c:#FFD43B"></i><i style="--w:76%;--c:#8EC5FF"></i>
+        <i style="--w:62%;--c:#B9A6EE"></i><i style="--w:70%;--c:#FF8FA3"></i><i style="--w:64%;--c:#C6F6B8"></i>
+        <i style="--w:74%;--c:#FFD43B"></i><i style="--w:60%;--c:#8EC5FF"></i><i style="--w:68%;--c:#B9A6EE"></i>
+        <b>PR</b>
+      </div>
+      <div class="dito-lupa dito-pr"><img src="${MURID[0].pose.diam}" alt="Dito"><span>😱</span></div>
+    </div>
+    <div class="adegan-label is-benar">PR segunung? Sebenarnya cuma beberapa lembar = hiperbola ✅</div>`,
 };
+
+/** angka [data-hitung] di adegan melesat dari 1 ke angka tujuannya (mis. 1 -> 1.000) */
+function jalankanHitung(wadah) {
+  wadah.querySelectorAll("[data-hitung]").forEach((el) => {
+    const tujuan = Number(el.dataset.hitung) || 0;
+    const mulai = performance.now() + 500; // tunggu papan selesai "digambar"
+    const lama = 2200;
+    (function langkah(t) {
+      if (!el.isConnected) return;
+      const p = Math.min(1, Math.max(0, (t - mulai) / lama));
+      const n = Math.max(1, Math.round(tujuan * p * p)); // makin lama makin cepat
+      el.textContent = n.toLocaleString("id-ID");
+      if (p < 1) requestAnimationFrame(langkah);
+      else el.classList.add("is-selesai");
+    })(performance.now());
+  });
+}
 
 /** baris dialog bisa teks biasa atau objek -> selalu jadi objek */
 function bacaBaris(baris) {
@@ -740,6 +850,7 @@ function tampilkanPapan(nama) {
     adeganTergambar = nama;
     playKapur();
     if (elPapanIsi.querySelector(".cap-silang")) playCap();
+    jalankanHitung(elPapanIsi);
   };
   elPapan.classList.add("ada-contoh"); // judul naik ke atas papan
   if (adaIsi) {
@@ -797,7 +908,8 @@ function renderKonten() {
     jadwalReaksi([[penjawab(idxMajas), "angkat", 1700, 0]]);
     btnAction.innerHTML = 'Paham! <i class="fa-solid fa-thumbs-up"></i>';
   } else if (diJawabMurid) {
-    // contoh tetap di papan sampai pindah ke bagian berikutnya
+    // contoh tetap di papan (atau diganti contoh dari jawaban murid)
+    if (majas.papanJawaban) tampilkanPapan(majas.papanJawaban);
     const i = penjawab(idxMajas);
     pilihMurid(i);
     aturKamera({ ke: i, skala: 1.15 });

@@ -2,19 +2,26 @@
    METAPIA — Google Apps Script penerima & pemberi data untuk website
    --------------------------------------------------------------------------
    File ini BUKAN bagian website. Isinya di-copy ke Google Apps Script.
-   VERSI 5: sekolah ber-KODE + akun guru (guru bisa MELIHAT nilai siswa
-   sekolahnya).
+   VERSI 6: sekolah ber-KODE + akun guru + TIAP GURU PUNYA KODE SISWA
+   SENDIRI (1 SD bisa punya beberapa kelas 5, mis. 5A & 5B: guru 5A cuma
+   melihat siswa 5A, guru 5B cuma melihat siswa 5B).
 
-   CARA KERJA KODE SEKOLAH (mirip Google Classroom). Tiap sekolah punya
-   2 kode acak 6 huruf/angka yang dibuat otomatis:
-   - KODE SISWA (mis. K7Q2MX): dibagikan ke siswa lewat LINK/QR (kodenya
-     langsung terisi) atau diketik. Daftar sekolah TIDAK ditampilkan ke umum.
-   - KODE GURU (mis. T4HR8W): HANYA untuk guru lain yang mau bergabung ke
-     sekolah itu. Dipisah dari kode siswa, jadi siswa/orang tua yang
-     memegang link siswa tetap tidak bisa daftar sebagai guru.
-   - Guru masuk dengan salah satu kode + nama + PIN 6 angka.
-   - Kode bocor? Ganti isi selnya di tab "Daftar Sekolah" (6 huruf/angka
-     bebas). Siswa yang sudah masuk tidak terpengaruh.
+   CARA KERJA KODE (mirip Google Classroom). Semua kode = 6 huruf/angka acak,
+   dibuat otomatis:
+   - KODE GURU sekolah (mis. T4HR8W, tab "Daftar Sekolah"): HANYA untuk guru
+     lain yang mau bergabung ke sekolah itu. Dibuat waktu guru PERTAMA
+     mendaftarkan sekolahnya.
+   - KODE SISWA milik TIAP GURU (mis. K7Q2MX, tab "Daftar Guru"): dibagikan
+     guru itu ke siswanya lewat LINK/QR (kodenya langsung terisi) atau
+     diketik. Siswa yang masuk dengan kode ini tercatat sebagai siswa guru
+     itu (kolom "Guru" di "Daftar Siswa") & hanya tampil di rekap guru itu.
+     Guru pertama memakai kode siswa sekolah yang lama (kolom "Kode Siswa"
+     di "Daftar Sekolah"), jadi link/QR yang sudah dibagikan tetap jalan.
+   - Guru masuk dengan kode sekolah/kode guru/kode siswanya + nama + PIN.
+   - Kode bocor? Ganti isi selnya (6 huruf/angka bebas). Siswa yang sudah
+     terdaftar tidak terpengaruh.
+   - Siswa pindah kelas? Cukup masuk lagi dengan kode siswa guru barunya,
+     atau ganti isi kolom "Guru"-nya di "Daftar Siswa".
 
    YANG DICATAT DI GOOGLE SHEET (1 file sheet untuk SEMUA sekolah; tiap baris
    punya kolom "Sekolah", jadi nilai SD A & SD B tidak tercampur):
@@ -25,7 +32,9 @@
       perlu, mis. "SD Negeri 1 Ceria Makassar").
 
    2) Tab "Daftar Guru" -> 1 guru = 1 baris
-        Nama | Sekolah | PIN | Pertama Masuk | Terakhir Masuk | Jumlah Masuk | Status
+        Nama | Sekolah | PIN | Pertama Masuk | Terakhir Masuk | Jumlah Masuk |
+        Status | Kode Siswa
+      "Kode Siswa" = kode untuk siswa guru itu (dibuat otomatis kalau kosong).
       Guru daftar sendiri di web (tab "Guru" di halaman masuk) dengan PIN
       6 angka. Guru cuma bisa MELIHAT nilai siswa di sekolahnya sendiri,
       tidak bisa mengubah apa pun.
@@ -36,7 +45,9 @@
 
    3) Tab "Daftar Siswa" -> 1 siswa = 1 baris
         Nama | Pertama Masuk | Terakhir Masuk | Jumlah Masuk | PIN |
-        Nilai Kuis Terakhir | Kuis Terakhir | Game Terakhir | ... | Sekolah
+        Nilai Kuis Terakhir | Kuis Terakhir | Game Terakhir | ... | Sekolah | Guru
+      - "Guru" = guru pemilik kode siswa yang dipakai siswa waktu masuk.
+        Kosong (siswa lama) = dianggap siswa guru pertama sekolah itu.
       - Nama gak boleh dobel DI SEKOLAH YANG SAMA ("acel" = "Acel").
         "Andi" di SD A dan "Andi" di SD B = 2 siswa berbeda.
       - Kalau siswa lupa PIN: guru bisa lihat PIN-nya di halaman Guru, atau
@@ -46,12 +57,12 @@
 
    4) Tab "Kuis DD-MM-YYYY" -> nilai kuis, DIPISAH PER TANGGAL
         No | Nama | Nilai Pertama | Nilai Terbaik | Nilai Terakhir |
-        Jumlah Mencoba | Jawaban Terakhir | Jam Terakhir | Sekolah
+        Jumlah Mencoba | Jawaban Terakhir | Jam Terakhir | Sekolah | Guru
    5) Tab "Game DD-MM-YYYY" -> skor game, DIPISAH PER TANGGAL
         No | Nama | Game | Skor Pertama | Skor Terbaik | Skor Terakhir |
-        Jumlah Main | Benar Terakhir | Jam Terakhir | Sekolah
-      Mau lihat 1 sekolah saja di Google Sheet: Data -> Buat filter ->
-      saring kolom "Sekolah".
+        Jumlah Main | Benar Terakhir | Jam Terakhir | Sekolah | Guru
+      Mau lihat 1 sekolah / 1 kelas saja di Google Sheet: Data -> Buat
+      filter -> saring kolom "Sekolah" / "Guru".
 
    CARA PASANG PERTAMA KALI:
    1. Buat Google Sheet baru -> menu Ekstensi -> Apps Script.
@@ -62,7 +73,7 @@
    4. Copy "URL aplikasi web" (berakhiran /exec) ke js/sheet.js.
    5. Cek: buka URL itu di browser -> muncul "METAPIA siap menerima data ✓".
 
-   CARA UPDATE (kalau isi file ini berubah, mis. ke versi 5 ini):
+   CARA UPDATE (kalau isi file ini berubah, mis. ke versi 6 ini):
    1. Paste ulang SELURUH isi file ini ke Code.gs di Apps Script, Simpan.
    2. "Terapkan" -> "Kelola deployment" -> klik ✏️ (edit) ->
       Versi: "Versi baru" -> "Terapkan".  (URL /exec-nya TETAP SAMA)
@@ -80,17 +91,17 @@ const SHEET_SISWA = "Daftar Siswa";
 const SHEET_GURU = "Daftar Guru";
 const SHEET_SEKOLAH = "Daftar Sekolah";
 const KOLOM_SISWA = ["Nama", "Pertama Masuk", "Terakhir Masuk", "Jumlah Masuk", "PIN", "Nilai Kuis Terakhir", "Kuis Terakhir",
-                     "Game Terakhir", "Skor Game Terakhir", "Waktu Game Terakhir", "Sekolah"];
-const KOLOM_GURU = ["Nama", "Sekolah", "PIN", "Pertama Masuk", "Terakhir Masuk", "Jumlah Masuk", "Status"];
+                     "Game Terakhir", "Skor Game Terakhir", "Waktu Game Terakhir", "Sekolah", "Guru"];
+const KOLOM_GURU = ["Nama", "Sekolah", "PIN", "Pertama Masuk", "Terakhir Masuk", "Jumlah Masuk", "Status", "Kode Siswa"];
 const KOLOM_SEKOLAH = ["Nama Sekolah", "Kode Siswa", "Kode Guru", "Dibuat", "Dibuat Oleh"];
 const HURUF_KODE = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // tanpa 0/O, 1/I/L biar gak ketuker
-const KOLOM_NILAI = ["No", "Nama", "Nilai Pertama", "Nilai Terbaik", "Nilai Terakhir", "Jumlah Mencoba", "Jawaban Terakhir", "Jam Terakhir", "Sekolah"];
-const KOLOM_GAME = ["No", "Nama", "Game", "Skor Pertama", "Skor Terbaik", "Skor Terakhir", "Jumlah Main", "Benar Terakhir", "Jam Terakhir", "Sekolah"];
+const KOLOM_NILAI = ["No", "Nama", "Nilai Pertama", "Nilai Terbaik", "Nilai Terakhir", "Jumlah Mencoba", "Jawaban Terakhir", "Jam Terakhir", "Sekolah", "Guru"];
+const KOLOM_GAME = ["No", "Nama", "Game", "Skor Pertama", "Skor Terbaik", "Skor Terakhir", "Jumlah Main", "Benar Terakhir", "Jam Terakhir", "Sekolah", "Guru"];
 
 /* ==========================================================================
    PINTU MASUK
    SISWA
-   - POST {aksi:"masuk", nama, pin, kodeSekolah}      -> daftar / masuk (kodeSekolah = kode siswa)
+   - POST {aksi:"masuk", nama, pin, kodeSekolah}      -> daftar / masuk (kodeSekolah = kode siswa milik guru)
    - POST {aksi:"nilai", nama, pin, sekolah, nilai, benar, salah, jawaban}
    - POST {aksi:"game",  nama, pin, sekolah, gameId, game, skor, benar}
    - GET  ?aksi=status&nama=..&pin=..&sekolah=..      -> nilai & game terakhir
@@ -98,9 +109,10 @@ const KOLOM_GAME = ["No", "Nama", "Game", "Skor Pertama", "Skor Terbaik", "Skor 
    - POST {aksi:"guruDaftar", mode:"baru", nama, pin, sekolah, kode}   -> bikin sekolah baru (+ kode sekolah)
    - POST {aksi:"guruDaftar", mode:"gabung", nama, pin, kodeSekolah}  -> gabung sekolah (kodeSekolah = KODE GURU)
    - POST {aksi:"guruMasuk",  nama, pin, kodeSekolah}  (kode siswa / kode guru)
-   - POST {aksi:"guruRekap",  nama, pin, kodeSekolah}  -> nilai semua siswa di sekolahnya (lihat saja)
+   - POST {aksi:"guruRekap",  nama, pin, kodeSekolah}  -> nilai siswa GURU ITU saja (lihat saja)
+     Balasan guruDaftar/guruMasuk/guruRekap: kodeSekolah = KODE SISWA milik guru itu.
    UMUM
-   - GET  ?aksi=cekKode&kode=..&jenis=siswa|guru|semua -> nama sekolah dari kode (konfirmasi di halaman masuk)
+   - GET  ?aksi=cekKode&kode=..&jenis=siswa|guru|semua -> nama sekolah (+ guru) dari kode
    - GET  ?aksi=info             -> { butuhKode } (perlu kode pembuat sekolah?)
    - GET  (tanpa aksi)           -> cek script hidup
    ========================================================================== */
@@ -138,29 +150,35 @@ function doGet(e) {
   try {
     if (p.aksi === "status") return balas(status(p.nama, p.pin, p.sekolah));
     if (p.aksi === "cekKode") {
-      const s = sekolahDariKode(p.kode, p.jenis || "siswa");
-      return balas(s ? { ok: true, sekolah: s.nama, kode: s.kode } : { ok: false, kode: "kode_salah" });
+      const jenis = p.jenis || "siswa";
+      if (jenis === "siswa") {
+        const k = kelasDariKode(p.kode);
+        return balas(k ? { ok: true, sekolah: k.sekolah, guru: k.guru, kode: k.kode } : { ok: false, kode: "kode_salah" });
+      }
+      const s = sekolahDariKode(p.kode, jenis) || (jenis === "semua" && kelasDariKode(p.kode));
+      return balas(s ? { ok: true, sekolah: s.nama || s.sekolah, kode: s.kode } : { ok: false, kode: "kode_salah" });
     }
-    if (p.aksi === "info") return balas({ ok: true, versi: 5, butuhKode: !!KODE_DAFTAR_GURU });
+    if (p.aksi === "info") return balas({ ok: true, versi: 6, butuhKode: !!KODE_DAFTAR_GURU });
   } catch (err) {
     return balas({ ok: false, kode: "error", pesan: String(err) });
   }
-  return ContentService.createTextOutput("METAPIA siap menerima data ✓ (versi 5: kode sekolah + akun guru + kuis + game)");
+  return ContentService.createTextOutput("METAPIA siap menerima data ✓ (versi 6: kode siswa per guru + akun guru + kuis + game)");
 }
 
-/** siswa masuk pakai KODE sekolah (dari link/QR/ketik) */
+/** siswa masuk pakai KODE SISWA milik gurunya (dari link/QR/ketik) */
 function masukDenganKode(data) {
-  const s = sekolahDariKode(data.kodeSekolah, "siswa");
-  if (!s) return { ok: false, kode: rapikanKode(data.kodeSekolah) ? "kode_salah" : "perlu_sekolah" };
-  const hasil = masuk(data.nama, data.pin, s.nama);
-  if (hasil.ok) hasil.kodeSekolah = s.kode;
+  const k = kelasDariKode(data.kodeSekolah);
+  if (!k) return { ok: false, kode: rapikanKode(data.kodeSekolah) ? "kode_salah" : "perlu_sekolah" };
+  const hasil = masuk(data.nama, data.pin, k.sekolah, k.guru);
+  if (hasil.ok) { hasil.kodeSekolah = k.kode; hasil.guru = k.guru; }
   return hasil;
 }
 
 /* ==========================================================================
    1) SISWA: MASUK / DAFTAR
    ========================================================================== */
-function masuk(namaMentah, pinMentah, sekolahMentah) {
+/** guruNama: guru pemilik kode yang dipakai ("" = tidak diubah) */
+function masuk(namaMentah, pinMentah, sekolahMentah, guruNama) {
   const nama = rapikanNama(namaMentah);
   const pin = rapikanPin(pinMentah);
   if (!nama) return { ok: false, kode: "nama_kosong" };
@@ -193,6 +211,7 @@ function masuk(namaMentah, pinMentah, sekolahMentah) {
     const r = sheet.getLastRow() + 1;
     sheet.getRange(r, K["Nama"]).setValue(amankan(nama));
     sheet.getRange(r, K["Sekolah"]).setValue(amankan(sekolah));
+    if (guruNama) sheet.getRange(r, K["Guru"]).setValue(amankan(guruNama));
     sheet.getRange(r, K["Pertama Masuk"]).setValue(sekarang).setNumberFormat("dd/MM/yyyy HH:mm");
     sheet.getRange(r, K["Terakhir Masuk"]).setValue(sekarang).setNumberFormat("dd/MM/yyyy HH:mm");
     sheet.getRange(r, K["Jumlah Masuk"]).setValue(1);
@@ -211,6 +230,8 @@ function masuk(namaMentah, pinMentah, sekolahMentah) {
   const jumlah = Number(sheet.getRange(baris, K["Jumlah Masuk"]).getValue()) || 0;
   sheet.getRange(baris, K["Terakhir Masuk"]).setValue(sekarang).setNumberFormat("dd/MM/yyyy HH:mm");
   sheet.getRange(baris, K["Jumlah Masuk"]).setValue(jumlah + 1);
+  // masuk pakai kode siswa guru lain (pindah kelas) -> ikut guru itu
+  if (guruNama) sheet.getRange(baris, K["Guru"]).setValue(amankan(guruNama));
 
   return {
     ok: true,
@@ -246,7 +267,9 @@ function catatNilai(data) {
 
   // a) tab tanggal hari ini (tab baru ditaruh di posisi ke-2, habis "Daftar Siswa")
   const sheet = ambilSheet("Kuis " + tanggal, KOLOM_NILAI, 1);
-  const kolSekolah = petaKolom(sheet, KOLOM_NILAI)["Sekolah"];
+  const KN = petaKolom(sheet, KOLOM_NILAI);
+  const kolSekolah = KN["Sekolah"];
+  const guruSiswa = String(siswa.getRange(barisSiswa, K["Guru"]).getValue() || "").replace(/^'/, "");
   const baris = cariBarisSekolah(sheet, 2, namaAsli, kolSekolah, sekolah);
   if (baris) {
     // sudah pernah kuis hari ini -> update (Nilai Pertama gak diubah)
@@ -258,9 +281,12 @@ function catatNilai(data) {
       jawaban,
       jam,
     ]]);
+    sheet.getRange(baris, KN["Guru"]).setValue(amankan(guruSiswa));
   } else {
     const no = sheet.getLastRow(); // baris 1 = judul, jadi siswa pertama = No 1
-    sheet.appendRow([no, amankan(namaAsli), nilai, nilai, nilai, 1, jawaban, jam, amankan(sekolah)]);
+    const isi = [no, amankan(namaAsli), nilai, nilai, nilai, 1, jawaban, jam, amankan(sekolah)];
+    isi[KN["Guru"] - 1] = amankan(guruSiswa);
+    sheet.appendRow(isi);
   }
 
   // b) catat juga di "Daftar Siswa" biar gampang dibaca dari perangkat lain
@@ -287,7 +313,9 @@ function catatGame(data) {
 
   // a) tab tanggal hari ini: 1 baris per siswa + game
   const sheet = ambilSheet("Game " + tanggal, KOLOM_GAME, 1);
-  const kolSekolah = petaKolom(sheet, KOLOM_GAME)["Sekolah"];
+  const KG = petaKolom(sheet, KOLOM_GAME);
+  const kolSekolah = KG["Sekolah"];
+  const guruSiswa = String(siswa.getRange(barisSiswa, K["Guru"]).getValue() || "").replace(/^'/, "");
   const baris = cariBarisGame(sheet, namaAsli, game, kolSekolah, sekolah);
   if (baris) {
     // sudah pernah main game ini hari ini -> update (Skor Pertama gak diubah)
@@ -299,9 +327,12 @@ function catatGame(data) {
       benar,
       jam,
     ]]);
+    sheet.getRange(baris, KG["Guru"]).setValue(amankan(guruSiswa));
   } else {
     const no = sheet.getLastRow(); // baris 1 = judul, jadi siswa pertama = No 1
-    sheet.appendRow([no, amankan(namaAsli), game, skor, skor, skor, 1, benar, jam, amankan(sekolah)]);
+    const isi = [no, amankan(namaAsli), game, skor, skor, skor, 1, benar, jam, amankan(sekolah)];
+    isi[KG["Guru"] - 1] = amankan(guruSiswa);
+    sheet.appendRow(isi);
   }
 
   // b) "Daftar Siswa": game terakhir yang dimainkan (dibaca Dashboard)
@@ -400,7 +431,10 @@ function guruDaftar(data) {
   sheet.getRange(r, K["Terakhir Masuk"]).setValue(sekarang).setNumberFormat("dd/MM/yyyy HH:mm");
   sheet.getRange(r, K["Jumlah Masuk"]).setValue(1);
   sheet.getRange(r, K["Status"]).setValue("Aktif");
-  return { ok: true, nama, sekolah, kodeSekolah, kodeGuru };
+  // kode siswa guru ini: guru pembuat sekolah = kode siswa sekolah, guru lain = kode baru
+  const kodeKelas = data.mode === "baru" ? kodeSekolah : buatKodeBaru();
+  sheet.getRange(r, K["Kode Siswa"]).setNumberFormat("@").setValue(kodeKelas);
+  return { ok: true, nama, sekolah, kodeSekolah: kodeKelas, kodeGuru };
 }
 
 function guruMasuk(data) {
@@ -410,7 +444,7 @@ function guruMasuk(data) {
   const jumlah = Number(sheet.getRange(baris, K["Jumlah Masuk"]).getValue()) || 0;
   sheet.getRange(baris, K["Terakhir Masuk"]).setValue(new Date()).setNumberFormat("dd/MM/yyyy HH:mm");
   sheet.getRange(baris, K["Jumlah Masuk"]).setValue(jumlah + 1);
-  return { ok: true, nama: g.nama, sekolah: g.sekolah, kodeSekolah: g.kodeSekolah, kodeGuru: g.kodeGuru, status: g.pinBaru ? "pin_baru" : "masuk" };
+  return { ok: true, nama: g.nama, sekolah: g.sekolah, kodeSekolah: g.kodeKelas, kodeGuru: g.kodeGuru, status: g.pinBaru ? "pin_baru" : "masuk" };
 }
 
 /** cek kode sekolah + nama + PIN guru. PIN dikosongkan di sheet -> PIN yang diketik jadi PIN baru */
@@ -418,7 +452,12 @@ function cekGuru(data) {
   const nama = rapikanNama(data.nama);
   const pin = pinGuruKetik(data.pin);
   if (!nama || !pin) return { ok: false, kode: "pin_salah" };
-  const s = sekolahDariKode(data.kodeSekolah, "semua");
+  // kode sekolah lama / kode guru sekolah / kode siswa milik guru mana pun di sekolah itu
+  let s = sekolahDariKode(data.kodeSekolah, "semua");
+  if (!s) {
+    const k = kelasDariKode(data.kodeSekolah);
+    if (k) s = daftarSekolah().find((x) => kunciNama(x.nama) === kunciNama(k.sekolah)) || null;
+  }
   if (!s) return { ok: false, kode: "kode_salah" };
   const sekolah = s.nama;
   const sheet = sheetGuru();
@@ -430,11 +469,15 @@ function cekGuru(data) {
   if (pinLama && pinLama !== pin) return { ok: false, kode: "pin_salah" };
   if (!pinLama) sheet.getRange(baris, K["PIN"]).setNumberFormat("@").setValue(pin);
   const namaAsli = String(sheet.getRange(baris, K["Nama"]).getValue()).replace(/^'/, "");
-  return { ok: true, sheet, K, baris, nama: namaAsli, sekolah, kodeSekolah: s.kode, kodeGuru: s.kodeGuru, pinBaru: !pinLama };
+  const kelas = daftarKelas().find((x) => x.baris === baris);
+  const kodeKelas = kelas ? kelas.kode : s.kode;
+  return { ok: true, sheet, K, baris, nama: namaAsli, sekolah, kodeKelas, kodeSekolahLama: s.kode, kodeGuru: s.kodeGuru, pinBaru: !pinLama };
 }
 
 /**
- * Rekap nilai SEMUA siswa di sekolah guru (hanya dibaca):
+ * Rekap nilai siswa MILIK GURU INI saja (hanya dibaca). Siswa milik guru =
+ * kolom "Guru" = nama guru ini. Siswa lama yang kolom Guru-nya kosong ikut
+ * guru yang memegang kode siswa sekolah yang lama (guru pertama).
  *  siswa  : [{ nama, pin, pertamaMasuk, terakhirMasuk, jumlahMasuk }]
  *  kuis   : [{ tanggal, nama, pertama, terbaik, terakhir, mencoba, jam }]
  *  game   : [{ tanggal, nama, game, pertama, terbaik, terakhir, main, benar, jam }]
@@ -444,6 +487,13 @@ function guruRekap(data) {
   if (!g.ok) return g;
   const sekolah = g.sekolah;
   const kunciSekolah = kunciNama(sekolah);
+  const kunciGuru = kunciNama(g.nama);
+  const pemegangKodeLama = g.kodeKelas === g.kodeSekolahLama; // guru pertama
+  const milikGuruIni = (guru) => {
+    const kg = kunciNama(String(guru || "").replace(/^'/, ""));
+    return kg ? kg === kunciGuru : pemegangKodeLama;
+  };
+  const namaSiswa = {}; // kunci nama -> true (buat nyaring tab Kuis/Game)
   const tz = ZONA_WAKTU;
   const teksWaktu = (v) => (v instanceof Date ? Utilities.formatDate(v, tz, "dd-MM-yyyy HH:mm") : String(v || ""));
 
@@ -455,6 +505,8 @@ function guruRekap(data) {
   if (jml > 0) {
     sh.getRange(2, 1, jml, sh.getLastColumn()).getValues().forEach((r) => {
       if (kunciNama(r[K["Sekolah"] - 1]) !== kunciSekolah) return;
+      if (!milikGuruIni(r[K["Guru"] - 1])) return;
+      namaSiswa[kunciNama(String(r[K["Nama"] - 1]).replace(/^'/, ""))] = true;
       siswa.push({
         nama: String(r[K["Nama"] - 1]).replace(/^'/, ""),
         pin: rapikanPin(r[K["PIN"] - 1]),
@@ -477,6 +529,7 @@ function guruRekap(data) {
     isi.forEach((r, i) => {
       if (kunciNama(r[kolS - 1]) !== kunciSekolah) return;
       const nama = String(r[1]).replace(/^'/, "");
+      if (!namaSiswa[kunciNama(nama)]) return; // siswa guru lain
       if (m[1] === "Kuis") {
         kuis.push({ tanggal: m[2], nama, pertama: Number(r[2]) || 0, terbaik: Number(r[3]) || 0, terakhir: Number(r[4]) || 0, mencoba: Number(r[5]) || 0, jam: jam[i][0] });
       } else {
@@ -485,7 +538,7 @@ function guruRekap(data) {
     });
   });
 
-  return { ok: true, sekolah, kodeSekolah: g.kodeSekolah, kodeGuru: g.kodeGuru, guru: g.nama, siswa, kuis, game, diambil: Utilities.formatDate(new Date(), tz, "dd-MM-yyyy HH:mm") };
+  return { ok: true, sekolah, kodeSekolah: g.kodeKelas, kodeGuru: g.kodeGuru, guru: g.nama, siswa, kuis, game, diambil: Utilities.formatDate(new Date(), tz, "dd-MM-yyyy HH:mm") };
 }
 
 /* ==========================================================================
@@ -533,7 +586,67 @@ function daftarSekolah() {
 function semuaKode() {
   const kode = [];
   daftarSekolah().forEach((x) => kode.push(x.kode, x.kodeGuru));
+  // kode siswa milik guru (dibaca langsung, biar gak muter ke daftarKelas)
+  const sh = sheetGuru();
+  const kol = kolomJudul(sh, "Kode Siswa");
+  if (kol && sh.getLastRow() > 1) sh.getRange(2, kol, sh.getLastRow() - 1, 1).getValues().forEach((r) => { if (rapikanKode(r[0])) kode.push(rapikanKode(r[0])); });
   return kode;
+}
+
+/**
+ * Semua "kelas" = guru + kode siswanya: [{ guru, sekolah, kode, baris }].
+ * Guru yang belum punya kode siswa (guru dari versi 5) otomatis dibuatkan:
+ * guru pembuat sekolah ("Dibuat Oleh") dapat kode siswa sekolah yang lama
+ * (biar link/QR lama tetap ke dia), guru lain dapat kode baru.
+ */
+function daftarKelas() {
+  const sh = sheetGuru();
+  const K = petaKolom(sh, KOLOM_GURU);
+  const jml = sh.getLastRow() - 1;
+  if (jml < 1) return [];
+  const isi = sh.getRange(2, 1, jml, sh.getLastColumn()).getValues();
+  const sekolahList = daftarSekolah();
+  // sekolah -> nama pembuatnya
+  const ss = ambilSheet(SHEET_SEKOLAH, KOLOM_SEKOLAH, 0);
+  const KS = petaKolom(ss, KOLOM_SEKOLAH);
+  const pembuat = {};
+  if (ss.getLastRow() > 1) {
+    ss.getRange(2, 1, ss.getLastRow() - 1, ss.getLastColumn()).getValues().forEach((r) => {
+      pembuat[kunciNama(r[KS["Nama Sekolah"] - 1])] = kunciNama(String(r[KS["Dibuat Oleh"] - 1]).replace(/^'/, ""));
+    });
+  }
+  const dipakai = semuaKode();
+  const hasil = [];
+  isi.forEach((r, i) => {
+    const guru = String(r[K["Nama"] - 1]).replace(/^'/, "").trim();
+    const sekolah = String(r[K["Sekolah"] - 1]).replace(/^'/, "").trim();
+    if (!guru || !sekolah) return;
+    let kode = rapikanKode(r[K["Kode Siswa"] - 1]);
+    if (!kode) {
+      const s = sekolahList.find((x) => kunciNama(x.nama) === kunciNama(sekolah));
+      const kodeLamaSudahDipegang = s && hasil.some((h) => h.kode === s.kode) ||
+        isi.some((y) => rapikanKode(y[K["Kode Siswa"] - 1]) === (s && s.kode));
+      if (s && pembuat[kunciNama(sekolah)] === kunciNama(guru) && !kodeLamaSudahDipegang) kode = s.kode;
+      else { kode = buatKodeBaru(dipakai); dipakai.push(kode); }
+      sh.getRange(i + 2, K["Kode Siswa"]).setNumberFormat("@").setValue(kode);
+    }
+    hasil.push({ guru, sekolah, kode, baris: i + 2 });
+  });
+  return hasil;
+}
+
+/**
+ * kode siswa -> { sekolah, guru, kode } atau null.
+ * Kode siswa sekolah yang lama (tab "Daftar Sekolah") yang belum dipegang
+ * guru mana pun tetap diterima (guru = "": siswanya ikut guru pertama).
+ */
+function kelasDariKode(teks) {
+  const k = rapikanKode(teks);
+  if (!k) return null;
+  const kelas = daftarKelas().find((x) => x.kode === k);
+  if (kelas) return { sekolah: kelas.sekolah, guru: kelas.guru, kode: k };
+  const s = sekolahDariKode(k, "siswa");
+  return s ? { sekolah: s.nama, guru: "", kode: k } : null;
 }
 
 /** cari sekolah dari NAMA (huruf besar/kecil & spasi dianggap sama) -> ejaan aslinya, atau "" */
