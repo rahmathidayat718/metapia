@@ -1,6 +1,6 @@
 /* ==========================================================================
    METAPIA — game3d/pabrik-sortir.js
-   GAME 2 versi 3D: "PABRIK SORTIR MAJAS" (pengganti Keranjang Majas)
+   GAME 2 versi 3D: "PABRIK SORTIR MAJAS" (versi 2D: js/game-keranjang.js)
    -------------------------------------------------------------------------
    Kotak berisi kalimat datang lewat ban berjalan (dari kiri bawah ke tengah).
    Di depan ada 3 tong: Metafora / Personifikasi / Hiperbola.

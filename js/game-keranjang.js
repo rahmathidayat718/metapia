@@ -1,6 +1,6 @@
 /* ==========================================================================
    METAPIA — game-keranjang.js
-   GAME 2: KERANJANG MAJAS (MENGELOMPOKKAN)
+   GAME 2 versi 2D: PABRIK SORTIR MAJAS (MENGELOMPOKKAN) — sortir manual:
    Tiap soal: 1 kartu kalimat -> diseret ke 1 dari 3 keranjang.
    - Seret pakai mouse ATAU jari (Pointer Events, bukan HTML5 drag)
    - Alternatif: ketuk kartu, lalu ketuk keranjang

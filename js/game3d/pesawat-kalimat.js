@@ -1,6 +1,6 @@
 /* ==========================================================================
    METAPIA — game3d/pesawat-kalimat.js
-   GAME 3 versi 3D: "PESAWAT PERAKIT KALIMAT" (pengganti Ubah Kalimatku)
+   GAME 3 versi 3D: "PESAWAT PERAKIT KALIMAT" (versi 2D: js/game-ubah.js)
    -------------------------------------------------------------------------
    Luar angkasa. Di atas: kalimat biasa + jenis majas yang diminta.
    Kata-kata kalimat bermajas (jawaban soal) + kata pengecoh melayang jadi

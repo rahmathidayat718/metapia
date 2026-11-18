@@ -8,6 +8,6 @@ import pecahBalon from "./pecah-balon.js";
 import pabrikSortir from "./pabrik-sortir.js";
 import pesawatKalimat from "./pesawat-kalimat.js";
 
-Game.daftar3d(1, pecahBalon);   // Tebak Gambar    -> Pecah Balon Majas
-Game.daftar3d(2, pabrikSortir); // Keranjang Majas -> Pabrik Sortir Majas
-Game.daftar3d(3, pesawatKalimat); // Ubah Kalimatku -> Pesawat Perakit Kalimat
+Game.daftar3d(1, pecahBalon);   // Pecah Balon Majas
+Game.daftar3d(2, pabrikSortir); // Pabrik Sortir Majas
+Game.daftar3d(3, pesawatKalimat); // Pesawat Perakit Kalimat

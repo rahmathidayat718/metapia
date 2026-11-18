@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script src="js/reset-data.js"></script>
 <!-- belum masukin nama? langsung balik ke halaman login -->
 <script src="js/cek-login.js"></script>
 <meta charset="UTF-8">
@@ -153,6 +154,12 @@ tampilkanSkorGame();
   const user = getCurrentUser();
   if (!user) return;
   const hasil = await ambilStatusSiswa(user.nama, user.pin, user.sekolah || "");
+  // akun sudah gak terdaftar di sheet (mis. sheet dikosongkan) -> masuk ulang
+  if (hasil && !hasil.ok && KODE_AKUN_HILANG.includes(hasil.kode)) {
+    alert("Akunmu sudah tidak terdaftar. Silakan masuk lagi dengan kode dari gurumu, ya.");
+    keluarkanAkunHilang(user.nama, 0);
+    return;
+  }
   if (!hasil || !hasil.ok) return;
   if (hasil.nilai) {
     simpanNilaiLokal(user.nama, hasil.nilai.nilai, hasil.nilai.tanggal);

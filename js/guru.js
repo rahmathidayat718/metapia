@@ -7,8 +7,10 @@
    disimpan di perangkat ("metapia_rekap") biar tetap bisa dilihat offline.
    ========================================================================== */
 const guru = JSON.parse(localStorage.getItem("metapia_guru") || "{}");
-const URUTAN_GAME = ["Tebak Gambar", "Keranjang Majas", "Ubah Kalimatku"]; // nama game di sheet
-const LABEL_GAME = { "Tebak Gambar": "Game 1", "Keranjang Majas": "Game 2", "Ubah Kalimatku": "Game 3" };
+const URUTAN_GAME = ["Pecah Balon Majas", "Pabrik Sortir Majas", "Pesawat Perakit Kalimat"]; // nama game di sheet
+const LABEL_GAME = { "Pecah Balon Majas": "Game 1", "Pabrik Sortir Majas": "Game 2", "Pesawat Perakit Kalimat": "Game 3",
+  // nama lama (data sebelum nama disamakan)
+  "Tebak Gambar": "Game 1", "Keranjang Majas": "Game 2", "Ubah Kalimatku": "Game 3" };
 
 let rekap = null;
 let tab = "siswa";

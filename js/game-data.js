@@ -10,16 +10,16 @@
    - petunjuk : muncul (lewat Kak Rara) waktu siswa salah
    - pembahasan : muncul setelah soal selesai
 
-   VERSI 3D (js/game3d/): pakai data soal yang SAMA persis. Yang ditambah
-   cuma nama/deskripsi/cara main versi 3D (judul3d, deskripsi3d, caraMain3d)
-   dan pengaturan kecepatan (kecepatan3d). Nama yang dikirim ke Google Sheet
-   tetap "judul" (nama lama) biar data penelitian gak kepisah.
+   VERSI 3D (js/game3d/): pakai data soal yang SAMA persis. NAMA game sama
+   untuk 2D & 3D ("judul", juga yang dicatat di Google Sheet). Yang beda
+   cuma deskripsi & cara main versi 3D (deskripsi3d, caraMain3d) dan
+   pengaturan kecepatan (kecepatan3d).
    ========================================================================== */
 
 /* urutan tombol/keranjang jenis majas (tetap) */
 const JENIS_MAJAS = ["Metafora", "Personifikasi", "Hiperbola"];
 
-/* warna & ikon tiap jenis majas (dipakai tombol stempel & keranjang) */
+/* warna & ikon tiap jenis majas (dipakai balon Game 1 & keranjang Game 2) */
 const GAYA_MAJAS = {
   Metafora:      { ikon: "🌟", warna: "kuning" },
   Personifikasi: { ikon: "🗣️", warna: "biru" },
@@ -28,19 +28,18 @@ const GAYA_MAJAS = {
 
 const DATA_GAME = {
   /* ======================================================================
-     GAME 1 — TEBAK GAMBAR (MENGENALI)
+     GAME 1 — PECAH BALON MAJAS (MENGENALI)
      Langkah 1: pilih kalimat yang cocok dengan gambar (boleh coba 2x)
      Langkah 2: pilih jenis majasnya (1x)
      Skor: langkah 1 benar +10, langkah 2 benar +10 -> maks 100
      ====================================================================== */
   1: {
     id: 1,
-    judul: "Tebak Gambar",
+    judul: "Pecah Balon Majas",
     label: "MENGENALI",
     ikon: "🖼️",
     warna: "kuning",
-    deskripsi: "Lihat gambarnya, temukan kalimat bermajas yang cocok, lalu tebak jenis majasnya!",
-    judul3d: "Pecah Balon Majas",
+    deskripsi: "Lihat gambarnya, lalu pecahkan balon kalimat yang cocok dan balon jenis majasnya!",
     deskripsi3d: "Lihat gambarnya, lalu pecahkan balon kalimat yang cocok dan balon jenis majasnya!",
     caraMain3d: [
       "Lihat gambar di atas baik-baik. Santai, tidak ada batas waktu!",
@@ -48,9 +47,9 @@ const DATA_GAME = {
       "Lalu ketuk balon jenis majasnya. Benar terus = poin bonus! 🔥",
     ],
     caraMain: [
-      "Perhatikan gambar baik-baik.",
-      "Pilih kalimat yang paling cocok dengan gambar.",
-      "Tebak jenis majasnya: Metafora, Personifikasi, atau Hiperbola.",
+      "Perhatikan gambar baik-baik. Santai, tidak ada batas waktu!",
+      "Ketuk balon kalimat yang cocok dengan gambar. Dor! 🎈",
+      "Lalu pecahkan balon jenis majasnya: Metafora, Personifikasi, atau Hiperbola.",
     ],
     soal: [
       {
@@ -122,19 +121,18 @@ const DATA_GAME = {
   },
 
   /* ======================================================================
-     GAME 2 — KERANJANG MAJAS (MENGELOMPOKKAN)
+     GAME 2 — PABRIK SORTIR MAJAS (MENGELOMPOKKAN)
      Seret kartu kalimat ke keranjang yang benar. 30 detik per soal.
      Skor: benar percobaan ke-1 +20, ke-2 +10 -> maks 100
      ====================================================================== */
   2: {
     id: 2,
-    judul: "Keranjang Majas",
+    judul: "Pabrik Sortir Majas",
     label: "MENGELOMPOKKAN",
     ikon: "🧺",
     warna: "biru",
     detikPerSoal: 30,
-    deskripsi: "Seret kartu kalimat ke keranjang majas yang tepat sebelum waktunya habis!",
-    judul3d: "Pabrik Sortir Majas",
+    deskripsi: "Sortir kalimatnya! Seret kartu kalimat ke keranjang majas yang tepat sebelum waktunya habis!",
     deskripsi3d: "Kotak kalimat datang di ban berjalan. Lempar kotaknya ke tong majas yang tepat!",
     caraMain3d: [
       "Baca kalimat di kotak yang datang lewat ban berjalan.",
@@ -183,19 +181,18 @@ const DATA_GAME = {
   },
 
   /* ======================================================================
-     GAME 3 — UBAH KALIMATKU (MENERAPKAN)
+     GAME 3 — PESAWAT PERAKIT KALIMAT (MENERAPKAN)
      Ubah kalimat biasa jadi kalimat bermajas. Maks 3 percobaan per soal.
      Skor: percobaan ke-1 = 3 bintang (20), ke-2 = 2 bintang (10),
            ke-3 = 1 bintang (5) -> maks 100 poin / 15 bintang
      ====================================================================== */
   3: {
     id: 3,
-    judul: "Ubah Kalimatku",
+    judul: "Pesawat Perakit Kalimat",
     label: "MENERAPKAN",
     ikon: "🪄",
     warna: "pink",
-    deskripsi: "Pakai tongkat ajaibmu! Ubah kalimat biasa menjadi kalimat bermajas.",
-    judul3d: "Pesawat Perakit Kalimat",
+    deskripsi: "Terbangkan pesawatmu! Ubah kalimat biasa menjadi kalimat bermajas.",
     deskripsi3d: "Terbang di luar angkasa! Tembak kata-kata sesuai urutan untuk merakit kalimat bermajas.",
     caraMain3d: [
       "Baca kalimat biasa dan jenis majas yang diminta.",
@@ -208,7 +205,7 @@ const DATA_GAME = {
        nentuin sendiri, tambahin di soalnya:  kataPengecoh: ["batu", "meja"] */
     caraMain: [
       "Baca kalimat biasa dan jenis majas yang diminta.",
-      "Pilih kalimat bermajas yang tepat.",
+      "Pilih pesawat berisi kalimat bermajas yang tepat. 🚀",
       "Makin sedikit salah, makin banyak bintangmu!",
     ],
     soal: [

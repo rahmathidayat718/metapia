@@ -52,6 +52,9 @@ function tulisAntrean(daftar) {
  * Kirim 1 data ke sheet. Hasilnya { status, pesan }:
  *  "ok"         -> tersimpan di sheet
  *  "pin_salah"  -> ditolak (PIN gak cocok), gak diantre
+ *  "akun_hilang"-> akun/sekolahnya sudah gak ada di sheet (mis. sheet
+ *                  dikosongkan), gak diantre. Kalau itu akun yang sedang
+ *                  masuk -> otomatis dikeluarkan (lihat keluarkanAkunHilang)
  *  "versi_lama" -> Apps Script belum diperbarui, diantre
  *  "offline"    -> gak nyambung / kelamaan, diantre
  *  "error"      -> error di Apps Script, diantre
@@ -81,10 +84,12 @@ async function kirimData(data, { antreKalauGagal = true } = {}) {
   if (balas && balas.ok) hasil = { status: "ok" };
   else if (!balas) hasil = { status: "offline" };
   else if (balas.kode === "pin_salah") hasil = { status: "pin_salah" };
+  else if (KODE_AKUN_HILANG.includes(balas.kode)) hasil = { status: "akun_hilang" };
   else if (balas.kode === "aksi_salah") hasil = { status: "versi_lama" };
   else hasil = { status: "error", pesan: balas.pesan || balas.kode };
 
   if (hasil.status !== "ok") console.warn("[METAPIA] gagal kirim ke Google Sheet:", hasil, balas);
+  if (hasil.status === "akun_hilang") keluarkanAkunHilang(data.nama);
   if (antreKalauGagal && ["offline", "versi_lama", "error"].includes(hasil.status)) {
     const daftar = bacaAntrean();
     daftar.push({ ...data, dikirimPada: new Date().toISOString() });
@@ -99,6 +104,7 @@ function pesanKirim(hasil, apa = "Nilai") {
     case "ok": return { teks: `✓ ${apa} sudah tersimpan!`, kelas: "is-ok" };
     case "guru": return { teks: `Mode guru: ${apa.toLowerCase()} tidak disimpan (hanya untuk mencoba dan mengajar).`, kelas: "is-ok" };
     case "pin_salah": return { teks: `${apa} ditolak server: PIN tidak cocok. Coba keluar, lalu masuk lagi.`, kelas: "is-gagal" };
+    case "akun_hilang": return { teks: `Akunmu sudah tidak terdaftar, jadi ${apa.toLowerCase()} tidak bisa disimpan. Sebentar lagi kamu diarahkan ke halaman masuk. Masuk lagi dengan kode dari gurumu, ya.`, kelas: "is-gagal" };
     case "versi_lama": return { teks: `${apa} belum terkirim: server Google Sheet perlu diperbarui oleh guru. ${apa} disimpan dan dikirim otomatis nanti.`, kelas: "is-gagal" };
     case "offline": return { teks: `${apa} belum terkirim (internet lambat/putus). Akan dikirim otomatis nanti.`, kelas: "is-gagal" };
     default: return { teks: `${apa} belum terkirim (server bermasalah). Akan dikirim otomatis nanti.`, kelas: "is-gagal" };
@@ -115,7 +121,7 @@ async function kirimAntrean() {
   const sisa = [];
   for (const data of daftar) {
     const hasil = await kirimData(data, { antreKalauGagal: false });
-    if (hasil.status !== "ok" && hasil.status !== "pin_salah") sisa.push(data);
+    if (!["ok", "pin_salah", "akun_hilang"].includes(hasil.status)) sisa.push(data);
   }
   // data baru yang masuk antrean selama proses ini juga dipertahankan
   const tambahan = bacaAntrean().slice(daftar.length);
@@ -130,6 +136,30 @@ if (typeof window !== "undefined" && localStorage.getItem("metapia_user")) {
 
 function bacaUserLokal() {
   try { return JSON.parse(localStorage.getItem("metapia_user")); } catch (e) { return null; }
+}
+
+/* balasan sheet yang artinya akun siswa / sekolahnya SUDAH GAK ADA
+   (mis. Google Sheet dikosongkan pengelola) */
+const KODE_AKUN_HILANG = ["sekolah_tidak_ada", "tidak_ada", "perlu_sekolah"];
+
+/**
+ * Akun yang sedang masuk ternyata sudah gak terdaftar di sheet -> keluarkan:
+ * hapus login + akun offline-nya di perangkat ini, lalu (setelah jeda,
+ * biar pesannya sempat terbaca) ke halaman masuk. Data antrean milik
+ * akun lain gak bikin akun yang sedang masuk ikut keluar.
+ */
+let sudahDikeluarkan = false;
+function keluarkanAkunHilang(nama, jeda = 6000) {
+  const u = bacaUserLokal();
+  if (!u || (nama && String(nama).toLowerCase() !== String(u.nama).toLowerCase()) || sudahDikeluarkan) return;
+  sudahDikeluarkan = true;
+  localStorage.removeItem("metapia_user");
+  try {
+    const akun = JSON.parse(localStorage.getItem("metapia_akun")) || {};
+    Object.keys(akun).forEach((k) => { if (akun[k].nama.toLowerCase() === u.nama.toLowerCase()) delete akun[k]; });
+    localStorage.setItem("metapia_akun", JSON.stringify(akun));
+  } catch (e) {}
+  setTimeout(() => location.replace("index.html"), jeda);
 }
 
 /* ==========================================================================

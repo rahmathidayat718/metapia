@@ -1,6 +1,6 @@
 /* ==========================================================================
    METAPIA — game3d/pecah-balon.js
-   GAME 1 versi 3D: "PECAH BALON MAJAS" (pengganti Tebak Gambar)
+   GAME 1 versi 3D: "PECAH BALON MAJAS" (versi 2D: js/game-tebak.js)
    -------------------------------------------------------------------------
    Langit 3D. Gambar soal tampil besar di papan atas. 3 balon besar berisi
    kalimat naik pelan dari bawah lalu melayang di tempat (GAK ADA batas

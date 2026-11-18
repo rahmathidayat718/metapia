@@ -13,8 +13,8 @@
    Versi 3D dipakai kalau: perangkat dukung WebGL + modul 3D berhasil dimuat
    + siswa gak milih "Versi 2D" di layar pembuka. Selain itu otomatis 2D.
    Skor yang dikirim ke Google Sheet SAMA aturannya (maks 100) & nama game-nya
-   tetap nama lama, jadi data penelitian gak berubah. Poin Bonus (combo dll)
-   cuma tampil di layar, gak dikirim.
+   SAMA untuk 2D & 3D (judul di game-data.js). Poin Bonus (combo dll) cuma
+   tampil di layar, gak dikirim.
 
    Alamat halaman:
      game.html          -> menu peta
@@ -45,7 +45,7 @@ const Game = (() => {
   function pakai3d(id) {
     return DUKUNG_WEBGL && modePilihan() === "3d" && (mesin3d[id] || !window.__gagal3d);
   }
-  /** judul/deskripsi/cara main yang ditampilkan (versi 3D punya nama baru) */
+  /** deskripsi/cara main yang ditampilkan (versi 3D punya teks sendiri; nama sama) */
   function teks(g, kunci) {
     return pakai3d(g.id) && g[kunci + "3d"] ? g[kunci + "3d"] : g[kunci];
   }
@@ -216,6 +216,26 @@ const Game = (() => {
     tik: () => bunyi("tik"),
     habis: () => bunyi("habis"),
     selesai: () => bunyi("selesai"),
+    /** suara balon PECAH ("dor!"): ledakan derau pendek + "pop" nada turun */
+    pecah() {
+      if (!suaraNyala) return;
+      nada(900, 0, 0.08, 0.22, "sine", 120); // bikin audioCtx kalau belum ada
+      if (!audioCtx) return;
+      const t = audioCtx.currentTime;
+      const panjang = Math.floor(audioCtx.sampleRate * 0.12);
+      const buf = audioCtx.createBuffer(1, panjang, audioCtx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < panjang; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / panjang, 3);
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      const saring = audioCtx.createBiquadFilter();
+      saring.type = "highpass";
+      saring.frequency.value = 900;
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.9, t);
+      src.connect(saring).connect(gain).connect(keluaran);
+      src.start(t);
+    },
   };
   function gantiSuara(btn) {
     suaraNyala = !suaraNyala;
@@ -642,7 +662,7 @@ const Game = (() => {
       <div class="layar">
         <div class="layar-tengah layar-hasil">
           <div class="bintang">${htmlBintang(n)}</div>
-          <h1>${esc(hasil.bonus !== undefined && g.judul3d ? g.judul3d : `Level ${g.id}`)} Selesai!</h1>
+          <h1>${esc(g.judul)} Selesai!</h1>
           <div class="nilai-bulat"><b>${hasil.skor}</b><small>SKOR</small></div>
           ${hasil.bonus !== undefined ? `<span class="chip-bonus"><i class="fa-solid fa-bolt"></i> Poin Bonus: <b>${hasil.bonus}</b></span>` : ""}
           <p class="sapa"><b>${esc(user.nama)}</b> — ${esc(hasil.benar)} ${esc(hasil.satuan)} benar dari ${hasil.dari}${hasil.bintang !== undefined ? `, dapat <b>${hasil.bintang}/15 ⭐</b>` : ""}.<br>${predikat}</p>

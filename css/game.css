@@ -3,7 +3,7 @@
    Halaman Game. Susunan & komponen dasar (panel Kak Rara, kartu putih
    bergaris tebal, header ungu, tombol kuning, layar hasil, konfeti)
    DIPAKAI ULANG dari komik.css + kuis.css. File ini cuma nambahin yang
-   khas game: peta level, HUD, polaroid gambar, gelembung pilihan, stempel,
+   khas game: peta level, HUD, polaroid gambar, balon pilihan,
    keranjang + kartu seret, kartu mantra, angka "+10" melayang.
    Urutan load: common.css -> komik.css -> kuis.css -> game.css
    ========================================================================== */
@@ -214,7 +214,7 @@
 @keyframes sorotBenar{ 50%{ transform:scale(1.05); } }
 
 /* ==========================================================================
-   GAME 1 — TEBAK GAMBAR
+   GAME 1 — PECAH BALON MAJAS (versi 2D)
    ========================================================================== */
 .tg{ display:grid; grid-template-columns:.9fr 1.1fr; gap:22px; align-items:start; }
 
@@ -250,58 +250,119 @@
 .tg-sisi{ display:flex; flex-direction:column; gap:10px; }
 .tg-opsi{ display:flex; flex-direction:column; gap:10px; }
 
-/* pilihan kalimat berbentuk balon kata (ada ekornya di kiri) */
-.gelembung{
-  position:relative;
-  display:flex; align-items:center; gap:12px;
-  min-height:50px; padding:8px 16px 8px 10px;
-  background:#fff; color:var(--ink);
-  border:3px solid var(--ink); border-radius:22px;
+/* ---------- BALON pilihan ----------
+   Langkah 1: balon bulat berhuruf (A/B/C) di kiri, talinya mengikat kartu
+   kalimat. Langkah 2: 3 balon besar berisi ikon + nama jenis majas.
+   Balon melayang goyang tipis. Diketuk -> balon PECAH (menggembung, "💥",
+   hilang) -> tinggal tanda ✅ benar / ❌ salah. */
+.balon-2d{
+  position:relative; display:flex; align-items:center;
+  width:100%; padding:0; background:none; border:none; box-shadow:none;
+  color:var(--ink); cursor:pointer; text-align:left;
+}
+/* balonnya (oval mengkilap + simpul) */
+.balon-bulat{
+  position:relative; z-index:2; flex:none;
+  width:58px; height:68px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.85) 0 12%, transparent 30%), var(--warna);
+  border:3px solid var(--ink); border-radius:50% 50% 48% 48% / 55% 55% 45% 45%;
+  box-shadow:inset -6px -8px 0 rgba(0,0,0,.1), 3px 4px 0 rgba(44,36,80,.35);
+  animation:balonGoyang 2.6s ease-in-out infinite alternate;
+  transform-origin:50% 120%;
+}
+.balon-2d:nth-child(2) .balon-bulat{ animation-delay:-.9s; animation-duration:2.9s; }
+.balon-2d:nth-child(3) .balon-bulat{ animation-delay:-1.7s; animation-duration:2.4s; }
+@keyframes balonGoyang{
+  0%{ transform:translateY(0) rotate(-6deg); }
+  100%{ transform:translateY(-5px) rotate(6deg); }
+}
+.balon-bulat::after{ /* simpul */
+  content:""; position:absolute; left:50%; bottom:-10px;
+  width:14px; height:10px; background:var(--warna);
+  border:3px solid var(--ink); border-top:none;
+  clip-path:polygon(50% 0, 100% 100%, 0 100%);
+  transform:translateX(-50%);
+}
+.balon-label{
+  font-family:var(--font-display); font-weight:800; font-size:1.5rem; line-height:1;
+  color:var(--ink); text-shadow:0 1px 0 rgba(255,255,255,.6);
+}
+/* kartu kalimat yang diikat tali balon */
+.balon-isi{
+  position:relative; flex:1; margin-left:16px;
+  min-height:52px; display:flex; align-items:center;
+  padding:8px 16px;
+  background:#fff; border:3px solid var(--ink); border-radius:16px;
   box-shadow:4px 4px 0 var(--ink);
-  font-family:var(--font-display); font-weight:700; font-size:1.05rem; line-height:1.3; text-align:left;
+  font-family:var(--font-display); font-weight:700; font-size:1.05rem; line-height:1.3;
   transition:transform .12s, box-shadow .12s;
 }
-.gelembung::before{ /* ekor balon */
-  content:''; position:absolute; left:-12px; top:50%;
-  width:16px; height:16px; background:inherit;
-  border-left:3px solid var(--ink); border-bottom:3px solid var(--ink);
-  transform:translateY(-50%) rotate(45deg);
+.balon-isi::before{ /* tali dari balon ke kartu */
+  content:""; position:absolute; left:-19px; top:50%; width:18px; height:2px;
+  background:var(--ink); opacity:.7;
 }
-.gelembung-huruf{
-  flex:none; width:34px; height:34px;
-  display:flex; align-items:center; justify-content:center;
-  background:var(--yellow); border:2px solid var(--ink); border-radius:50%;
-  font-weight:800;
-}
-.gelembung:not(:disabled):hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink); }
-.gelembung:disabled{ cursor:default; }
-.gelembung:disabled:not(.is-benar):not(.is-salah){ opacity:.5; }
+.balon-2d:not(:disabled):hover .balon-isi{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink); }
+.balon-2d:not(:disabled):hover .balon-bulat{ animation-duration:.9s; }
+.balon-2d:disabled{ cursor:default; }
+.balon-2d:disabled:not(.is-pecah){ opacity:.5; }
+.balon-2d:disabled:not(.is-pecah) .balon-bulat{ animation-play-state:paused; }
 
-/* langkah 2: tombol stempel jenis majas */
+/* PECAH */
+.balon-2d.is-pecah .balon-bulat{ animation:balonPecah .26s ease-in forwards; }
+.balon-2d.is-pecah::before{
+  content:"💥"; position:absolute; left:29px; top:50%; z-index:3;
+  font-size:2.4rem; pointer-events:none;
+  transform:translate(-50%,-50%); animation:dor2d .45s ease-out forwards;
+}
+.balon-besar.is-pecah::before{ left:50%; top:42%; }
+@keyframes balonPecah{
+  0%{ transform:scale(1); }
+  60%{ transform:scale(1.25, 1.3); opacity:1; }
+  100%{ transform:scale(1.5); opacity:0; }
+}
+@keyframes dor2d{
+  0%{ transform:translate(-50%,-50%) scale(.3); opacity:0; }
+  40%{ transform:translate(-50%,-50%) scale(1.3); opacity:1; }
+  100%{ transform:translate(-50%,-70%) scale(1.5); opacity:0; }
+}
+/* setelah pecah: balon jadi lencana ✅ / ❌, kartunya hijau / merah */
+.balon-2d.is-benar .balon-bulat, .balon-2d.is-salah .balon-bulat{
+  animation:kartuMuncul2d .3s cubic-bezier(.34,1.56,.64,1) forwards;
+  background:#fff; box-shadow:none; border-radius:50%; height:58px;
+}
+.balon-2d.is-benar .balon-bulat::after, .balon-2d.is-salah .balon-bulat::after,
+.balon-2d.is-benar .balon-isi::before, .balon-2d.is-salah .balon-isi::before{ display:none; }
+.balon-2d.is-benar .balon-bulat{ border-color:#0E8A5F; }
+.balon-2d.is-salah .balon-bulat{ border-color:#C23A3A; }
+.balon-2d.is-benar .balon-label, .balon-2d.is-salah .balon-label{ font-size:0; }
+.balon-2d.is-benar .balon-label::before{ content:"✅"; font-size:1.5rem; }
+.balon-2d.is-salah .balon-label::before{ content:"❌"; font-size:1.5rem; }
+.balon-2d.is-benar .balon-isi{ background:#D9FBEA; border-color:#0E8A5F; box-shadow:4px 4px 0 #0E8A5F; }
+.balon-2d.is-salah .balon-isi{ background:#FFE1E1; border-color:#C23A3A; box-shadow:4px 4px 0 #C23A3A; text-decoration:line-through; text-decoration-thickness:2px; }
+.balon-2d.is-ditunjukkan .balon-isi, .balon-besar.is-ditunjukkan .balon-bulat{ animation:sorotBenar 1s ease .3s 2; }
+@keyframes kartuMuncul2d{ from{ transform:scale(.5); opacity:0; } to{ transform:scale(1); opacity:1; } }
+/* status umum (dipakai semua game) tidak berlaku ke tombol balon */
+.game-body .balon-2d.is-benar, .game-body .balon-2d.is-salah{ background:none; border:none; box-shadow:none; animation:none; }
+
+/* langkah 2: 3 balon besar jenis majas sejajar */
 .tg-langkah2{ display:flex; flex-direction:column; gap:12px; animation:layarMasuk .35s ease-out; }
 .tg-langkah2[hidden]{ display:none; }
-.stempel-baris{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
-.stempel{
-  display:flex; flex-direction:column; align-items:center; gap:4px;
-  padding:7px 6px;
-  background:var(--warna-muda); color:var(--ink);
-  border:3px solid var(--ink); border-radius:16px;
-  box-shadow:4px 4px 0 var(--ink);
-  font-family:var(--font-display); font-weight:800; font-size:.98rem;
-  transform:rotate(-2deg);
-  transition:transform .12s, box-shadow .12s;
+.balon-baris{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; padding-bottom:12px; }
+.balon-besar{ justify-content:center; }
+.balon-besar .balon-bulat{ width:min(100%, 128px); height:112px; gap:2px; }
+.balon-besar .balon-label{ font-size:1.6rem; }
+.balon-nama{ font-family:var(--font-display); font-weight:800; font-size:.92rem; line-height:1.1; text-align:center; padding:0 6px; }
+.balon-besar.is-benar .balon-bulat, .balon-besar.is-salah .balon-bulat{ height:112px; border-radius:22px; }
+.balon-besar.is-benar .balon-bulat{ background:#D9FBEA; box-shadow:4px 4px 0 #0E8A5F; }
+.balon-besar.is-salah .balon-bulat{ background:#FFE1E1; box-shadow:4px 4px 0 #C23A3A; }
+
+@media (prefers-reduced-motion:reduce){
+  .balon-bulat{ animation:none; }
 }
-.stempel:nth-child(2){ transform:rotate(1.5deg); }
-.stempel-ikon{ font-size:1.35rem; }
-.stempel:not(:disabled):hover{ transform:rotate(0) scale(1.05); }
-.stempel:not(:disabled):active{ transform:scale(.95); box-shadow:1px 1px 0 var(--ink); }
-.stempel:disabled{ cursor:default; }
-.stempel:disabled:not(.is-benar):not(.is-salah){ opacity:.5; }
-.stempel.is-benar{ animation:cap .35s ease; }
-@keyframes cap{ 0%{ transform:scale(1.4) rotate(-8deg); } 100%{ transform:scale(1) rotate(-2deg); } }
 
 /* ==========================================================================
-   GAME 2 — KERANJANG MAJAS
+   GAME 2 — PABRIK SORTIR MAJAS (versi 2D: seret ke keranjang)
    ========================================================================== */
 .kr{ display:flex; flex-direction:column; gap:16px; flex:1; }
 .kr-atas{
@@ -395,7 +456,7 @@
 }
 
 /* ==========================================================================
-   GAME 3 — UBAH KALIMATKU
+   GAME 3 — PESAWAT PERAKIT KALIMAT (versi 2D)
    ========================================================================== */
 .uk{ display:flex; flex-direction:column; gap:14px; }
 .uk-mantra{ display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:14px; }
@@ -450,6 +511,19 @@
 .uk-pilihan:disabled{ cursor:default; }
 .uk-pilihan:disabled:not(.is-benar):not(.is-salah){ opacity:.5; }
 .uk-pilihan.is-salah .uk-pilihan-teks{ text-decoration:line-through; text-decoration-thickness:2px; }
+/* ikon pesawat di tiap pilihan (sama tema dengan versi 3D) */
+.uk-pesawat{
+  flex:none; font-size:1.5rem; line-height:1;
+  transition:transform .2s;
+}
+.uk-pilihan:not(:disabled):hover .uk-pesawat{ transform:translate(2px,-2px) scale(1.12); }
+.uk-pilihan.is-benar .uk-pesawat{ animation:pesawatLuncur .9s cubic-bezier(.5,0,.6,1) forwards; }
+.uk-pilihan.is-salah .uk-pesawat{ filter:grayscale(1); opacity:.6; }
+@keyframes pesawatLuncur{
+  0%{ transform:none; }
+  30%{ transform:translate(-3px,3px); }
+  100%{ transform:translate(12px,-12px) scale(1.2); }
+}
 
 /* ==========================================================================
    LAYAR HASIL — rekap 3 warna (penuh / sebagian / nol)
@@ -505,5 +579,7 @@
   .uk-mantra{ grid-template-columns:1fr; justify-items:center; text-align:center; gap:8px; }
   .uk-asal{ width:100%; }
   .uk-tongkat{ transform:rotate(90deg); }
-  .stempel{ font-size:.85rem; }
+  .balon-isi{ font-size:.98rem; }
+  .balon-besar .balon-bulat{ height:96px; }
+  .balon-nama{ font-size:.8rem; }
 }

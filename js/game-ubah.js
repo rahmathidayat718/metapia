@@ -1,6 +1,6 @@
 /* ==========================================================================
    METAPIA — game-ubah.js
-   GAME 3: UBAH KALIMATKU (MENERAPKAN)
+   GAME 3 versi 2D: PESAWAT PERAKIT KALIMAT (MENERAPKAN)
    Tiap soal: kalimat biasa + jenis majas yang diminta -> pilih 1 dari 3
    kalimat bermajas. Salah -> pilihan ditandai, petunjuk, coba lagi
    (maks 3 percobaan). Benar -> "kartu mantra" berubah jadi kalimat bermajas.
@@ -50,6 +50,7 @@ Game.daftar(3, {
           <div class="uk-opsi">
             ${s.pilihan.map((p, i) => `
               <button class="uk-pilihan" data-i="${i}">
+                <span class="uk-pesawat" aria-hidden="true">🚀</span>
                 <span class="opsi-huruf">${HURUF[i]}</span>
                 <span class="uk-pilihan-teks">${api.esc(p)}</span>
               </button>`).join("")}
@@ -60,8 +61,8 @@ Game.daftar(3, {
       const bintangSoal = [...api.body.querySelectorAll(".uk-bintang-soal i")];
 
       api.guru(
-        idx === 0 ? `Ayo pakai tongkat ajaibmu! Ubah kalimatnya jadi ${s.target}! 🪄` :
-        api.acak([`Kali ini ubah jadi ${s.target}, ya!`, `Kalimat ${s.target} yang mana, ya? ✨`, "Ayo, sihir kalimatnya! 🪄"]),
+        idx === 0 ? `Ayo terbangkan pesawatmu! Ubah kalimatnya jadi ${s.target}! 🚀` :
+        api.acak([`Kali ini ubah jadi ${s.target}, ya!`, `Kalimat ${s.target} yang mana, ya? ✨`, "Pesawat mana yang membawa kalimat yang tepat? 🚀"]),
         { poseAkhir: "nunjuk" }
       );
 
