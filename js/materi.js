@@ -113,11 +113,11 @@ const DAFTAR_MAJAS = [
     kategori: "Pengantar",
     dialog: [
       {
-        teks: "Majas ada beberapa jenis. Hari ini kita belajar *tiga jenis majas*, teman-teman, yaitu metafora, personifikasi, dan hiperbola!",
+        teks: "Majas ada beberapa jenis. Hari ini kita belajar *tiga jenis majas* yaitu metafora, personifikasi, dan hiperbola!",
         reaksi: [[3, "tepuk", 2600], [1, "tepuk", 2800], [2, "tepuk", 3000], [0, "senang", 3200]],
       },
       {
-        teks: "Kita bahas satu per satu, ya! Kita mulai dari yang pertama, yaitu metafora.",
+        teks: "Kita bahas satu per satu, ya!",
         reaksi: [[0, "senang", 1400]],
       },
     ],
