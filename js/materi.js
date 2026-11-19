@@ -80,13 +80,15 @@ const POSE_PENGGANTI = {
                                      (lama kosong = ditahan). Tanpa ini:
                                      murid ngomong -> kamera dekati murid itu.
                      Tulis *kata* -> kata itu disorot stabilo + bunyi "ting".
+   - tanya         : (opsional) pertanyaan "paham?" sendiri. Kosong =
+                     "Sudah paham tentang <nama majas>?"
    - papanJawaban  : (opsional) adegan papan waktu murid menjawab "paham?"
                      Kosong = contoh terakhir tetap di papan.
    - jawabanMurid  : jawaban murid waktu ditanya "paham?" (usahakan pendek,
                      maksimal ~70 huruf biar muat di balon kata)
    ========================================================================== */
-const SAPAAN_GURU = "Halo, teman-teman! 👋 Hari ini kita akan belajar MAJAS. Teman-teman siap?";
-const SAPAAN_MURID = "Siap, Ibu Rara! Aku sudah tidak sabar! 🙌";
+const SAPAAN_GURU = "Halo, teman-teman! Hari ini kita akan belajar majas. Teman-teman siap?";
+const SAPAAN_MURID = "Siap, Ibu Rara! Aku sudah tidak sabar!";
 
 const DAFTAR_MAJAS = [
   {
@@ -94,15 +96,16 @@ const DAFTAR_MAJAS = [
     kategori: "Pengantar",
     dialog: [
       {
-        teks: "Majas adalah gaya bahasa yang memakai KATA-KATA KIASAN\nsupaya kalimat kita lebih hidup dan menarik, teman-teman!",
+        teks: "Majas adalah gaya bahasa yang memakai *kata-kata kiasan*, yaitu kata-kata yang artinya bukan arti sebenarnya. Majas membuat kalimat kita lebih hidup dan menarik.",
         reaksi: [[0, "ide", 1800]],
       },
       {
-        teks: "Contoh: daripada berkata “dia pintar sekali”,\nkita bisa berkata “dia adalah bintang kelas”.\nLebih menarik didengar, bukan?",
+        teks: "Contohnya, daripada berkata \"Dia pintar sekali.\", kita bisa berkata \"Dia adalah bintang kelas.\" Lebih menarik didengar, bukan?",
         papan: "biasa-vs-majas",
         reaksi: [[1, "malu", 2300], [2, "tepuk", 2900], [0, "senang", 3200]],
       },
     ],
+    tanya: "Sudah paham apa itu majas?",
     jawabanMurid: "Paham, Bu! Majas itu gaya bahasa yang memakai kata-kata kiasan!",
   },
   {
@@ -110,11 +113,11 @@ const DAFTAR_MAJAS = [
     kategori: "Pengantar",
     dialog: [
       {
-        teks: "Majas itu ada beberapa jenis. Hari ini kita belajar 3 JENIS MAJAS, teman-teman: METAFORA, PERSONIFIKASI, dan HIPERBOLA!",
+        teks: "Majas ada beberapa jenis. Hari ini kita belajar *tiga jenis majas*, teman-teman, yaitu metafora, personifikasi, dan hiperbola!",
         reaksi: [[3, "tepuk", 2600], [1, "tepuk", 2800], [2, "tepuk", 3000], [0, "senang", 3200]],
       },
       {
-        teks: "Kita bahas satu per satu, ya!\nDimulai dari yang pertama: METAFORA.",
+        teks: "Kita bahas satu per satu, ya! Kita mulai dari yang pertama, yaitu metafora.",
         reaksi: [[0, "senang", 1400]],
       },
     ],
@@ -125,11 +128,11 @@ const DAFTAR_MAJAS = [
     kategori: "Jenis 1",
     dialog: [
       {
-        teks: "Yang pertama: *METAFORA*!\nMetafora adalah majas yang menggunakan kata\nsebagai *SIMBOL* dari makna sebenarnya.",
+        teks: "Yang pertama adalah *metafora*! Metafora adalah majas yang memakai kata bukan dengan arti sebenarnya. Kata itu dipakai untuk *membandingkan* sesuatu dengan hal lain yang mirip.",
         reaksi: [[2, "bingung", 2400]],
       },
       {
-        teks: "Contoh: \"*Sari adalah bintang kelas* di sekolah kami.\"",
+        teks: "Contohnya, \"*Sari adalah bintang kelas* di sekolah kami.\"",
         pose: "nunjuk",
         // Sari disebut -> kamera nyorot Sari yang malu-malu
         kamera: { ke: 1, skala: 1.22, jeda: 900, lama: 2200 },
@@ -142,52 +145,52 @@ const DAFTAR_MAJAS = [
         reaksi: [[1, "malu", 0, 0], ["guru", "kaget", 1300, 1000], ["guru", "tertawa", 2400, 0], [0, "senang", 2600]],
       },
       {
-        teks: "Hihi, bukan, Bima! Kalau bintangnya bintang betulan, jadinya lucu begini...",
+        teks: "Bukan, Bima! Kalau bintangnya bintang sungguhan, jadinya lucu seperti ini...",
         papan: "bintang-harfiah",
         reaksi: [[2, "tertawa", 2400, 0], [0, "senang", 2800]],
       },
       {
-        teks: "*Bintang kelas* itu SIMBOL untuk *murid paling pintar*.\nSeperti Sari yang nilainya selalu bagus!",
+        teks: "*Bintang kelas* artinya *murid yang paling pintar*. Seperti Sari yang nilainya selalu bagus!",
         papan: "bintang-makna", // pose "bicara": tangan menadah ke papan
         reaksi: [[1, "bangga", 1400, 0], [2, "tepuk", 2100], [3, "tepuk", 2300], [0, "senang", 2600]],
       },
     ],
-    jawabanMurid: "Paham, Bu! Bintang kelas itu simbol murid paling pintar, bukan bintang di langit!",
+    jawabanMurid: "Paham, Bu! Bintang kelas artinya murid paling pintar, bukan bintang di langit!",
   },
   {
     nama: "Personifikasi",
     kategori: "Jenis 2",
     dialog: [
       {
-        teks: "Yang kedua: PERSONIFIKASI!\nIni majas yang memberi benda mati sifat seperti manusia,\nseolah-olah bisa bergerak atau memiliki perasaan.",
+        teks: "Yang kedua adalah *personifikasi*! Personifikasi adalah majas yang membuat *benda mati* seolah-olah bisa berbuat dan merasa *seperti manusia*.",
         reaksi: [[2, "bingung", 2400]],
       },
       {
-        teks: "Contoh: \"Angin berbisik lembut di telinga Keke.\"\n(Padahal, angin tidak bisa berbicara sungguhan, ya!)",
+        teks: "Contohnya, \"Angin berbisik lembut di telinga Keke.\" Padahal, angin tidak bisa berbisik sungguhan, ya!",
         papan: "angin-berbisik",
         // Keke disebut -> kamera nyorot Keke (seperti Sari di contoh bintang kelas)
         kamera: { ke: 3, skala: 1.22, jeda: 900, lama: 2200 },
         reaksi: [[3, "tepuk", 1000, 2600], [0, "ide", 1800], [2, "tertawa", 3000]],
       },
     ],
-    jawabanMurid: "Aku paham! Personifikasi membuat benda mati seperti manusia!",
+    jawabanMurid: "Aku paham! Personifikasi membuat benda mati seolah-olah bisa berbuat seperti manusia!",
   },
   {
     nama: "Hiperbola",
     kategori: "Jenis 3",
     dialog: [
       {
-        teks: "Yang ketiga, terakhir: HIPERBOLA!\nMajas yang MELEBIH-LEBIHKAN sesuatu,\nagar kesannya lebih dramatis.",
+        teks: "Yang ketiga sekaligus yang terakhir adalah *hiperbola*! Hiperbola adalah majas yang *melebih-lebihkan* sesuatu supaya terdengar lebih hebat dan lebih kuat.",
         reaksi: [[2, "tertawa", 2400], [0, "senang", 2800]],
       },
       {
-        teks: "Contoh: \"Aku sudah mengatakannya beribu-ribu kali,\ntetapi kamu tetap saja lupa!\"",
+        teks: "Contohnya, \"Aku sudah mengatakannya beribu-ribu kali, tetapi kamu tetap saja lupa!\"",
         papan: "beribu-kali",
         kamera: { ke: "guru", skala: 1.12, jeda: 300 }, // kalimat dramatis -> kamera mendekat ke guru
         reaksi: [[2, "tertawa", 2200], [1, "tepuk", 2600], [0, "senang", 2900]],
       },
     ],
-    jawabanMurid: "Paham sekali! Hiperbola itu melebih-lebihkan, seperti “PR-ku segunung”!",
+    jawabanMurid: "Paham sekali! Hiperbola itu melebih-lebihkan, seperti \"PR-ku segunung\"!",
     papanJawaban: "pr-segunung",
   },
   {
@@ -196,11 +199,11 @@ const DAFTAR_MAJAS = [
     kategori: "Penutup",
     dialog: [
       {
-        teks: "Hebat, teman-teman! Kita sudah belajar 3 jenis majas: METAFORA, PERSONIFIKASI, dan HIPERBOLA. 🎉",
+        teks: "Hebat, teman-teman! Kita sudah belajar tiga jenis majas, yaitu metafora, personifikasi, dan hiperbola.",
         reaksi: [[1, "tepuk", 1400, 0], [2, "tepuk", 1600, 0], [3, "tepuk", 1800, 0], [0, "senang", 2000, 0]],
       },
       {
-        teks: "Supaya makin paham, ayo kita tonton VIDEO majas!\nTekan tombol \"Lanjut ke Video\" di bawah, ya. 🎬",
+        teks: "Supaya makin paham, ayo kita tonton video majas! Tekan tombol \"Lanjut ke Video\" di bawah, ya.",
         reaksi: [[0, "senang", 1600], [3, "tepuk", 1900]],
       },
     ],
@@ -232,7 +235,7 @@ const ADEGAN = {
       <span class="kerlip" style="right:8%;top:16%;animation-delay:.4s">⭐</span>
       <span class="kerlip" style="left:16%;top:40%;animation-delay:.7s">✦</span>
       <div class="bintang-hidup">${SVG_BINTANG_HIDUP}</div>
-      <div class="meja"><span>KELAS 5</span></div>
+      <div class="meja"><span>KELAS V</span></div>
       <div class="cap-silang">❌</div>
     </div>
     <div class="adegan-label is-salah">Bintang di langit? Bukan!</div>`,
@@ -246,7 +249,7 @@ const ADEGAN = {
       <span class="kerlip" style="left:10%;bottom:12%;animation-delay:.3s">✨</span>
       <span class="kerlip" style="right:12%;top:8%;animation-delay:.6s">✨</span>
     </div>
-    <div class="adegan-label is-benar">Bintang kelas = murid paling pintar ✅</div>`,
+    <div class="adegan-label is-benar">Bintang kelas artinya murid paling pintar ✅</div>`,
 
   // PENGANTAR: kalimat biasa (datar) -> kalimat bermajas (hidup)
   "biasa-vs-majas": `
@@ -255,7 +258,7 @@ const ADEGAN = {
         <small>Kalimat biasa 😐</small>
         <b>“Dia pintar sekali.”</b>
       </div>
-      <div class="panah-ubah">⬇️ <span>pakai majas</span></div>
+      <div class="panah-ubah">⬇️ <span>memakai majas</span></div>
       <div class="kartu-kalimat is-majas">
         <small>Kalimat bermajas 🤩</small>
         <b>“Dia adalah bintang kelas!”</b>
@@ -263,7 +266,7 @@ const ADEGAN = {
         <span class="kerlip" style="left:3%;bottom:-12%;animation-delay:.5s">✨</span>
       </div>
     </div>
-    <div class="adegan-label is-benar">Majas = kalimat lebih hidup & menarik ✅</div>`,
+    <div class="adegan-label is-benar">Majas membuat kalimat lebih hidup dan menarik ✅</div>`,
 
   // PERSONIFIKASI: tiupan angin ala kartun (kepala bulat berpipi kembung +
   // ekor pusaran angin) "berbisik" ke telinga Keke (karakter asli)
@@ -302,19 +305,19 @@ const ADEGAN = {
       <div class="bisikan">psst… 🤫</div>
       <div class="keke-dengar"><img src="${MURID[3].pose.diam}" alt="Keke"></div>
     </div>
-    <div class="adegan-label is-benar">Angin “berbisik” seperti manusia = personifikasi ✅</div>`,
+    <div class="adegan-label is-benar">Angin “berbisik” seperti manusia. Itulah personifikasi. ✅</div>`,
 
   // HIPERBOLA: hitungan "sudah bilang" melesat sampai 1.000 kali
   "beribu-kali": `
     <div class="adegan">
-      <div class="hitungan"><b data-hitung="1000">1</b><small>kali bilang!</small></div>
+      <div class="hitungan"><b data-hitung="1000">1</b><small>kali!</small></div>
       <span class="balon-mini m1">Jangan lupa!</span>
       <span class="balon-mini m2">Jangan lupa!</span>
       <span class="balon-mini m3">Jangan lupa!</span>
       <span class="balon-mini m4">Jangan lupa!</span>
       <div class="dito-lupa"><img src="${MURID[0].pose.diam}" alt="Dito"><span>❓</span></div>
     </div>
-    <div class="adegan-label is-benar">Beribu-ribu kali? Sebenarnya cuma beberapa kali = hiperbola ✅</div>`,
+    <div class="adegan-label is-benar">Beribu-ribu kali? Sebenarnya hanya beberapa kali. Itulah hiperbola. ✅</div>`,
 
   // HIPERBOLA (jawaban murid): tumpukan buku PR menjulang sampai puncak gunung
   "pr-segunung": `
@@ -331,7 +334,7 @@ const ADEGAN = {
       </div>
       <div class="dito-lupa dito-pr"><img src="${MURID[0].pose.diam}" alt="Dito"><span>😱</span></div>
     </div>
-    <div class="adegan-label is-benar">PR segunung? Sebenarnya cuma beberapa lembar = hiperbola ✅</div>`,
+    <div class="adegan-label is-benar">PR segunung? Sebenarnya hanya beberapa lembar. Itulah hiperbola. ✅</div>`,
 };
 
 /** angka [data-hitung] di adegan melesat dari 1 ke angka tujuannya (mis. 1 -> 1.000) */
@@ -567,6 +570,8 @@ function bicara(siapa, teks, opsi = {}) {
   // pose yang beneran dipakai (mis. Sari gak punya "ide" -> pakai "bicara")
   pembicaraAktif = { siapa, ...opsi, poseNgomong: p.tokoh.cariPose(opsi.pose || p.pose.ngomong) };
   teksSekarang = teks;
+  // kalimat sangat panjang -> huruf sedikit dikecilkan biar muat di balon (HP)
+  p.bubble.classList.toggle("is-panjang", teks.replace(/\*/g, "").length > 150);
   p.isi.textContent = "";
   p.cursor.classList.remove("is-hidden");
   p.tokoh.gantiPose(pembicaraAktif.poseNgomong);
@@ -902,7 +907,7 @@ function renderKonten() {
     // guru nanya, murid jawab di langkah berikutnya (setelah tombol ditekan).
     // Papan tulis contoh terakhir tetap ditampilkan biar bisa dilihat lagi.
     aturKamera(null);
-    bicara("guru", `Bagaimana, teman-teman? Sudah paham tentang “${majas.nama}”? 😊`);
+    bicara("guru", `Bagaimana, teman-teman? ${majas.tanya || `Sudah paham tentang ${majas.nama.toLowerCase()}?`}`);
     // murid yang nanti menjawab ANGKAT TANGAN dulu ("Aku, Bu!"), ditahan
     // sampai gilirannya ngomong. (Dito: telunjuk ke atas, Keke: angkat tangan)
     jadwalReaksi([[penjawab(idxMajas), "angkat", 1700, 0]]);

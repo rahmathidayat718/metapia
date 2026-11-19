@@ -436,3 +436,7 @@ body.kamera .comic-controls{ position:relative; z-index:6; }
   .bintang-hidup, .piala, .kerlip, .angin-wajah, .hembus i, .daun, .keke-dengar, .bisikan, .kartu-kalimat.is-majas, #scene .tokoh .tokoh-body{ animation:none !important; }
   .dunia, body.kamera::before{ transition:none; }
 }
+
+/* kalimat sangat panjang (lebih dari ±150 huruf, diatur js/materi.js):
+   huruf sedikit dikecilkan biar tetap muat di balon kata, terutama di HP */
+.speech-bubble.is-panjang .speech-text > span{ font-size:.88em; }
