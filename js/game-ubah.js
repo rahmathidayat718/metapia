@@ -70,6 +70,7 @@ Game.daftar(3, {
 
       function pilih(i, btn) {
         if (terkunci) return;
+        api.suara.tembak(); // "piu!" pesawat menembak (seperti versi 3D)
 
         if (i === s.jawaban) {
           const bintang = MAKS_COBA - salah; // 3 / 2 / 1

@@ -443,7 +443,7 @@ function pilihJawaban(i) {
   document.getElementById("btnLanjut").addEventListener("click", lanjut);
   document.getElementById("btnLanjut").focus({ preventScroll: true });
   // di HP kotak penjelasan + tombol Lanjut ada di bawah layar -> gulir ke sana
-  if (layarHP.matches) umpan.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  if (layarHP.matches) setTimeout(() => gulirTerlihat(document.getElementById("btnLanjut")), 60);
 
   if (benar) {
     suaraBenar();

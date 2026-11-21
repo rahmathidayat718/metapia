@@ -216,6 +216,8 @@ const Game = (() => {
     tik: () => bunyi("tik"),
     habis: () => bunyi("habis"),
     selesai: () => bunyi("selesai"),
+    /** suara tembakan laser pesawat (sama seperti versi 3D) */
+    tembak() { nada(1200, 0, 0.15, 0.16, "square", 300); nada(1800, 0.02, 0.1, 0.08, "sine", 600); },
     /** suara balon PECAH ("dor!"): ledakan derau pendek + "pop" nada turun */
     pecah() {
       if (!suaraNyala) return;
@@ -440,6 +442,9 @@ const Game = (() => {
     temaSuara = id;
     sedangMain = true;
     elCard.classList.toggle("mode-3d", versi3d);
+    // HP: gulir sampai kartu game pas di atas layar (navbar ikut tergulir) ->
+    // HUD + area main kelihatan penuh
+    if (layarHP.matches) setTimeout(() => window.scrollTo({ top: elCard.getBoundingClientRect().top + window.scrollY - 8, behavior: "smooth" }), 50);
     elCard.innerHTML = `
       <div class="layar">
         <div class="kuis-head hud">
@@ -583,7 +588,7 @@ const Game = (() => {
         const btn = el.querySelector("button");
         btn.addEventListener("click", () => { suara.klik(); onLanjut(); }, { once: true });
         btn.focus({ preventScroll: true });
-        if (layarHP.matches) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        if (layarHP.matches) setTimeout(() => gulirTerlihat(el.querySelector("button") || el), 60);
       },
       /** kotak petunjuk kuning di kartu (petunjuk panjang gak muat di balon Kak Rara) */
       petunjuk(teks) {

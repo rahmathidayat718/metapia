@@ -96,12 +96,14 @@
 /* HP: balon zig-zag di kiri, tulisan di kanannya */
 .g3d-balon-label.is-tegak .balon-teks{
   width:auto; max-width:none; left:0; right:auto;
-  margin-left:34px; margin-top:-22px;
+  margin-left:34px; margin-top:0;
+  translate:0 -50%; /* kartu tepat sejajar tengah balonnya */
   width:calc(100% - 34px);
-  max-width:min(62vw, 260px);
+  max-width:min(56vw, 240px); /* gak kepotong di tepi kanan */
+  min-height:0; padding:6px 10px;
   justify-content:flex-start; text-align:left;
   border-top-width:3px; border-left:8px solid var(--warna);
-  font-size:.92rem;
+  font-size:.88rem; line-height:1.2;
 }
 
 /* tutorial Game 1: balon naik, satu meletus */
@@ -309,7 +311,9 @@
   /* HP: strip Kak Rara disembunyiin selama main 3D biar area main lebih luas */
   .kuis-stage:has(.mode-3d) .kuis-guru{ display:none; }
   /* area main setinggi sisa layar (dikurangi navbar, HUD, menu bawah) */
-  .g3d{ min-height:max(420px, calc(100svh - 300px)); }
+  /* area main setinggi layar dikurangi HUD & menu bawah (navbar ikut tergulir
+     ke atas waktu game dimulai, lihat game.js) -> ruang main lebih lega */
+  .g3d{ min-height:max(440px, calc(100svh - 190px)); }
   .g3d-papan{ left:8px; right:8px; top:8px; padding:8px 10px 10px; border-radius:14px; }
   .papan-judul{ font-size:.92rem; }
   .papan-tambahan{ display:none !important; }  /* teks tambahan disembunyiin di HP */
@@ -317,7 +321,7 @@
   .papan-isi{ gap:8px; }
   .papan-gambar{ width:86px; border-width:2px; border-radius:8px; }
   .papan-kutipan{ font-size:.92rem; }
-  .papan-gambar-besar{ width:min(190px, 62%); margin-top:6px; }
+  .papan-gambar-besar{ width:min(150px, 46%); margin-top:6px; } /* lebih kecil biar 3 balon kalimat muat lega */
   .hud-nyawa{ padding:3px 8px; font-size:.8rem; }
   .hud-bonus{ padding:3px 9px; font-size:.82rem; }
   .g3d-rakit{ right:88px; min-height:46px; padding:6px 8px; }

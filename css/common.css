@@ -275,6 +275,14 @@ button{ font-family:var(--font-body); cursor:pointer; }
 }
 .btn-panduan:hover, .btn-panduan.is-aktif{ background:var(--purple-700); color:#fff; }
 .nav-toggle{ display:none; background:none; border:none; font-size:1.4rem; color:var(--purple-700); } /* tombol hamburger, cuma muncul di HP */
+/* tombol KELUAR (ikon pintu) di sebelah pil nama */
+.btn-keluar{
+  width:42px; height:42px; flex:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid #C23A3A; border-radius:50%;
+  background:#FFF0F0; color:#C23A3A; font-size:1.05rem;
+}
+.btn-keluar:hover{ background:#C23A3A; color:#fff; }
 
 /* ==========================================================================
    TOMBOL (BUTTON)
@@ -315,6 +323,10 @@ button{ font-family:var(--font-body); cursor:pointer; }
 
 @media (max-width:980px){
   .nav-links{ display:none; }   /* menu navbar atas disembunyiin */
+  /* HP & tablet: navbar TIDAK nempel/ngambang lagi waktu discroll (dulu
+     nutupin isi halaman & isi kelihatan "ngintip" di sekelilingnya).
+     Navbar ikut tergulir ke atas; menu utama tetap ada di menu bawah. */
+  .navbar{ position:relative; top:auto; }
   .nav-toggle{ display:none; }  /* gak perlu hamburger lagi, ada menu bawah */
 
   body.ada-menu-bawah{
@@ -365,6 +377,7 @@ button{ font-family:var(--font-body); cursor:pointer; }
   .nav-right{ gap:8px; min-width:0; }
   .avatar-btn{ max-width:130px; height:38px; padding:0 12px 0 4px; font-size:.88rem; }
   .btn-panduan{ width:38px; height:38px; font-size:1.05rem; }
+  .btn-keluar{ width:38px; height:38px; font-size:.95rem; }
   .avatar-btn.nama-panjang{ font-size:.8rem; }
   .avatar-ikon{ width:28px; height:28px; }
 }
@@ -373,5 +386,6 @@ button{ font-family:var(--font-body); cursor:pointer; }
   .brand{ gap:7px; }
   .brand-badge{ width:34px; height:34px; }
   .brand-name{ font-size:.98rem; }
-  .avatar-btn{ max-width:96px; }
+  .avatar-btn{ max-width:86px; }
+  .nav-right{ gap:6px; }
 }

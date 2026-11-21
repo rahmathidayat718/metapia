@@ -120,10 +120,15 @@ export default {
       batas.x = W * 0.86;
       // kata-kata melayang di antara bawah papan soal (HTML) & atas pesawat
       const papan = g.lapis.querySelector(".g3d-papan");
-      const bawahPapan = papan && !papan.hidden ? papan.offsetTop + papan.offsetHeight + 58 : dunia.tinggi * 0.2;
-      batas.kapal = yDunia(dunia.tinggi - 105, H);        // pesawat di atas bar kalimat
+      const bawahPapan = papan && !papan.hidden ? papan.offsetTop + papan.offsetHeight + (dunia.kamera.aspect < 1 ? 26 : 58) : dunia.tinggi * 0.2;
+      // pesawat tepat di atas bar kalimat (bar di HP bisa 2 baris -> diukur langsung)
+      const rakit = g.lapis.querySelector(".g3d-rakit");
+      const atasBar = rakit && rakit.offsetHeight ? rakit.offsetTop : dunia.tinggi - 80;
+      batas.kapal = yDunia(atasBar - 42, H);
       batas.atas = Math.min(H * 0.6, yDunia(bawahPapan, H));
-      batas.bawah = batas.kapal + 1.9;
+      // JALUR TEMBAK: kata-kata cuma di bagian atas; ±40% ruang di atas pesawat
+      // dikosongkan biar pesawat bisa bergerak & menembak dengan leluasa
+      batas.bawah = batas.kapal + Math.max(2.2, (batas.atas - batas.kapal) * 0.34);
       if (batas.bawah > batas.atas) batas.bawah = batas.atas;
       batas.W = W; batas.H = H;
       if (asteroid.length) susunSlot();
@@ -214,10 +219,10 @@ export default {
         <p class="papan-kutipan">🪄 “${esc(s.kalimatBiasa)}”</p>
         <div class="papan-target">Ubah jadi: <b style="--warna:${{ kuning: "#FFC93C", biru: "#4FC3F7", pink: "#FF7AAE" }[gaya.warna]}">${gaya.ikon} ${s.target}</b>
           <span class="papan-tambahan">· Tembak kata sesuai urutan!</span></div>`);
-      aturBatas(); // papan sudah tampil -> hitung ulang area kata
+      tampilkanRakit(); // bar kalimat dulu (tingginya dipakai buat posisi pesawat)
+      aturBatas(); // papan & bar sudah tampil -> hitung ulang area kata
       susunSlot();
       asteroid.forEach((a) => a.grup.position.set(a.slot.x, batas.atas + 8, 0)); // turun dari atas
-      tampilkanRakit();
       if (idx > 0) g.sorak(`Level ${idx + 1}! Asteroid makin lincah! ⚡`, "level");
       api.guru(idx === 0
         ? `Tembak kata-kata sesuai urutan supaya menjadi kalimat ${s.target}! Ketuk katanya! 🚀`

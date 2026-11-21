@@ -79,8 +79,10 @@ export default {
       batas.W = batas.H * dunia.kamera.aspect;
       const papan = g.lapis.querySelector(".g3d-papan");
       const bawahPapan = papan && !papan.hidden ? papan.offsetTop + papan.offsetHeight : dunia.tinggi * 0.3;
-      batas.atas = yDunia(bawahPapan + 70);
-      batas.bawah = yDunia(dunia.tinggi - 30);
+      batas.atasPx = bawahPapan + (dunia.kamera.aspect < 0.9 ? 40 : 70);
+      batas.bawahPx = dunia.tinggi - 30;
+      batas.atas = yDunia(batas.atasPx);
+      batas.bawah = yDunia(batas.bawahPx);
       if (balon.length) susunSlot();
     }
 
@@ -125,8 +127,13 @@ export default {
       elLabel.classList.toggle("is-tegak", tegak);
       balon.forEach((b, k) => {
         if (tegak) {
-          b.slot = { x: -batas.W * 0.66, y: batas.atas - tinggi * (0.1 + k * 0.4) };
-          b.ukuran = Math.min(tinggi * 0.09, batas.W * 0.18);
+          // HP: 3 balon + kartu kalimat berjajar ke bawah. Jaraknya diukur dalam
+          // PIKSEL (min. 78px) biar kartu kalimat 2 baris gak saling tumpuk.
+          const ruangPx = batas.bawahPx - batas.atasPx;
+          const jarakPx = Math.min(96, Math.max(70, (ruangPx - 10) / (balon.length - 0.4)));
+          const yPx = batas.bawahPx - 16 - (balon.length - 1 - k) * jarakPx;
+          b.slot = { x: -batas.W * 0.66, y: yDunia(yPx) };
+          b.ukuran = Math.min(Math.max(tinggi * 0.09, 0.45), batas.W * 0.16);
         } else {
           b.slot = { x: (k - 1) * batas.W * 0.6, y: batas.atas - tinggi * 0.2 };
           b.ukuran = Math.min(tinggi * 0.2, batas.W * 0.14);
@@ -281,7 +288,7 @@ export default {
       b.el.classList.add("is-meletus");
       partikel.ledak(b.grup.position.clone(), { jumlah: ringan ? 30 : (keras ? 70 : 35), kuat: keras ? 8 : 5, warna: keras ? null : WARNA_BALON[b.i] });
       b.grup.visible = false;
-      g.musik.efek(900, 120, 0.18, keras ? 0.12 : 0.06, "square");
+      api.suara.pecah(); // suara balon pecah "dor!" (sama dengan versi 2D)
       if (keras) dunia.getar(0.3);
     }
 

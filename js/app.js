@@ -69,16 +69,23 @@ function renderUserInNav() {
     // tampilkan nama lengkap; kalau kepanjangan CSS motong jadi "..."
     avatarEl.innerHTML = `<span class="avatar-ikon"><i class="fa-solid fa-user"></i></span><span class="avatar-nama"></span>`;
     avatarEl.querySelector(".avatar-nama").textContent = user.nama;
-    avatarEl.title = `${user.nama} — klik untuk keluar`; // nama lengkap muncul pas kursor diarahkan
+    avatarEl.title = user.nama; // nama lengkap muncul pas kursor diarahkan
     avatarEl.classList.toggle("nama-panjang", user.nama.length > 14);
-    // pil nama = tombol Keluar (footer disembunyikan di halaman layar penuh)
-    avatarEl.setAttribute("role", "button");
-    avatarEl.tabIndex = 0;
-    const tanyaKeluar = () => {
-      if (confirm(`Keluar dari METAPIA, ${user.nama.split(" ")[0]}?`)) logout();
-    };
-    avatarEl.addEventListener("click", tanyaKeluar);
-    avatarEl.addEventListener("keydown", (e) => { if (e.key === "Enter") tanyaKeluar(); });
+    avatarEl.style.cursor = "default";
+    // tombol KELUAR terpisah (ikon pintu) di sebelah pil nama
+    if (!document.getElementById("btnKeluarNav")) {
+      const btn = document.createElement("button");
+      btn.id = "btnKeluarNav";
+      btn.className = "btn-keluar";
+      btn.type = "button";
+      btn.title = "Keluar";
+      btn.setAttribute("aria-label", "Keluar");
+      btn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i>';
+      btn.addEventListener("click", () => {
+        if (confirm(`Keluar dari METAPIA, ${user.nama.split(" ")[0]}?`)) logout();
+      });
+      avatarEl.after(btn);
+    }
   }
 }
 
@@ -157,3 +164,16 @@ document.addEventListener("DOMContentLoaded", () => {
   initMenuBawah();
   renderUserInNav();
 });
+
+/**
+ * HP: pastikan elemen (mis. tombol "Lanjut" di kotak penjelasan) kelihatan
+ * utuh, tidak ketutup menu bawah. Digulir seperlunya saja.
+ */
+function gulirTerlihat(el) {
+  if (!el) return;
+  const menu = document.querySelector(".menu-bawah");
+  const batasBawah = window.innerHeight - (menu && getComputedStyle(menu).display !== "none" ? menu.offsetHeight + 24 : 16);
+  const r = el.getBoundingClientRect();
+  if (r.bottom > batasBawah) window.scrollBy({ top: r.bottom - batasBawah, behavior: "smooth" });
+  else if (r.top < 10) window.scrollBy({ top: r.top - 10, behavior: "smooth" });
+}
