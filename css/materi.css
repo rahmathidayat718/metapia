@@ -440,10 +440,3 @@ body.kamera .comic-controls{ position:relative; z-index:6; }
 /* kalimat sangat panjang (lebih dari ±150 huruf, diatur js/materi.js):
    huruf sedikit dikecilkan biar tetap muat di balon kata, terutama di HP */
 .speech-bubble.is-panjang .speech-text > span{ font-size:.88em; }
-
-/* Ekor balon kata dulu digambar DI LUAR kotak SVG (y sampai ±137 dari 100).
-   Safari iPhone kadang memotong bagian di luar kotak itu tiap layar digambar
-   ulang (mis. waktu gerak bibir) -> ekor kedip muncul-hilang. Sekarang kotak
-   SVG-nya 140% tinggi balon (viewBox 0 0 100 140, skala tetap sama), jadi
-   ekornya ada DI DALAM kotak & gak pernah kepotong. */
-#scene .bubble-shape{ bottom:auto; height:140%; }
