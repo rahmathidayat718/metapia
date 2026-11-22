@@ -380,6 +380,7 @@ let suaraNyala = true;
 let pembicaraAktif = null; // siapa yang lagi ngetik (guru / dito), null = gak ada
 let teksSekarang = "";     // teks lengkap baris yang lagi diketik
 let timerKetik = null;
+let tokenBicara = 0;    // naik tiap bicara() -> balasan suara yang telat diabaikan
 let timerGiliran = null;   // jeda sebelum Dito jawab
 let giliranBerikut = null; // fungsi yang dijalanin pas jeda itu habis
 
@@ -434,12 +435,145 @@ function playKapur() {
 function playHapus() { nadaPendek(520, 180, 0.32, 0.04); }               // penghapus disapukan
 function playCap() { setTimeout(() => nadaPendek(180, 60, 0.25, 0.12), 1400); } // cap ❌
 
-/** coba muter file suara asli; kalau belum ada / gagal, diabaikan aja (gak error) */
-function playSuaraAsli(src) {
-  if (!suaraNyala || !src) return;
-  const audio = new Audio(src);
-  audio.volume = 0.8;
-  audio.play().catch(() => {});
+/* --------------------------------------------------------------------------
+   VOICE OVER (rekaman suara asli per kalimat)
+   -------------------------------------------------------------------------
+   Kunci = posisi baris:
+     "sapaan" / "sapaan-murid"  -> pembuka (Ibu Rara & Dito)
+     "<bagian>-<baris>"         -> DAFTAR_MAJAS[bagian].dialog[baris]
+     "<bagian>-tanya"           -> "Bagaimana, teman-teman? Sudah paham ...?"
+     "<bagian>-jawab"           -> jawabanMurid
+   Kalau urutan/isi dialog diubah, kuncinya ikut dicek ya (rekaman lama
+   bisa jadi gak cocok lagi). Rekaman asli ada di folder voice_over/.
+   src    : file rekaman
+   vol    : volume (0..1) biar semua rekaman sama keras (murid cowok
+            rekamannya lebih keras -> dikecilkan)
+   segmen : [mulai, selesai] (detik) bagian yang BERSUARA. Diukur otomatis
+            dari rekaman (bagian hening dilewati). Dipakai untuk:
+            - memutar mulai segmen pertama, berhenti di segmen terakhir
+              (hening di awal/akhir rekaman gak ikut diputar)
+            - mengetik teks HANYA selama ada suara -> teks jalan bareng suara,
+              berhenti sebentar waktu guru jeda napas
+   Baris yang punya voice over: suara ketik "tik-tik" dimatikan.
+   -------------------------------------------------------------------------- */
+const VOICE_OVER = {
+  "sapaan": { src: "assets/audio/materi/vo-sapaan.m4a", vol: 0.96, segmen: [[1.9, 3.42], [3.72, 4.6], [4.94, 6.8], [7.32, 8.76]] }, // Guru (1).m4a
+  "sapaan-murid": { src: "assets/audio/materi/vo-sapaan-murid.m4a", vol: 1, segmen: [[0.16, 1.28], [1.56, 3]] }, // Murid cowok 1.m4a
+  "0-0": { src: "assets/audio/materi/vo-0-0.m4a", vol: 0.89, segmen: [[1.02, 6.8], [7.44, 12.3], [13, 16.48], [16.74, 17.74]] }, // Guru (2).m4a
+  "0-1": { src: "assets/audio/materi/vo-0-1.m4a", vol: 0.84, segmen: [[0.7, 1.6], [2.02, 3.92], [4.64, 6.14], [6.68, 8.14], [8.62, 11.22], [11.92, 14.04]] }, // Guru (3).m4a
+  "0-tanya": { src: "assets/audio/materi/vo-0-tanya.m4a", vol: 1, segmen: [[1.14, 2.66], [3, 4.98]] }, // Guru (4).m4a
+  "0-jawab": { src: "assets/audio/materi/vo-0-jawab.m4a", vol: 0.92, segmen: [[0.84, 1.64], [2.08, 3.06], [3.38, 4.38], [4.78, 5.76], [6.3, 6.38], [6.84, 7.98]] }, // Sari.m4a
+  "1-0": { src: "assets/audio/materi/vo-1-0.m4a", vol: 1, segmen: [[1.26, 3.6], [4.2, 4.94], [5.2, 7.84], [8.38, 8.94], [9.3, 10.28], [10.86, 12.2], [12.6, 14.02]] }, // Guru (5).m4a
+  "1-1": { src: "assets/audio/materi/vo-1-1.m4a", vol: 0.96, segmen: [[0.96, 3.34]] }, // Guru (6).m4a
+  "2-0": { src: "assets/audio/materi/vo-2-0.m4a", vol: 1, segmen: [[1.3, 3.9], [4.46, 11.08], [11.76, 17.9]] }, // Guru (7).m4a
+  "2-1": { src: "assets/audio/materi/vo-2-1.m4a", vol: 0.95, segmen: [[1.12, 1.78], [2.28, 5.94]] }, // Guru (8).m4a
+  "2-2": { src: "assets/audio/materi/vo-2-2.m4a", vol: 0.56, segmen: [[0.2, 1.24], [1.78, 2.54], [2.94, 5.06]] }, // Murid cowok 2.m4a
+  "2-3": { src: "assets/audio/materi/vo-2-3.m4a", vol: 0.74, segmen: [[1.24, 2.34], [2.64, 5.04], [5.5, 7.52]] }, // Guru (9).m4a
+  "2-4": { src: "assets/audio/materi/vo-2-4.m4a", vol: 0.83, segmen: [[0.68, 3.14], [3.6, 5.56], [6.24, 8.44], [8.72, 9.74]] }, // Guru (10).m4a
+  "2-tanya": { src: "assets/audio/materi/vo-2-tanya.m4a", vol: 0.85, segmen: [[1.2, 2.74], [3.02, 5.42]] }, // Guru (11).m4a
+  "2-jawab": { src: "assets/audio/materi/vo-2-jawab.m4a", vol: 0.95, segmen: [[0.7, 1.46], [1.8, 2.9], [3.18, 3.88], [4.5, 5.78], [6.42, 7.58]] }, // Keke.m4a
+  "3-0": { src: "assets/audio/materi/vo-3-0.m4a", vol: 0.91, segmen: [[0.76, 3.68], [4.22, 8.56], [8.98, 13.3]] }, // Guru (12).m4a
+  "3-1": { src: "assets/audio/materi/vo-3-1.m4a", vol: 0.94, segmen: [[0.62, 1.46], [2.08, 5.72], [6.48, 7.18], [7.88, 10.56]] }, // Guru (13).m4a
+  "3-tanya": { src: "assets/audio/materi/vo-3-tanya.m4a", vol: 1, segmen: [[0.78, 2.48], [2.96, 5.84]] }, // Guru 15.m4a
+  "3-jawab": { src: "assets/audio/materi/vo-3-jawab.m4a", vol: 0.52, segmen: [[0.4, 0.88], [1.58, 1.76], [2.04, 3.8], [4.16, 7.12]] }, // Murid cowok 11.m4a
+  "4-0": { src: "assets/audio/materi/vo-4-0.m4a", vol: 0.78, segmen: [[0.86, 3.96], [4.24, 5.62], [6.16, 10.92], [11.34, 13.26], [13.52, 14.6]] }, // Guru 16.m4a
+  "4-1": { src: "assets/audio/materi/vo-4-1.m4a", vol: 0.73, segmen: [[0.5, 1.3], [1.88, 4.14], [4.48, 6], [6.62, 7.6], [7.92, 8.92]] }, // Guru 17.m4a
+  "4-tanya": { src: "assets/audio/materi/vo-4-tanya.m4a", vol: 0.74, segmen: [[0.86, 4.54]] }, // Guru 18.m4a
+  "4-jawab": { src: "assets/audio/materi/vo-4-jawab.m4a", vol: 0.94, segmen: [[0.58, 1.6], [2.14, 3.46], [3.82, 5.08], [5.36, 5.94], [6.46, 7.04], [7.38, 8.04]] }, // Sari-1.m4a
+  "5-0": { src: "assets/audio/materi/vo-5-0.m4a", vol: 0.89, segmen: [[0.88, 2.04], [2.34, 5.38], [5.82, 7.68], [8.04, 8.52], [8.84, 10.76]] }, // Guru 18-1.m4a
+  "5-1": { src: "assets/audio/materi/vo-5-1.m4a", vol: 0.74, segmen: [[1.14, 2.66], [2.92, 5.26], [5.88, 6.7], [7.02, 9.68]] }, // Guru 19.m4a
+};
+
+// satu pemutar dipakai ulang: di iPhone pemutar yang sudah "dibuka" lewat
+// sentuhan boleh memutar lagi tanpa disentuh
+const pemutarVO = new Audio();
+pemutarVO.preload = "auto";
+const urlVO = {}; // src -> Promise(blob URL). Diunduh utuh dulu (lebih andal di iPhone & bisa offline)
+
+function muatVO(vo) {
+  if (!urlVO[vo.src]) {
+    urlVO[vo.src] = fetch(vo.src)
+      .then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+      .then((b) => URL.createObjectURL(b));
+    urlVO[vo.src].catch(() => delete urlVO[vo.src]);
+  }
+  return urlVO[vo.src];
+}
+
+/** buka kunci suara di HP: panggil DI DALAM sentuhan/klik (putar hening sekejap) */
+function bukaKunciSuara() {
+  pastikanAudioSiap();
+  if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+  // WAV hening 1 sampel
+  pemutarVO.src = "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQIAAAAAAA==";
+  pemutarVO.play().then(() => pemutarVO.pause()).catch(() => {});
+}
+
+// iPhone mengabaikan audio.volume -> volume diatur lewat Web Audio (GainNode).
+// Cuma kalau Web Audio sudah "jalan" (dibuka lewat sentuhan); kalau belum,
+// pakai audio.volume biasa (laptop/Android menurutinya).
+let gainVO = null;
+function aturVolumeVO(vol) {
+  if (!gainVO && audioCtx && audioCtx.state === "running") {
+    try {
+      gainVO = audioCtx.createGain();
+      audioCtx.createMediaElementSource(pemutarVO).connect(gainVO).connect(audioCtx.destination);
+    } catch (e) { gainVO = null; }
+  }
+  if (gainVO) {
+    if (audioCtx.state !== "running") audioCtx.resume().catch(() => {});
+    gainVO.gain.value = vol;
+    pemutarVO.volume = 1;
+  } else {
+    pemutarVO.volume = vol;
+  }
+}
+
+/** unduh duluan rekaman beberapa baris ke depan biar gak nunggu */
+function muatVODuluan(...kunci) {
+  kunci.forEach((k) => VOICE_OVER[k] && muatVO(VOICE_OVER[k]).catch(() => {}));
+}
+
+let sesiVO = 0; // naik tiap baris baru -> pemutaran lama yang telat mulai dibatalkan
+function hentikanVO() {
+  sesiVO++;
+  pemutarVO.pause();
+}
+
+/**
+ * Putar voice over. Resolve true kalau suara benar-benar jalan,
+ * false kalau gagal (file gak ada / diblokir browser) -> ketik biasa.
+ */
+async function putarVO(vo) {
+  const sesi = ++sesiVO;
+  try {
+    const url = await muatVO(vo);
+    if (sesi !== sesiVO) return false;
+    pemutarVO.src = url;
+    await new Promise((ok, gagal) => {
+      if (pemutarVO.readyState >= 1) return ok();
+      pemutarVO.onloadedmetadata = ok;
+      pemutarVO.onerror = gagal;
+    });
+    if (sesi !== sesiVO) return false;
+    pemutarVO.currentTime = Math.max(0, vo.segmen[0][0] - 0.1);
+    aturVolumeVO(vo.vol == null ? 1 : vo.vol);
+    await pemutarVO.play();
+    if (sesi !== sesiVO) { pemutarVO.pause(); return false; } // keburu dibatalkan
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+/** berapa bagian (0..1) dari "waktu bersuara" yang sudah lewat di detik t */
+function progresVO(vo, t) {
+  let total = 0, lewat = 0;
+  vo.segmen.forEach(([a, b]) => {
+    total += b - a;
+    lewat += Math.min(Math.max(t - a, 0), b - a);
+  });
+  return total ? lewat / total : 1;
 }
 
 /* ==========================================================================
@@ -577,30 +711,57 @@ function bicara(siapa, teks, opsi = {}) {
   p.tokoh.gantiPose(pembicaraAktif.poseNgomong);
   p.tokoh.el.classList.add("is-talking");
   mulaiMulut(p.tokoh, pembicaraAktif.poseNgomong);
-  playSuaraAsli(opsi.suara);
+  const token = ++tokenBicara;
+  const vo = suaraNyala && opsi.vo ? VOICE_OVER[opsi.vo] : null;
 
   // diketik per potongan: potongan *sorot* masuk ke <span class="sorot">
   const potongan = pecahSorot(teks);
-  let iPotong = 0, iHuruf = 0, n = 0, wadah = null;
-  (function ketikSatuHuruf() {
-    if (iPotong < potongan.length) {
-      const pt = potongan[iPotong];
-      if (!wadah) {
-        wadah = document.createElement("span");
-        if (pt.sorot) wadah.className = "sorot";
-        p.isi.appendChild(wadah);
-      }
-      wadah.textContent += pt.t.charAt(iHuruf++);
-      if (!opsi.suara && n++ % 2 === 0) playTick(siapa !== "guru");
-      if (iHuruf >= pt.t.length) {
-        if (pt.sorot) playTing();
-        iPotong++; iHuruf = 0; wadah = null;
-      }
-      timerKetik = setTimeout(ketikSatuHuruf, 26);
-    } else {
-      selesaiNgetik();
+  const totalHuruf = potongan.reduce((j, x) => j + x.t.length, 0);
+  let iPotong = 0, iHuruf = 0, n = 0, wadah = null, ditulis = 0;
+  /** tulis 1 huruf berikutnya; false kalau sudah habis */
+  function tulisSatu() {
+    if (iPotong >= potongan.length) return false;
+    const pt = potongan[iPotong];
+    if (!wadah) {
+      wadah = document.createElement("span");
+      if (pt.sorot) wadah.className = "sorot";
+      p.isi.appendChild(wadah);
     }
-  })();
+    wadah.textContent += pt.t.charAt(iHuruf++);
+    ditulis++;
+    if (iHuruf >= pt.t.length) {
+      if (pt.sorot) playTing();
+      iPotong++; iHuruf = 0; wadah = null;
+    }
+    return true;
+  }
+  // tanpa voice over: huruf per huruf + suara "tik"
+  function ketikBiasa() {
+    if (!tulisSatu()) return selesaiNgetik();
+    if (n++ % 2 === 0) playTick(siapa !== "guru");
+    timerKetik = setTimeout(ketikBiasa, 26);
+  }
+  if (!vo) return ketikBiasa();
+
+  // dengan voice over: jumlah huruf yang tampil mengikuti posisi suara
+  // sinyal lambat: kalau 4 detik suara belum mulai, ketik biasa (rekaman batal)
+  const batasTunggu = new Promise((ok) => setTimeout(() => ok("lambat"), 4000));
+  Promise.race([putarVO(vo), batasTunggu]).then((jalan) => {
+    if (jalan === "lambat") { if (token === tokenBicara && pembicaraAktif) hentikanVO(); jalan = false; }
+    if (token !== tokenBicara || !pembicaraAktif) return; // sudah pindah baris
+    if (!jalan) return ketikBiasa(); // suara gagal -> ketik biasa
+    const akhir = vo.segmen[vo.segmen.length - 1][1];
+    (function ikutiSuara() {
+      const t = pemutarVO.currentTime;
+      const target = Math.floor(progresVO(vo, t) * totalHuruf);
+      while (ditulis < target && tulisSatu());
+      if (t >= akhir + 0.15 || pemutarVO.paused || pemutarVO.ended) {
+        pemutarVO.pause();
+        return selesaiNgetik();
+      }
+      timerKetik = setTimeout(ikutiSuara, 30);
+    })();
+  });
 }
 
 /** "a *b* c" -> [{t:"a "}, {t:"b", sorot:true}, {t:" c"}] */
@@ -624,6 +785,7 @@ function selesaiNgetik() {
   const p = PEMBICARA[siapa];
   pembicaraAktif = null;
   clearTimeout(timerKetik);
+  hentikanVO();
 
   // kalau di-skip, langsung tampil penuh
   if (p.isi.textContent !== teksSekarang.replace(/\*/g, "")) tulisPenuh(p.isi, teksSekarang);
@@ -675,6 +837,7 @@ function hentikanMulut() {
 /** stop semua ketikan/jeda yang lagi jalan (dipakai sebelum pindah baris) */
 function hentikanSemua() {
   clearTimeout(timerKetik);
+  hentikanVO();
   hentikanMulut();
   clearTimeout(timerGiliran);
   giliranBerikut = null;
@@ -873,20 +1036,27 @@ function tampilkanPapan(nama) {
 /* ==========================================================================
    10) RENDER TIAP TAHAP
    ========================================================================== */
-function renderIntro() {
+/**
+ * langsung = true -> guru sudah berdiri di kelas (datang lewat menu, lalu
+ * tombol "Mulai Belajar" di papan ditekan): gak ada animasi jalan masuk,
+ * langsung menyapa.
+ */
+function renderIntro(langsung = false) {
   renderProgress();
   tulisJudul("Ayo Belajar!");
 
-  guru.el.classList.add("is-masuk");
-  playMasuk();
+  if (!langsung) {
+    guru.el.classList.add("is-masuk");
+    playMasuk();
+  }
 
   // tunggu guru selesai jalan masuk, baru ngomong. Dito jawab nanti,
   // setelah tombol "Siap!" ditekan
   introDijawab = false;
   setTimeout(() => {
     guru.el.classList.remove("is-masuk");
-    bicara("guru", SAPAAN_GURU);
-  }, 1350);
+    bicara("guru", SAPAAN_GURU, { vo: "sapaan" });
+  }, langsung ? 250 : 1350);
 
   btnPrev.disabled = true;
   btnAction.innerHTML = 'Siap! <i class="fa-solid fa-arrow-right"></i>';
@@ -902,12 +1072,14 @@ function renderKonten() {
   renderProgress();
   tulisJudul(majas.nama, majas.kategori);
   bersihkanReaksi();
+  // rekaman 2 langkah berikutnya diunduh duluan (bagian ini & awal bagian berikutnya)
+  muatVODuluan(`${idxMajas}-${idxDialog + 1}`, `${idxMajas}-${idxDialog + 2}`, `${idxMajas}-tanya`, `${idxMajas}-jawab`, `${idxMajas + 1}-0`);
 
   if (diPromptPaham) {
     // guru nanya, murid jawab di langkah berikutnya (setelah tombol ditekan).
     // Papan tulis contoh terakhir tetap ditampilkan biar bisa dilihat lagi.
     aturKamera(null);
-    bicara("guru", `Bagaimana, teman-teman? ${majas.tanya || `Sudah paham tentang ${majas.nama.toLowerCase()}?`}`);
+    bicara("guru", `Bagaimana, teman-teman? ${majas.tanya || `Sudah paham tentang ${majas.nama.toLowerCase()}?`}`, { vo: `${idxMajas}-tanya` });
     // murid yang nanti menjawab ANGKAT TANGAN dulu ("Aku, Bu!"), ditahan
     // sampai gilirannya ngomong. (Dito: telunjuk ke atas, Keke: angkat tangan)
     jadwalReaksi([[penjawab(idxMajas), "angkat", 1700, 0]]);
@@ -918,7 +1090,7 @@ function renderKonten() {
     const i = penjawab(idxMajas);
     pilihMurid(i);
     aturKamera({ ke: i, skala: 1.15 });
-    bicara("murid", majas.jawabanMurid, { pose: "ide" });
+    bicara("murid", majas.jawabanMurid, { pose: "ide", vo: `${idxMajas}-jawab` });
     jadwalReaksi([["guru", "bangga", 1800, 0]]); // guru bangga muridnya paham
     btnAction.innerHTML = 'Lanjut <i class="fa-solid fa-arrow-right"></i>';
   } else {
@@ -932,11 +1104,11 @@ function renderKonten() {
     aturKamera(utama, sorot);
     if (baris.oleh != null) {
       pilihMurid(baris.oleh);
-      bicara("murid", baris.teks, { pose: "bicara", selesai: baris.selesai });
+      bicara("murid", baris.teks, { pose: "bicara", selesai: baris.selesai, vo: `${idxMajas}-${idxDialog}` });
     } else {
       // ada papan -> pose "bicara" (tangan menadah ke arah papan di kirinya)
       const poseDefault = baris.papan ? "bicara" : baris.teks.includes("Contoh") ? "nunjuk" : "bicara";
-      bicara("guru", baris.teks, { pose: baris.pose || poseDefault });
+      bicara("guru", baris.teks, { pose: baris.pose || poseDefault, vo: `${idxMajas}-${idxDialog}` });
     }
     jadwalReaksi(baris.reaksi);
     btnAction.innerHTML = 'Lanjut <i class="fa-solid fa-arrow-right"></i>';
@@ -985,7 +1157,7 @@ btnAction.addEventListener("click", () => {
     introDijawab = true;
     pilihMurid(0);
     aturKamera({ ke: 0, skala: 1.15 });
-    bicara("murid", SAPAAN_MURID);
+    bicara("murid", SAPAAN_MURID, { vo: "sapaan-murid" });
     jadwalReaksi([[3, "tepuk", 900], [1, "tepuk", 1100], [2, "tepuk", 1300]]);
     btnAction.innerHTML = 'Mulai Belajar <i class="fa-solid fa-arrow-right"></i>';
     return;
@@ -1032,9 +1204,32 @@ btnMute.addEventListener("click", () => {
   suaraNyala = !suaraNyala;
   btnMute.classList.toggle("is-muted", !suaraNyala);
   muteIcon.className = suaraNyala ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
+  if (!suaraNyala) pemutarVO.pause(); // voice over ikut diam (teks langsung tampil penuh)
 });
 
 /* ==========================================================================
    13) MULAI!
    ========================================================================== */
-renderIntro();
+// - Datang dari tombol "Mulai Belajar" di Beranda (materi.html?mulai=1):
+//   langsung mulai, guru masuk & menyapa.
+// - Datang dari menu atas/bawah (atau muat ulang): tampil tombol
+//   "Mulai Belajar" dulu. Sekalian membuka kunci suara di HP (iPhone cuma mau
+//   memutar suara setelah layar disentuh).
+// Rekaman sapaan diunduh duluan.
+const btnMulai = document.getElementById("btnMulai");
+muatVODuluan("sapaan", "sapaan-murid", "0-0", "0-1");
+const dariBeranda = new URLSearchParams(location.search).has("mulai");
+if (dariBeranda) {
+  // buang "?mulai=1" dari alamat -> kalau dimuat ulang, tombol Mulai muncul lagi
+  history.replaceState(null, "", location.pathname + location.hash);
+  renderIntro();
+} else {
+  btnMulai.hidden = false;
+  btnAction.disabled = btnPrev.disabled = true;
+  btnMulai.addEventListener("click", () => {
+    bukaKunciSuara();
+    btnMulai.hidden = true;
+    btnAction.disabled = false;
+    renderIntro(true); // guru sudah di kelas -> langsung menyapa
+  }, { once: true });
+}

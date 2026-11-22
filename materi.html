@@ -45,6 +45,7 @@
 
     <div class="comic-panel" id="scene">
 
+
       <!-- "DUNIA" = lapisan panggung: papan tulis, murid & guru. Di layar
            lebar di-zoom KAMERA (js/materi.js). Balon kata di luar lapisan ini
            -> gak ikut zoom (tetap terbaca) -->
@@ -56,6 +57,11 @@
           <div class="papan-bidang">
             <p class="papan-judul" id="papanJudul"><small class="papan-kategori"></small><span class="papan-nama">Ayo Belajar!</span></p>
             <div class="papan-isi" id="papanIsi"></div>
+            <!-- tombol mulai di papan, di bawah "Ayo Belajar!". Sekalian membuka
+                 kunci suara di HP (iPhone baru mau memutar suara setelah disentuh) -->
+            <button class="comic-btn comic-btn-primary papan-mulai" id="btnMulai" type="button" hidden>
+              <i class="fa-solid fa-play"></i> Mulai Belajar
+            </button>
             <span class="papan-baki" aria-hidden="true"><i class="kapur"></i><i class="kapur k2"></i><i class="penghapus"></i></span>
           </div>
         </div>

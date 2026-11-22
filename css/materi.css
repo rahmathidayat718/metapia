@@ -8,6 +8,9 @@
 
 /* ---------- tokoh ---------- */
 .guru{ left:27%; bottom:5%; height:62%; }
+/* tokoh cuma gambar (gak bisa diklik): kotak gambarnya yang transparan jangan
+   "menangkap" klik -> tombol "Mulai Belajar" di papan tetap bisa ditekan */
+#scene .tokoh{ pointer-events:none; }
 
 .kelompok-murid{ position:absolute; inset:0; pointer-events:none; }
 .murid{ bottom:5.5%; height:40%; }
@@ -440,3 +443,21 @@ body.kamera .comic-controls{ position:relative; z-index:6; }
 /* kalimat sangat panjang (lebih dari ±150 huruf, diatur js/materi.js):
    huruf sedikit dikecilkan biar tetap muat di balon kata, terutama di HP */
 .speech-bubble.is-panjang .speech-text > span{ font-size:.88em; }
+
+/* ---------- tombol "Mulai Belajar" di papan tulis (di bawah "Ayo Belajar!") ---------- */
+.papan-mulai{
+  position:absolute; left:50%; top:66%; z-index:2;
+  translate:-50% 0;
+  pointer-events:auto; /* .papan pointer-events:none */
+  height:auto; white-space:nowrap;
+  font-size:min(1.45cqw, 2.6cqh); padding:.55em 1.1em; gap:.45em;
+  animation:mulaiDenyut 1.4s ease-in-out infinite;
+}
+.papan-mulai[hidden]{ display:none; }
+@keyframes mulaiDenyut{ 50%{ transform:scale(1.07); } }
+@media (max-width:820px), (orientation:portrait) and (max-width:1100px){
+  .papan-mulai{ font-size:3.6cqw; }
+}
+@media (max-width:600px){
+  .papan-mulai{ font-size:4.3cqw; top:64%; }
+}
