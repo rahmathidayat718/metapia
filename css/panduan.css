@@ -55,7 +55,7 @@
 .langkah h2{ font-size:1.25rem; margin-bottom:4px; }
 .langkah p, .langkah li{ font-weight:600; font-size:.98rem; line-height:1.55; color:var(--ink); }
 .langkah p + p{ margin-top:6px; }
-.langkah ul{ margin:6px 0 0; padding-left:20px; display:flex; flex-direction:column; gap:4px; }
+.langkah ul, .langkah ol{ margin:6px 0 0; padding-left:20px; display:flex; flex-direction:column; gap:4px; }
 .langkah .comic-btn{ margin:8px 0 4px; }
 .info-pasang{ margin-top:8px; color:#0E8A5F !important; font-weight:800 !important; }
 

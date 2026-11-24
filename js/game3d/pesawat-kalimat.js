@@ -114,6 +114,20 @@ export default {
     const batas = { x: 6, atas: 3, bawah: -3, kapal: -5 };
     /** px dari atas canvas -> koordinat y dunia (di bidang z=0) */
     function yDunia(px, H) { return H * (1 - (2 * px) / Math.max(dunia.tinggi, 1)); }
+    /* Bar kalimat makin tinggi waktu kata-katanya terisi (kotak kosong kecil,
+       kata asli lebih lebar). Di HP kalimat panjang bisa jadi 3 baris & bar
+       nutupin pesawat. Jadi dari awal soal, tinggi bar langsung dipesan
+       setinggi kalimat lengkapnya (diukur diam-diam, gak keliatan siswa). */
+    function cadangkanTinggiRakit(rakit) {
+      if (!rakit || !target.length) return;
+      const isi = rakit.innerHTML;
+      rakit.style.minHeight = "";
+      rakit.innerHTML = target.map((k) => `<span class="kata" style="animation:none">${esc(k)}</span>`).join("");
+      const tinggi = rakit.offsetHeight;
+      rakit.innerHTML = isi;
+      rakit.style.minHeight = `${tinggi}px`;
+    }
+
     function aturBatas() {
       const H = Math.tan(THREE.MathUtils.degToRad(dunia.kamera.fov / 2)) * JARAK_KAMERA;
       const W = H * dunia.kamera.aspect;
@@ -121,8 +135,9 @@ export default {
       // kata-kata melayang di antara bawah papan soal (HTML) & atas pesawat
       const papan = g.lapis.querySelector(".g3d-papan");
       const bawahPapan = papan && !papan.hidden ? papan.offsetTop + papan.offsetHeight + (dunia.kamera.aspect < 1 ? 26 : 58) : dunia.tinggi * 0.2;
-      // pesawat tepat di atas bar kalimat (bar di HP bisa 2 baris -> diukur langsung)
+      // pesawat tepat di atas bar kalimat (bar di HP bisa 2-3 baris -> diukur langsung)
       const rakit = g.lapis.querySelector(".g3d-rakit");
+      cadangkanTinggiRakit(rakit);
       const atasBar = rakit && rakit.offsetHeight ? rakit.offsetTop : dunia.tinggi - 80;
       batas.kapal = yDunia(atasBar - 42, H);
       batas.atas = Math.min(H * 0.6, yDunia(bawahPapan, H));

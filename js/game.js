@@ -88,12 +88,38 @@ const Game = (() => {
     Object.entries(poseEls).forEach(([n, img]) => img.classList.toggle("is-active", n === nama));
   }
 
+  /* Balon kata ukurannya TETAP (biar ekornya pas ke kepala), jadi kalimat
+     panjang dulu keluar dari balon. Sebelum diketik, teks lengkapnya diukur
+     dulu & hurufnya dikecilin sampai muat di dalam bentuk bulat balon. */
+  const elTeksBalon = elIsi.parentElement; // <span> pembungkus isi + kursor
+  let teksBalon = "";
+  function pasKanTeks(teks) {
+    const p = elTeksBalon.parentElement; // .speech-text
+    const lama = elIsi.textContent;
+    elIsi.textContent = teks;
+    elTeksBalon.style.fontSize = "";
+    const gaya = getComputedStyle(p);
+    // teks harus muat di bagian tengah elips (pojok kotak kepotong lengkungan)
+    const muatTinggi = (p.clientHeight - parseFloat(gaya.paddingTop) - parseFloat(gaya.paddingBottom)) * 0.8;
+    const muatLebar = p.clientWidth - parseFloat(gaya.paddingLeft) - parseFloat(gaya.paddingRight);
+    if (muatTinggi > 0) {
+      for (let skala = 1; skala > 0.55; skala -= 0.05) {
+        elTeksBalon.style.fontSize = `${skala.toFixed(2)}em`;
+        if (elTeksBalon.offsetHeight <= muatTinggi && elTeksBalon.scrollWidth <= muatLebar + 1) break;
+      }
+    }
+    elIsi.textContent = lama;
+  }
+  window.addEventListener("resize", () => { if (teksBalon) pasKanTeks(teksBalon); });
+
   /** Kak Rara ngomong (teks diketik huruf per huruf) */
   function guru(teks, { poseNgomong = "bicara", poseAkhir = "senyum" } = {}) {
     clearTimeout(timerKetik);
     clearTimeout(timerPose);
     if (layarHP.matches && poseAkhir === "nunjuk") poseAkhir = "senyum";
     elBubble.classList.add("is-show");
+    teksBalon = teks;
+    pasKanTeks(teks);
     elIsi.textContent = "";
     gantiPose(poseNgomong);
     elGuru.classList.add("is-talking");
