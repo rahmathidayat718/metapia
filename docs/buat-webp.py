@@ -21,7 +21,7 @@ TUJUAN = os.path.join(AKAR, "assets")
 ATURAN = [
     ("bocah", 1000, 78),          # tampil ± 500 px di Beranda
     ("game/g1-soal", 880, 76),    # tampil ± 200-440 px di game
-    ("bgMateri", None, 72),       # background layar penuh
+    ("bgMateri", 2560, 82),       # background layar penuh (sumber hasil upscale AI 4x)
     ("kupu", None, 85),           # kecil sekali
 ]
 

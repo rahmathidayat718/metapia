@@ -4,12 +4,17 @@ Video YouTube atau Google Drive **tidak bisa** ditonton tanpa internet. Itu atur
 
 ## 1. Kecilkan ukuran video dulu
 
-Target: resolusi **480p** dengan ukuran **di bawah 30 MB** (maksimal 50 MB). Semakin kecil, semakin cepat siswa menyimpannya.
+Target: ukuran **di bawah 30 MB** (maksimal 50 MB; GitHub menolak file di atas 100 MB). Semakin kecil, semakin cepat siswa menyimpannya dan semakin hemat kuota.
+
+- Video sampai ±5 menit: **720p** (contoh: video majas 3 menit 47 detik = 18 MB).
+- Video lebih panjang: **480p**.
+
+Format harus **MP4 (H.264)**. File **.MOV dari iPhone** (codec HEVC) tidak bisa diputar di banyak HP Android dan laptop, jadi wajib dikonversi.
 
 Pakai **HandBrake** (gratis, https://handbrake.fr):
 
 1. Buka HandBrake, lalu seret file video ke jendelanya.
-2. Di **Preset**, pilih **General → Fast 480p30**.
+2. Di **Preset**, pilih **General → Fast 720p30** (atau **Fast 480p30** untuk video panjang).
 3. Di tab **Summary**, centang **Web Optimized**.
 4. Format: **MP4**.
 5. Klik **Start Encode**.
@@ -17,7 +22,7 @@ Pakai **HandBrake** (gratis, https://handbrake.fr):
 Kalau ffmpeg sudah terpasang, perintah ini menghasilkan file yang sama:
 
 ```
-ffmpeg -i video-asli.mp4 -vf scale=-2:480 -c:v libx264 -crf 28 -preset slow -c:a aac -b:a 96k -movflags +faststart video-majas.mp4
+ffmpeg -i video-asli.mov -vf scale=-2:720 -c:v libx264 -crf 27 -preset slow -c:a aac -b:a 96k -movflags +faststart video-majas.mp4
 ```
 
 ## 2. Taruh di folder proyek

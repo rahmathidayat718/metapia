@@ -275,8 +275,11 @@ export class Musik {
   /** pola = deretan nada (Hz, 0 = diam), tempo = ketukan per menit,
       tipe = bentuk gelombang melodi (beda tiap game), ketukan = bunyi drum
       ("pop" balon, "mesin" pabrik, "angkasa" pesawat) */
-  constructor(nyalaFn, { pola, bass, tempo = 120, volume = 0.07, tipe = "triangle", ketukan = "" } = {}) {
+  constructor(nyalaFn, { lagu = "", pola, bass, tempo = 120, volume = 0.07, tipe = "triangle", ketukan = "" } = {}) {
     this.nyala = nyalaFn;
+    // lagu bersama dari js/musik.js (sama dengan versi 2D). Kalau file itu
+    // gak ada, pakai pola sederhana di bawah (cadangan)
+    this.namaLagu = lagu;
     this.pola = pola || [523, 659, 784, 659, 587, 698, 880, 698];
     this.bass = bass || [131, 131, 175, 175];
     this.ketuk = 60 / tempo / 2;
@@ -301,6 +304,12 @@ export class Musik {
       this.keluar.connect(kompresor).connect(this.ctx.destination);
     }
     if (this.ctx.state === "suspended") this.ctx.resume();
+    if (this.namaLagu && window.MusikLatar) {
+      if (!this.latar) this.latar = new window.MusikLatar(this.namaLagu, { ctx: this.ctx, tujuan: this.keluar, nyala: this.nyala });
+      this.jalan = true;
+      this.latar.mulai();
+      return;
+    }
     this.jalan = true;
     this.berikut = this.ctx.currentTime + 0.05;
     this.timer = setInterval(() => this.jadwal(), 60);
@@ -351,6 +360,7 @@ export class Musik {
   }
   berhenti() {
     this.jalan = false;
+    if (this.latar) this.latar.berhenti();
     clearInterval(this.timer);
   }
 }

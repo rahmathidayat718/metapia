@@ -28,7 +28,7 @@
    berubah bikin cache lama di HP siswa dihapus & diganti yang baru.
    ========================================================================== */
 
-const CACHE_VERSI = "metapia-6e01ba3a88"; // diatur docs/perbarui-sw.py
+const CACHE_VERSI = "metapia-c3e83b67c1"; // diatur docs/perbarui-sw.py
 const CACHE_VIDEO = "video-metapia"; // sama dengan di js/video.js
 const DAFTAR_FILE = [
   // diatur docs/perbarui-sw.py
@@ -115,6 +115,7 @@ const DAFTAR_FILE = [
   "js/kuis.js",
   "js/kupu.js",
   "js/materi.js",
+  "js/musik.js",
   "js/pwa.js",
   "js/reset-data.js",
   "js/sheet.js",

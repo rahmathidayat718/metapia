@@ -30,7 +30,7 @@ const PERINTAH = "Pilihlah jawaban yang paling tepat!";
 
 const SOAL = [
   { // No. 1 — TP 1, C1 — Mudah
-    tanya: "Majas adalah …",
+    tanya: "Majas adalah ....",
     pilihan: [
       "kalimat yang berisi pertanyaan",
       "gaya bahasa yang menggunakan kata-kata kiasan agar kalimat lebih menarik",
@@ -42,13 +42,13 @@ const SOAL = [
   },
   { // No. 2 — TP 2, C3 — Sedang
     kutipan: "Jam dinding berdetak memanggil Rina untuk segera bangun.",
-    tanya: "Kalimat tersebut mengandung majas …",
+    tanya: "Kalimat tersebut mengandung majas ....",
     pilihan: ["metafora", "hiperbola", "personifikasi", "bukan majas"],
     jawaban: 2,
     penjelasan: "Jam dinding tidak bisa memanggil seperti manusia. Benda diberi sifat manusia, jadi ini personifikasi.",
   },
   { // No. 3 — TP 3, C5 — HOTS
-    tanya: "Kalimat “Sepatuku sudah sangat tua.” diubah menjadi majas personifikasi. Kalimat yang tepat adalah …",
+    tanya: "Kalimat “Sepatuku sudah sangat tua.” diubah menjadi majas personifikasi. Kalimat yang tepat adalah ....",
     pilihan: [
       "Sepatuku berumur seribu tahun.",
       "Sepatuku adalah sahabat setia.",
@@ -59,25 +59,25 @@ const SOAL = [
     penjelasan: "\"Sudah lelah menemani langkahku\" memberi sepatu sifat manusia (bisa lelah). A hiperbola, B metafora, C bukan majas.",
   },
   { // No. 4 — TP 1, C1 — Mudah
-    tanya: "Ciri majas metafora adalah …",
+    tanya: "Ciri majas metafora adalah ....",
     pilihan: [
-      "membandingkan dua hal secara langsung tanpa kata seperti atau bagaikan",
+      "memakai kata lain atau simbol untuk menggantikan makna sebenarnya",
       "memberi sifat manusia pada benda mati",
       "melebih-lebihkan keadaan",
       "mengulang kata yang sama",
     ],
     jawaban: 0,
-    penjelasan: "Metafora membandingkan dua hal secara langsung, tanpa kata \"seperti\" atau \"bagaikan\". Contoh: \"Sari adalah bintang kelas.\"",
+    penjelasan: "Metafora memakai kata lain atau simbol untuk menggantikan makna sebenarnya. Contoh: \"Sari adalah bintang kelas.\" Kata \"bintang kelas\" menggantikan makna murid yang paling pintar.",
   },
   { // No. 5 — TP 2, C3 — Sedang
     kutipan: "Suara adik keras sekali sampai terdengar ke bulan.",
-    tanya: "Kalimat tersebut mengandung majas …",
+    tanya: "Kalimat tersebut mengandung majas ....",
     pilihan: ["hiperbola", "metafora", "personifikasi", "bukan majas"],
     jawaban: 0,
     penjelasan: "Suara tidak mungkin terdengar sampai ke bulan. Kalimat ini melebih-lebihkan, jadi hiperbola.",
   },
   { // No. 6 — TP 2, C5 — HOTS
-    tanya: "Beni menulis kalimat “Gelas itu marah lalu jatuh dari meja.” Beni berpendapat kalimat itu majas metafora. Penilaian yang tepat terhadap pendapat Beni adalah …",
+    tanya: "Beni menulis kalimat “Gelas itu marah lalu jatuh dari meja.” Beni berpendapat kalimat itu majas metafora. Penilaian yang tepat terhadap pendapat Beni adalah ....",
     pilihan: [
       "Tepat, karena gelas dibandingkan dengan meja.",
       "Tepat, karena gelas itu benar-benar jatuh.",
@@ -88,7 +88,7 @@ const SOAL = [
     penjelasan: "Gelas diberi sifat \"marah\" seperti manusia, jadi kalimat itu personifikasi, bukan metafora.",
   },
   { // No. 7 — TP 1, C2 — Mudah
-    tanya: "Tujuan penulis menggunakan majas dalam sebuah tulisan adalah …",
+    tanya: "Tujuan penulis menggunakan majas dalam sebuah tulisan adalah ....",
     pilihan: [
       "agar tulisan lebih pendek",
       "agar tulisan tidak bisa dipahami",
@@ -101,7 +101,7 @@ const SOAL = [
   { // No. 8 — TP 2, C4 — HOTS
     perintah: "Perhatikan kalimat berikut!",
     kutipan: "(1) Payung itu setia melindungiku dari hujan.\n(2) Antrean kantin itu sepanjang jalan tol.\n(3) Sahabatku adalah obat di kala aku sedih.",
-    tanya: "Jenis majas kalimat (1), (2), dan (3) secara berurutan adalah …",
+    tanya: "Jenis majas kalimat (1), (2), dan (3) secara berurutan adalah ....",
     pilihan: [
       "metafora, hiperbola, personifikasi",
       "personifikasi, hiperbola, metafora",
@@ -113,19 +113,19 @@ const SOAL = [
   },
   { // No. 9 — TP 2, C3 — Sedang
     kutipan: "Kakek adalah perpustakaan berjalan bagi cucu-cucunya.",
-    tanya: "Kalimat tersebut mengandung majas …",
+    tanya: "Kalimat tersebut mengandung majas ....",
     pilihan: ["personifikasi", "hiperbola", "bukan majas", "metafora"],
     jawaban: 3,
     penjelasan: "Kakek langsung disebut \"perpustakaan berjalan\", simbol orang yang tahu banyak hal. Ini metafora.",
   },
   { // No. 10 — TP 1, C1 — Mudah
-    tanya: "Majas yang membuat benda, hewan, atau tumbuhan seolah-olah bisa berbuat dan merasa seperti manusia disebut …",
+    tanya: "Majas yang membuat benda, hewan, atau tumbuhan seolah-olah bisa berbuat dan merasa seperti manusia disebut ....",
     pilihan: ["hiperbola", "metafora", "pantun", "personifikasi"],
     jawaban: 3,
     penjelasan: "Personifikasi memberi sifat manusia (bisa berbuat dan merasa) pada benda, hewan, atau tumbuhan.",
   },
   { // No. 11 — TP 3, C5 — HOTS
-    tanya: "Kalimat “Rino sangat pemberani.” diubah menjadi majas metafora. Kalimat yang tepat adalah …",
+    tanya: "Kalimat “Rino sangat pemberani.” diubah menjadi majas metafora. Kalimat yang tepat adalah ....",
     pilihan: [
       "Rino berani melawan seribu musuh sendirian.",
       "Rino berani sekali.",
@@ -136,7 +136,7 @@ const SOAL = [
     penjelasan: "Rino langsung disebut \"singa\", simbol pemberani. Ini metafora. A hiperbola, B bukan majas, D personifikasi.",
   },
   { // No. 12 — TP 2, C3 — Sedang
-    tanya: "Kalimat yang bukan majas adalah …",
+    tanya: "Kalimat yang bukan majas adalah ....",
     pilihan: [
       "Sepeda itu lelah menunggu pemiliknya.",
       "Ayah adalah pahlawan keluarga.",
@@ -147,9 +147,9 @@ const SOAL = [
     penjelasan: "\"Kucing itu tidur di atas kursi\" menceritakan keadaan sebenarnya, tanpa kiasan. Pilihan lain: personifikasi (A), metafora (B), hiperbola (C).",
   },
   { // No. 13 — TP 1, C2 — Mudah
-    tanya: "Majas hiperbola memiliki ciri …",
+    tanya: "Majas hiperbola memiliki ciri ....",
     pilihan: [
-      "membandingkan dua hal secara langsung",
+      "memakai kata lain atau simbol untuk menggantikan makna sebenarnya",
       "mengungkapkan sesuatu secara berlebihan dari keadaan sebenarnya",
       "memberi sifat manusia pada benda mati",
       "menggunakan kata tanya",
@@ -158,7 +158,7 @@ const SOAL = [
     penjelasan: "Hiperbola melebih-lebihkan keadaan yang sebenarnya, misalnya \"PR-ku segunung\".",
   },
   { // No. 14 — TP 3, C5 — HOTS
-    tanya: "Saat lomba lari, Tono berlari sangat cepat sehingga lawannya tertinggal jauh. Kalimat bermajas hiperbola yang paling tepat untuk menggambarkan kejadian itu adalah …",
+    tanya: "Saat lomba lari, Tono berlari sangat cepat sehingga lawannya tertinggal jauh. Kalimat bermajas hiperbola yang paling tepat untuk menggambarkan kejadian itu adalah ....",
     pilihan: [
       "Langkah Tono membuat lawannya tertinggal satu benua.",
       "Tono adalah kijang di lintasan lari.",
@@ -169,8 +169,8 @@ const SOAL = [
     penjelasan: "\"Tertinggal satu benua\" sangat melebih-lebihkan jarak, jadi hiperbola. B metafora, C personifikasi, D bukan majas.",
   },
   { // No. 15 — TP 3, C3 — Sedang
-    tanya: "Kata yang tepat untuk melengkapi kalimat bermajas personifikasi berikut adalah …",
-    kutipan: "Hujan … jendela kamarku sepanjang malam.",
+    tanya: "Kata yang tepat untuk melengkapi kalimat bermajas personifikasi berikut adalah ....",
+    kutipan: "Hujan ... jendela kamarku sepanjang malam.",
     pilihan: ["turun deras di", "mengetuk-ngetuk", "setinggi gunung di", "adalah air di"],
     jawaban: 1,
     penjelasan: "Mengetuk-ngetuk adalah perbuatan manusia. Hujan dibuat seolah-olah bisa mengetuk, jadi kalimatnya personifikasi.",
@@ -308,6 +308,9 @@ function nada(frekuensi, mulai, durasi, volume = 0.08, tipe = "sine") {
   osc.start(t);
   osc.stop(t + durasi);
 }
+/* musik latar kuis (santai, lihat js/musik.js). Ikut tombol suara. */
+const musikKuis = window.MusikLatar ? new MusikLatar("kuis", { nyala: () => suaraNyala }) : null;
+
 function suaraBenar() { nada(523, 0, 0.15); nada(659, 0.1, 0.15); nada(784, 0.2, 0.3); }
 function suaraSalah() { nada(220, 0, 0.2, 0.07, "triangle"); nada(175, 0.15, 0.35, 0.07, "triangle"); }
 function suaraKlik() { nada(600, 0, 0.08, 0.05); }
@@ -344,6 +347,7 @@ function renderMulai() {
 
 function mulaiKuis() {
   suaraKlik();
+  if (musikKuis) musikKuis.mulai(); // mulai setelah tombol ditekan (aturan browser)
   idxSoal = 0;
   jumlahBenar = 0;
   jawabanSiswa = [];
@@ -485,6 +489,7 @@ function gantiSuara() {
    7) LAYAR HASIL
    ========================================================================== */
 function renderHasil() {
+  if (musikKuis) musikKuis.berhenti();
   const nilai = Math.round(jumlahBenar * POIN_PER_SOAL);
   const salah = SOAL.length - jumlahBenar;
   const jumlahBintang = nilai >= 80 ? 3 : nilai >= 60 ? 2 : nilai > 0 ? 1 : 0;

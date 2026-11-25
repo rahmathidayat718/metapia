@@ -31,7 +31,7 @@
 const VIDEO = {
   judul: "Video Majas",                                  // tulisan di kotak kuning pojok
   ajakan: "Ayo, kita tonton video majas bersama! 🎬",     // balon kata bocah kiri (pendek aja)
-  file: "",                                              // file MP4 di assets/video/ (bisa offline)
+  file: "assets/video/video-majas.mp4",                  // file MP4 di assets/video/ (bisa offline)
   link: "",                                              // link YouTube / Google Drive (dipakai kalau file kosong)
 };
 const CACHE_VIDEO = "video-metapia"; // sama dengan di sw.js

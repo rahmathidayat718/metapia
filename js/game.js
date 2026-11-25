@@ -233,6 +233,11 @@ const Game = (() => {
     },
   };
   let temaSuara = 0;
+  /* musik latar beda tiap game (lihat js/musik.js). Versi 3D pakai lagu yang
+     sama lewat js/game3d/mesin3d.js, jadi di sini cuma buat versi 2D. */
+  const LAGU_GAME = { 1: "balon", 2: "pabrik", 3: "pesawat" };
+  let musik2d = null;
+  function hentikanMusik2d() { if (musik2d) musik2d.berhenti(); musik2d = null; }
   const bunyi = (n) => (TEMA_SUARA[temaSuara] || TEMA_SUARA[0])[n]();
   const suara = {
     benar: () => bunyi("benar"),
@@ -466,6 +471,11 @@ const Game = (() => {
     }
     const versi3d = pakai3d(id) && !!mesin3d[id];
     temaSuara = id;
+    hentikanMusik2d();
+    if (!versi3d && window.MusikLatar) {
+      musik2d = new MusikLatar(LAGU_GAME[id], { nyala: () => suaraNyala });
+      musik2d.mulai();
+    }
     sedangMain = true;
     elCard.classList.toggle("mode-3d", versi3d);
     // HP: gulir sampai kartu game pas di atas layar (navbar ikut tergulir) ->
@@ -640,6 +650,7 @@ const Game = (() => {
       /** game selesai -> layar hasil */
       selesai(hasil) {
         sedangMain = false;
+        hentikanMusik2d();
         Game.saatKeluar = null;
         elCard.classList.remove("mode-3d");
         renderHasil(id, { ...hasil, skor, bonus: versi3d ? bonus : undefined });
@@ -670,6 +681,7 @@ const Game = (() => {
 
   function keluar() {
     sedangMain = false; // biar gak muncul peringatan "tinggalkan halaman?"
+    hentikanMusik2d();
     if (typeof Game.saatKeluar === "function") Game.saatKeluar();
     Game.saatKeluar = null;
     window.location.href = "game.html";
