@@ -32,6 +32,7 @@ const VIDEO = {
   judul: "Video Majas",                                  // tulisan di kotak kuning pojok
   ajakan: "Ayo, kita tonton video majas bersama! 🎬",     // balon kata bocah kiri (pendek aja)
   file: "assets/video/video-majas.mp4",                  // file MP4 di assets/video/ (bisa offline)
+  rasio: "3 / 2",                                        // bentuk video (lebar / tinggi). YouTube biasanya "16 / 9"
   link: "",                                              // link YouTube / Google Drive (dipakai kalau file kosong)
 };
 const CACHE_VIDEO = "video-metapia"; // sama dengan di sw.js
@@ -100,6 +101,8 @@ setInterval(() => {
    4) LAYAR VIDEO — cover + tombol play, diklik baru videonya dimuat
    ========================================================================== */
 const elLayar = document.getElementById("layarVideo");
+// bingkai ngikutin bentuk videonya -> gak ada pita hitam di kiri-kanan/atas-bawah
+if (VIDEO.rasio) elLayar.style.aspectRatio = VIDEO.rasio;
 const info = VIDEO.file ? { file: VIDEO.file, thumbnail: null } : bacaLink(VIDEO.link);
 const urlFile = VIDEO.file ? new URL(VIDEO.file, location.href).href : "";
 

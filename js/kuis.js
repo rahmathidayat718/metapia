@@ -290,13 +290,21 @@ function acak(daftar) {
    4) SUARA (Web Audio API — gak butuh file mp3)
    ========================================================================== */
 let audioCtx = null;
+let keluaran = null; // penguat + pembatas: suara lebih keras tapi gak pecah
 function nada(frekuensi, mulai, durasi, volume = 0.08, tipe = "sine") {
   if (!suaraNyala) return;
   if (!audioCtx) {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     audioCtx = new AC();
+    const pembatas = audioCtx.createDynamicsCompressor();
+    pembatas.threshold.value = -8; pembatas.knee.value = 4; pembatas.ratio.value = 12;
+    pembatas.attack.value = 0.003; pembatas.release.value = 0.15;
+    keluaran = audioCtx.createGain();
+    keluaran.gain.value = 4;
+    keluaran.connect(pembatas).connect(audioCtx.destination);
   }
+  if (audioCtx.state === "suspended") audioCtx.resume();
   const t = audioCtx.currentTime + mulai;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -304,7 +312,7 @@ function nada(frekuensi, mulai, durasi, volume = 0.08, tipe = "sine") {
   osc.frequency.setValueAtTime(frekuensi, t);
   gain.gain.setValueAtTime(volume, t);
   gain.gain.exponentialRampToValueAtTime(0.001, t + durasi);
-  osc.connect(gain).connect(audioCtx.destination);
+  osc.connect(gain).connect(keluaran);
   osc.start(t);
   osc.stop(t + durasi);
 }

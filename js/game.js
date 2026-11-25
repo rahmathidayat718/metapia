@@ -176,10 +176,10 @@ const Game = (() => {
       if (!AC) return;
       audioCtx = new AC();
       const kompresor = audioCtx.createDynamicsCompressor();
-      kompresor.threshold.value = -12;
-      kompresor.ratio.value = 6;
+      kompresor.threshold.value = -8; kompresor.knee.value = 4; kompresor.ratio.value = 12;
+      kompresor.attack.value = 0.003; kompresor.release.value = 0.15;
       keluaran = audioCtx.createGain();
-      keluaran.gain.value = 1.6;
+      keluaran.gain.value = 2.4;
       keluaran.connect(kompresor).connect(audioCtx.destination);
     }
     if (audioCtx.state === "suspended") audioCtx.resume();

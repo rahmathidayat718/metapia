@@ -115,7 +115,7 @@
   .bocah-kanan{ left:75%; }
 
   /* balon lebih kecil & agak turun, biar gak mepet ke layar video */
-  .bubble-ajakan{ left:10%; top:54%; width:50%; height:10.5%; transform-origin:32% 113%; }
+  .bubble-ajakan{ left:10%; top:57%; width:50%; height:10.5%; transform-origin:32% 113%; }
   .bubble-ajakan .speech-text{ font-size:3.1cqw; padding:2% 11%; }
 
   .tombol-play{ width:16cqw; height:16cqw; font-size:6.5cqw; border-width:3px; box-shadow:4px 4px 0 var(--ink); }

@@ -297,15 +297,22 @@ export class Musik {
       this.ctx = new AC();
       // penguat + kompresor: lebih keras tapi gak pecah
       const kompresor = this.ctx.createDynamicsCompressor();
-      kompresor.threshold.value = -12;
-      kompresor.ratio.value = 6;
+      kompresor.threshold.value = -8; kompresor.knee.value = 4; kompresor.ratio.value = 12;
+      kompresor.attack.value = 0.003; kompresor.release.value = 0.15;
       this.keluar = this.ctx.createGain();
-      this.keluar.gain.value = 1.6;
+      this.keluar.gain.value = 2.4;
       this.keluar.connect(kompresor).connect(this.ctx.destination);
     }
     if (this.ctx.state === "suspended") this.ctx.resume();
     if (this.namaLagu && window.MusikLatar) {
-      if (!this.latar) this.latar = new window.MusikLatar(this.namaLagu, { ctx: this.ctx, tujuan: this.keluar, nyala: this.nyala });
+      if (!this.latar) {
+        // musik lewat penguatnya sendiri (1.4x, sama dengan versi 2D), bukan
+        // penguat efek suara (2.4x) -> keras musik 2D & 3D sama
+        const keluarMusik = this.ctx.createGain();
+        keluarMusik.gain.value = 1.4 / 2.4;
+        keluarMusik.connect(this.keluar);
+        this.latar = new window.MusikLatar(this.namaLagu, { ctx: this.ctx, tujuan: keluarMusik, nyala: this.nyala });
+      }
       this.jalan = true;
       this.latar.mulai();
       return;

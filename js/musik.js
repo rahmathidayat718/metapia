@@ -35,7 +35,7 @@
   const LAGU_METAPIA = {
     /* KUIS — santai, pelan, gak ramai (F mayor) */
     kuis: {
-      tempo: 84, volume: 0.05,
+      tempo: 84, volume: 0.1,
       melodiTipe: "sine", melodiVol: 0.9, gate: 0.95,
       akor: ["F3 A3 C4", "D3 F3 A3", "Bb2 D3 F3", "C3 E3 G3", "F3 A3 C4", "A2 C3 E3", "Bb2 D3 F3", "C3 E3 G3"],
       melodi: [
@@ -49,7 +49,7 @@
 
     /* GAME 1 — PECAH BALON: ceria, memantul (C mayor, cepat) */
     balon: {
-      tempo: 132, volume: 0.065,
+      tempo: 132, volume: 0.12,
       melodiTipe: "triangle", melodiVol: 1, gate: 0.5,
       akor: ["C4 E4 G4", "A3 C4 E4", "F3 A3 C4", "G3 B3 D4", "C4 E4 G4", "A3 C4 E4", "F3 A3 C4", "G3 B3 D4"],
       melodi: [
@@ -62,7 +62,7 @@
 
     /* GAME 2 — PABRIK SORTIR: groove mesin (A minor) */
     pabrik: {
-      tempo: 116, volume: 0.05,
+      tempo: 116, volume: 0.095,
       melodiTipe: "square", melodiVol: 0.55, gate: 0.6,
       akor: ["A2 C3 E3", "G2 B2 D3", "F2 A2 C3", "E2 G#2 B2", "A2 C3 E3", "G2 B2 D3", "F2 A2 C3", "E2 G#2 B2"],
       melodi: [
@@ -75,7 +75,7 @@
 
     /* GAME 3 — PESAWAT: luar angkasa, berkelip (D minor, pelan & luas) */
     pesawat: {
-      tempo: 96, volume: 0.06,
+      tempo: 96, volume: 0.115,
       melodiTipe: "triangle", melodiVol: 0.8, gate: 0.95,
       akor: ["D3 F3 A3", "Bb2 D3 F3", "F2 A2 C3", "C3 E3 G3", "D3 F3 A3", "Bb2 D3 F3", "G2 Bb2 D3", "A2 C#3 E3"],
       melodi: [
@@ -128,8 +128,8 @@
       if (!AC) return false;
       this.ctx = new AC();
       const kompresor = this.ctx.createDynamicsCompressor();
-      kompresor.threshold.value = -14;
-      kompresor.ratio.value = 4;
+      kompresor.threshold.value = -10; kompresor.knee.value = 4; kompresor.ratio.value = 10;
+      kompresor.attack.value = 0.003; kompresor.release.value = 0.2;
       this.tujuan = this.ctx.createGain();
       this.tujuan.gain.value = 1.4;
       this.tujuan.connect(kompresor).connect(this.ctx.destination);

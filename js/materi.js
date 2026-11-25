@@ -465,7 +465,7 @@ const VOICE_OVER = {
   "0-jawab": { src: "assets/audio/materi/vo-0-jawab.m4a", vol: 0.92, segmen: [[0.84, 1.64], [2.08, 3.06], [3.38, 4.38], [4.78, 5.76], [6.3, 6.38], [6.84, 7.98]] }, // Sari.m4a
   "1-0": { src: "assets/audio/materi/vo-1-0.m4a", vol: 1, segmen: [[1.26, 3.6], [4.2, 4.94], [5.2, 7.84], [8.38, 8.94], [9.3, 10.28], [10.86, 12.2], [12.6, 14.02]] }, // Guru (5).m4a
   "1-1": { src: "assets/audio/materi/vo-1-1.m4a", vol: 0.96, segmen: [[0.96, 3.34]] }, // Guru (6).m4a
-  "2-0": { src: "assets/audio/materi/vo-2-0.m4a", vol: 1, segmen: [[0.68, 2.56], [3.12, 5.56], [6.02, 9.5], [9.96, 13.18]] }, // revisi materi.mp4 (pengertian metafora baru)
+  "2-0": { src: "assets/audio/materi/vo-2-0.m4a", vol: 1, segmen: [[0.36, 2.56], [3.12, 5.56], [6.02, 9.5], [9.96, 13.18]] }, // revisi materi.mp4 (pengertian metafora baru)
   "2-1": { src: "assets/audio/materi/vo-2-1.m4a", vol: 0.95, segmen: [[1.12, 1.78], [2.28, 5.94]] }, // Guru (8).m4a
   "2-2": { src: "assets/audio/materi/vo-2-2.m4a", vol: 0.56, segmen: [[0.2, 1.24], [1.78, 2.54], [2.94, 5.06]] }, // Murid cowok 2.m4a
   "2-3": { src: "assets/audio/materi/vo-2-3.m4a", vol: 0.74, segmen: [[1.24, 2.34], [2.64, 5.04], [5.5, 7.52]] }, // Guru (9).m4a
@@ -556,7 +556,9 @@ async function putarVO(vo) {
       pemutarVO.onerror = gagal;
     });
     if (sesi !== sesiVO) return false;
-    pemutarVO.currentTime = Math.max(0, vo.segmen[0][0] - 0.1);
+    // mulai sedikit sebelum suara pertama: bunyi awal yang pelan (mis. "Y" di
+    // "Yang") gak kepotong, & HP sering "telat bangun" ±0,1 dtk waktu play
+    pemutarVO.currentTime = Math.max(0, vo.segmen[0][0] - 0.3);
     aturVolumeVO(vo.vol == null ? 1 : vo.vol);
     await pemutarVO.play();
     if (sesi !== sesiVO) { pemutarVO.pause(); return false; } // keburu dibatalkan
